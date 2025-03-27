@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": ["sae-java/src"],
+    "java.project.outputPath": "sae-java/bin",
+    "java.project.referencedLibraries": [
+        "sae-java/lib/junit-4.13.2.jar",
+        "sae-java/lib/hamcrest-2.2.jar"
+    ]
+}
