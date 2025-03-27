@@ -1,3 +1,6 @@
+# Target directory for compiled classes
+target/
+
 # Compiled class file
 *.class
 
