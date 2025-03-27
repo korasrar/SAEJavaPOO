@@ -3,7 +3,8 @@
 # Répertoire source et destination pour la compilation Java
 repertoire_source="../sae-java/src"
 repertoire_destination="../sae-java/bin"
-repertoire_lib="../sae-java/lib/junit-4.13.2.jar"
+repertoire_lib_javac="../sae-java/lib/junit-4.13.2.jar"
+repertoire_lib_java="../sae-java/bin:../sae-java/lib/junit-4.13.2.jar:../sae-java/lib/hamcrest-2.2.jar"
 
 # Compilation des fichiers Java
 echo "Compilation des fichiers Java..."
@@ -17,5 +18,5 @@ if [ -z "$classe_executable" ]; then
 else
     # Lancement du programme Java
     echo "Lancement du programme Java..."
-    java -cp "$repertoire_destination" "$classe_executable"
+    java -cp "$repertoire_lib_java" org.junit.runner.JUnitCore "$classe_executable"
 fi
