@@ -20,6 +20,6 @@
 **L’application devra permettre d’accéder aux diverses informations demandées dans le
 tableau de bord de votre SAE « Exploitation d’une base de données », de gérer les palmarès (livres, vendeurs, boutiques) et d’éditer des factures au format PDF**
 
-## Permission pour le script de compilation 
+## MAVEN PROJECT
 
-```chmod +x projet_java.sh```  
+Cette SAE utilise MAVEN, il faut dont installer l'extension Java de microsoft sur VSCode !

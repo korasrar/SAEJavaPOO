@@ -1,3 +1,5 @@
+package fr.saejava;
+
 public class Livre {
     int isbn;
     String titre;
