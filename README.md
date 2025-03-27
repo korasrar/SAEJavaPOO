@@ -19,3 +19,7 @@
 
 **L’application devra permettre d’accéder aux diverses informations demandées dans le
 tableau de bord de votre SAE « Exploitation d’une base de données », de gérer les palmarès (livres, vendeurs, boutiques) et d’éditer des factures au format PDF**
+
+## Permission pour le script de compilation 
+
+```chmod +x projet_java.sh```  

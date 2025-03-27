@@ -16,3 +16,10 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+
+## Important command !
+
+javac -cp sae-java/lib:junit-4.13.2.jar -d sae-java/bin sae-java/src/*
+
+java -cp sae-java/lib:hamcrest-2.2.jar:junit-4.13.2.jar org.junit.runner.JUnitCore
+*NomDuFichier*Test  
