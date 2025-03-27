@@ -3,10 +3,11 @@
 # Répertoire source et destination pour la compilation Java
 repertoire_source="../sae-java/src"
 repertoire_destination="../sae-java/bin"
+repertoire_lib="../sae-java/lib/junit-4.13.2.jar"
 
 # Compilation des fichiers Java
 echo "Compilation des fichiers Java..."
-javac -d "$repertoire_destination" -cp ../sae-java/lib:junit-4.13.2.jar "$repertoire_source"/*.java
+javac -d "$repertoire_destination" -cp "$repertoire_lib" "$repertoire_source"/*.java
 echo "Compilation terminée."
 
 # Recherche de la classe exécutable
