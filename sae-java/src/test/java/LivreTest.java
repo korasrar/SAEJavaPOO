@@ -9,6 +9,6 @@ public class LivreTest {
     @Test
     public void testGetISBN() {
         Livre livre = new Livre(1, "titre", 100, "01/01/2020", 10.0);
-        assertTrue(livre.getISBN() == 1);
+        assertTrue(livre.getIsbn() == 1);
     }
 }

@@ -1,11 +1,17 @@
 package fr.saejava;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Editeur{
     int idEdit;
     String nomEdit;
+    List<Livre> livres;
 
     Editeur(int idEdit,String nomEdit){
         this.idEdit=idEdit;
         this.nomEdit=nomEdit;
+        this.livres = new ArrayList<>();
     }
 
     @Override

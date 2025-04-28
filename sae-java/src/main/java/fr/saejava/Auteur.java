@@ -1,9 +1,14 @@
 package fr.saejava;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Auteur {
     int idAuteur;
     String nomAuteur;
     int anneeNais;
     int anneeDeces;
+    List<Livre> livres;
 
     Auteur(int idAuteur,String nomAuteur){
         this.idAuteur=idAuteur;
@@ -14,6 +19,7 @@ public class Auteur {
         this.nomAuteur=nomAuteur;
         this.anneeNais=anneeNais;
         this.anneeDeces=anneeDeces;
+        this.livres = new ArrayList<>();
     }
     public int getIdAuteur() {
         return idAuteur;
