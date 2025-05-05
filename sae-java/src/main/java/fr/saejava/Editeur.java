@@ -14,24 +14,33 @@ public class Editeur{
         this.livres = new ArrayList<>();
     }
 
-    @Override
-    public String toString() {
-        return this.idEdit+" "+this.nomEdit;
-    }
-
     public int getIdEdit() {
         return idEdit;
-    }
-
-    public void setIdEdit(int idEdit) {
-        this.idEdit = idEdit;
     }
 
     public String getNomEdit() {
         return nomEdit;
     }
 
+    public void setIdEdit(int idEdit) {
+        this.idEdit = idEdit;
+    }
+
     public void setNomEdit(String nomEdit) {
         this.nomEdit = nomEdit;
     }
+
+    @Override
+    public String toString() {
+        return this.idEdit+" "+this.nomEdit;
+    }
+    @Override
+    public boolean equals(Object obj){
+        if(obj==null){return false;}
+        if(obj==this){return true;}
+        if(!(obj instanceof Editeur)){return false;}
+        Editeur editeur=(Editeur) obj;
+        return this.idEdit==editeur.getIdEdit() && this.nomEdit.equals(editeur.getNomEdit());
+    }
+            
 }

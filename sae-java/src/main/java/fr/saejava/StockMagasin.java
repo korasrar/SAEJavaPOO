@@ -11,6 +11,13 @@ public class StockMagasin {
         this.qte = qte;
     }
 
+    public void ajouteQte(){
+    }
+
+    public void ajouteQte(int qte){
+        this.qte += qte;
+    }
+
     public Livre getLivre(){
         return this.livre;
     }
@@ -24,4 +31,13 @@ public class StockMagasin {
         this.qte=qte;
     }
     
+    @Override
+    public boolean equals(Object obj){
+        if(obj==null){return false;}
+        if(obj==this){return true;}
+        if(!(obj instanceof StockMagasin)){return false;}
+
+        StockMagasin tmp = (StockMagasin) obj;
+        return tmp.livre.equals(this.livre);
+    }
 }

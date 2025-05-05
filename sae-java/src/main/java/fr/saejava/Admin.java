@@ -5,8 +5,9 @@ public class Admin extends Personne{
     public Admin(String nom, String prenom){
         super(nom, prenom);
     }
-    public void creeCompteVendeur(){
 
+    public void creeCompteVendeur(Magasin magasin, String nom, String prenom){
+        Vendeur vendeur = new Vendeur(nom, prenom, magasin);
     }
     public void addNouvelleLibrairie(){
 

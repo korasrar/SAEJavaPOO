@@ -67,5 +67,15 @@ public class Livre {
         this.prix = prix;
     }
     
+    @Override
+    public boolean equals(Object obj){
+        if(obj==null){return false;}
+        if(obj==this){return true;}
+        if(!(obj instanceof Livre)){return false;}
+
+        Livre tmp = (Livre) obj;
+        return tmp.isbn==this.isbn && tmp.titre.equals(this.titre) && 
+        tmp.nbPages==this.nbPages && tmp.datePubli.equals(this.datePubli);
+    }
 }
 

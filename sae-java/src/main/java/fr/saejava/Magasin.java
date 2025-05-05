@@ -38,13 +38,22 @@ public class Magasin{
         this.ville = ville;
     }
 
-
     public void ajoutStock(StockMagasin ajout){
         this.stock.add(ajout);
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj==null){return false;}
+        if(obj==this){return true;}
+        if(!(obj instanceof Magasin)){return false;}
+        Magasin magasin=(Magasin) obj;
+        return this.id==magasin.getId() && this.nom.equals(magasin.getNom()) && this.ville.equals(magasin.getVille());
+    }
     /*====================================*/
-    public Livre onVousRecommande(){
-        return ;
+    public List<Livre> onVousRecommande(Client client){
+        
+        return null;
     }
     public int getQte(int i){
         return stock.indexOf(i);

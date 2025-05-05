@@ -6,13 +6,13 @@
 - [ ] Choisir le mode de réception (retrait en magasin ou livraison à domicile)  
 - [ ] Consulter le catalogue des livres disponibles  
 ### Vendeur 🏪  
-- [ ] Ajouter un livre au stock de sa librairie  
-- [ ] Mettre à jour la quantité disponible d’un livre  
-- [ ] Vérifier la disponibilité d’un livre dans une librairie  
+- [X] Ajouter un livre au stock de sa librairie  
+- [X] Mettre à jour la quantité disponible d’un livre  
+- [X] Vérifier la disponibilité d’un livre dans une librairie  
 - [ ] Passer une commande pour un client en magasin  
 - [ ] Transférer un livre d’une autre librairie pour satisfaire une commande client.  
 ### Administrateur ou administratrice 🛠️  
-- [ ] Créer un compte vendeur et l’affecter à une librairie  
+- [X] Créer un compte vendeur et l’affecter à une librairie  
 - [ ] Ajouter une nouvelle librairie au réseau  
 - [ ] Gérer les stocks globaux de toutes les librairies  
 - [ ] Consulter les statistiques de vente  
@@ -22,4 +22,4 @@ tableau de bord de votre SAE « Exploitation d’une base de données », de gé
 
 ## MAVEN PROJECT
 
-Cette SAE utilise MAVEN, il faut dont installer l'extension Java de microsoft sur VSCode !
+Cette SAE utilise MAVEN, il faut donc installer l'extension Java de microsoft sur VSCode !

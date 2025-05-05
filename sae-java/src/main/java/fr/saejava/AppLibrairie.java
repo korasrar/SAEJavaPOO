@@ -1,30 +1,27 @@
 package fr.saejava;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Properties;
 
 public class AppLibrairie {
-    public static void main(String[] argv) {
-        Properties connConfig = new Properties();
-        connConfig.setProperty("maubert", "maubert");
-        connConfig.setProperty("maubert", "maubert");
-
-        try (Connection conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/Librairie", connConfig)) {
-            try (Statement stmt = conn.createStatement()) {
-                try (ResultSet contact_list = stmt.executeQuery("SELECT , last_name, email FROM test.contacts")) {
-                    while (contact_list.next()) {
-                        System.out.println(String.format("%s %s <%s>",
-                            contact_list.getString("first_name"),
-                            contact_list.getString("last_name"),
-                            contact_list.getString("email")));
-                    }
-                }
+    // Connection avec JDBC 
+    public static void main(String[] args) throws SQLException, ClassNotFoundException{
+        Connection c;
+        System.out.println("Tentative de connection...");
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            c=DriverManager.getConnection(
+            "jdbc:mysql://servinfo-maria:3306/Librairie",
+            "maubert","maubert");
+            System.out.println("Connection réussi");
+            } catch (SQLException ex){
+                System.out.println("Msg:"+ex.getMessage()+
+                ex.getErrorCode());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            catch (ClassNotFoundException ex){
+                System.out.println("Driver pas trouvé");
+            }
     }
+
+    // Application avec menu 
 }

@@ -12,12 +12,12 @@ public class Classification {
         return idDewey;
     }
 
-    public void setIdDewey(int idDewey) {
-        this.idDewey = idDewey;
-    }
-
     public String getNomClass() {
         return nomClass;
+    }
+
+    public void setIdDewey(int idDewey) {
+        this.idDewey = idDewey;
     }
 
     public void setNomClass(String nomClass) {

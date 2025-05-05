@@ -1,6 +1,6 @@
 package fr.saejava;
 
-public class Personne{
+public abstract class Personne{
 
     private String nom;
     private String prenom;
@@ -25,6 +25,4 @@ public class Personne{
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
-  
-    
 }
