@@ -2,7 +2,7 @@
 
 ## Fonctionnalité à implémenter  
 ### Client 👤
-- [ ] Passer une commande (en magasin ou en ligne)  
+- [-] Passer une commande (en magasin ou en ligne)  
 - [ ] Choisir le mode de réception (retrait en magasin ou livraison à domicile)  
 - [ ] Consulter le catalogue des livres disponibles  
 ### Vendeur 🏪  

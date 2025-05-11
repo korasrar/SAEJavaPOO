@@ -2,6 +2,8 @@ package fr.saejava;
 import java.util.List;
 import java.util.ArrayList;
 
+// transformer ca en une map dans Magasin ?
+
 public class StockMagasin {
     private int qte;
     private Livre livre;

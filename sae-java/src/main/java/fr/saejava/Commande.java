@@ -1,8 +1,11 @@
 package fr.saejava;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Commande {
-    ArrayList<DetailCommande> contenue;
+    // Map<Livre, Integer> contenu; peut etre ?
+    List<DetailCommande> contenue;
     Client client;
     Magasin magasin;
 
@@ -20,7 +23,7 @@ public class Commande {
         return this.magasin;
     }
 
-    ArrayList<DetailCommande> getContenue(){
+    List<DetailCommande> getContenue(){
         return this.contenue;
     }
 
@@ -31,11 +34,9 @@ public class Commande {
         this.magasin = magasin;
     }
 
-    void ajoutLivre(DetailCommande ajout){
+    void ajouterLivre(DetailCommande ajout){
         this.contenue.add(ajout);
     }
-
-    
 
     @Override
     public String toString(){
@@ -45,6 +46,7 @@ public class Commande {
         }
         return res;
     }
+
     @Override
     public boolean equals(Object obj){
         if(obj==null){return false;}

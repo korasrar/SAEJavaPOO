@@ -47,6 +47,7 @@ public class Client extends Personne{
     public void setCodePostal(int codePostal){
         this.codePostal = codePostal;
     }
+
     public void passerCommande(){
         Commande commande = new Commande(this, null);
         Scanner scan = new Scanner(System.in);

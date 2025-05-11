@@ -9,12 +9,15 @@ public class Admin extends Personne{
     public void creeCompteVendeur(Magasin magasin, String nom, String prenom){
         Vendeur vendeur = new Vendeur(nom, prenom, magasin);
     }
-    public void addNouvelleLibrairie(){
 
+    public void ajouterNouvelleLibrairie(){
+        Magasin magasin = new Magasin();
     }
+
     public void gererLesStocks(){
 
     }
+
     public void statVente(){
         
     }
