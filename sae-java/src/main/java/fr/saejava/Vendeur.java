@@ -13,19 +13,13 @@ public class Vendeur extends Personne{
     }
 
     public void ajouteLivre(Livre l){
-        if (magasin.getStock().contains(l)){
-            magasin.getStock().get(magasin.getStock().indexOf(l)).ajouteQte();
-        }
-        else{
-            StockMagasin stock = new StockMagasin(l, 1);
-        }
+        magasin.getStock().putIfAbsent(l,0);
+        magasin.getStock().put(l,magasin.getStock().get(l)+1);
     }
 
     public void ajouteLivre(Livre l, int qte){
-        if (magasin.getStock().contains(l)){
-            magasin.getStock().get(magasin.getStock().indexOf(l)).ajouteQte(qte);}
-        else{
-            magasin.ajoutStock(new StockMagasin(l, 1));}
+        magasin.getStock().putIfAbsent(l,0);
+        magasin.getStock().put(l,magasin.getStock().get(l)+qte);
     }
 
     public void commander(List<Livre> livres, int qte, Client client){
@@ -34,6 +28,7 @@ public class Vendeur extends Personne{
             try{
             if (this.verifierDispo(l)){ // verifie la dispo dans le magasin du vendeur
                 commande.ajouterLivre(new DetailCommande(qte, l, commande));
+                client.getHistoriquLivres().add(l);
             }
             }
             catch(LivrePasDansStockMagasinExecption e){
@@ -48,6 +43,7 @@ public class Vendeur extends Personne{
             try{
             if (this.verifierDispo(l)){ // verifie la dispo dans le magasin du vendeur
                 commande.ajouterLivre(new DetailCommande(l, commande));
+                client.getHistoriquLivres().add(l);
             }
             }
             catch(LivrePasDansStockMagasinExecption e){
@@ -57,19 +53,19 @@ public class Vendeur extends Personne{
     }
 
     public void mettreAJour(Livre l, int qte) throws LivrePasDansStockMagasinExecption{
-        if (magasin.getStock().contains(l)){
-            magasin.getStock().get(magasin.getStock().indexOf(l)).setQte(qte);}
+        if (this.magasin.getStock().containsKey(l) && this.magasin.getStock().get(l)!=0){
+            magasin.getStock().put(l,qte);}
         else {
             throw new LivrePasDansStockMagasinExecption();}
     }
 
-    public void transferer(StockMagasin stock){
+    public void transferer(Magasin magasin2){
 
     }
 
     public boolean verifierDispo(Livre l) throws LivrePasDansStockMagasinExecption{
 
-        if (this.magasin.getStock().contains(l))
+        if (this.magasin.getStock().containsKey(l) && this.magasin.getStock().get(l)!=0)
         {return true;}
 
         else {

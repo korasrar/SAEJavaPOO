@@ -3,6 +3,8 @@ package fr.saejava;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Client extends Personne{
     
@@ -10,6 +12,7 @@ public class Client extends Personne{
     private String adresse;
     private String ville;
     private int codePostal;
+    private Set<Livre> historiqueLivre;
     private List<Commande> historiqueCommandes;
 
     public Client(String adresse, String ville, int codePostal, String nom, String prenom){
@@ -19,6 +22,7 @@ public class Client extends Personne{
         this.ville = ville;
         this.codePostal = codePostal;
         this.historiqueCommandes = new ArrayList<>();
+        this.historiqueLivre=new HashSet<>();
     }
     public int getNum(){ 
         return this.num;
@@ -35,6 +39,9 @@ public class Client extends Personne{
     public List<Commande> getHistoriqueCommandes(){
         return this.historiqueCommandes;
     }
+    public Set<Livre> getHistoriquLivres(){
+        return this.historiqueLivre;
+    }
     public void setNum(int num){ 
         this.num = num;
     }
@@ -49,6 +56,7 @@ public class Client extends Personne{
     }
 
     public void passerCommande(){
+        // this.historiqueLivre.addAll(Livre);
         Commande commande = new Commande(this, null);
         Scanner scan = new Scanner(System.in);
         System.out.println("Choisir magasin parmis la liste :\n");
@@ -62,7 +70,20 @@ public class Client extends Personne{
         
 
     }
+
     public void consulterCatalogue(){
         
+    }
+    
+    public Set<Livre> onVousRecommande(Client client){
+        // liste de tt les clients du magasin?, faire une copi de la liste et enlever le client en paramettre
+
+        // recuperer la liste de commandes de chaques client de la liste et du client passe en paramettre
+
+        // comparer les listes
+
+        // faire une liste avec les livres qui ne sont pas en commun pour chaque client qui a au moins un 
+        // livre en commun avec la liste du client passe en paramettre   
+        return null;
     }
 }
