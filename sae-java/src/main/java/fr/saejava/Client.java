@@ -12,8 +12,6 @@ public class Client extends Personne{
     private String adresse;
     private String ville;
     private int codePostal;
-    private Set<Livre> historiqueLivre;
-    private List<Commande> historiqueCommandes;
 
     public Client(String adresse, String ville, int codePostal, String nom, String prenom){
         super(nom, prenom);
@@ -21,8 +19,6 @@ public class Client extends Personne{
         this.adresse = adresse;
         this.ville = ville;
         this.codePostal = codePostal;
-        this.historiqueCommandes = new ArrayList<>();
-        this.historiqueLivre=new HashSet<>();
     }
     public int getNum(){ 
         return this.num;
@@ -36,12 +32,6 @@ public class Client extends Personne{
     public int getCodePostal(){
         return this.codePostal;
     }
-    public List<Commande> getHistoriqueCommandes(){
-        return this.historiqueCommandes;
-    }
-    public Set<Livre> getHistoriquLivres(){
-        return this.historiqueLivre;
-    }
     public void setNum(int num){ 
         this.num = num;
     }
@@ -54,6 +44,8 @@ public class Client extends Personne{
     public void setCodePostal(int codePostal){
         this.codePostal = codePostal;
     }
+
+    // pas sur de cette méthode
     public void modeDeReception(){
         
 

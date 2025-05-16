@@ -55,5 +55,5 @@ public class Commande {
         Commande commande=(Commande) obj;
         return this.client.equals(commande.getClient()) && this.magasin.equals(commande.getMagasin()) && this.contenue.equals(commande.getContenue());
     }
-
+// faire hashcode
 }
