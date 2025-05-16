@@ -54,36 +54,8 @@ public class Client extends Personne{
     public void setCodePostal(int codePostal){
         this.codePostal = codePostal;
     }
-
-    public void passerCommande(){
-        // this.historiqueLivre.addAll(Livre);
-        Commande commande = new Commande(this, null);
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Choisir magasin parmis la liste :\n");
-        System.out.println();
-        String magasinSelec = scan.nextLine(); // Retrouver magasin a partir de string 
-        // Liste de magasin ou ?
-        commande.setMagasin(magasinSelec);
-        scan.close();
-    }
     public void modeDeReception(){
         
 
-    }
-
-    public void consulterCatalogue(){
-        
-    }
-    
-    public Set<Livre> onVousRecommande(Client client){
-        // liste de tt les clients du magasin?, faire une copi de la liste et enlever le client en paramettre
-
-        // recuperer la liste de commandes de chaques client de la liste et du client passe en paramettre
-
-        // comparer les listes
-
-        // faire une liste avec les livres qui ne sont pas en commun pour chaque client qui a au moins un 
-        // livre en commun avec la liste du client passe en paramettre   
-        return null;
     }
 }

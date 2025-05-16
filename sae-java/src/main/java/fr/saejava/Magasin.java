@@ -41,11 +41,6 @@ public class Magasin{
         this.ville = ville;
     }
 
-    public void ajoutStock(Livre l, Integer qte){
-        this.stockMagasin.computeIfPresent(l, (key, value) -> value += qte);
-        this.stockMagasin.putIfAbsent(l, qte);
-    }
-
     @Override
     public boolean equals(Object obj){
         if(obj==null){return false;}
