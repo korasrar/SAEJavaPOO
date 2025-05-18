@@ -27,17 +27,14 @@ public class ClientBD {
         st.executeUpdate("");
     }
 
-    public Commande getDerniereCommande(){
-        return null;
-        // A implémenter
-    }0
-
     public Set<Livre> getHistoriqueLivresClients(){
         return null;
         // A implementer
     }
 
     public Set<Livre> onVousRecommande(Client client){
+        // requete SQL pour récuperer les livres des clients qui ont au moins un livre en commun avec le client passé en parametre
+        // donc ne pas hésiter a faires des requetes SQL pour ce genre de méthodes
         // liste de tt les clients du magasin?, faire une copi de la liste et enlever le client en paramettre
 
         // recuperer la liste de commandes de chaques client de la liste et du client passe en paramettre

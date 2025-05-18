@@ -34,7 +34,7 @@ public class Commande {
         this.magasin = magasin;
     }
 
-    void ajouterLivre(DetailCommande ajout){
+    void ajouterDetailCommande(DetailCommande ajout){
         this.contenue.add(ajout);
     }
 
