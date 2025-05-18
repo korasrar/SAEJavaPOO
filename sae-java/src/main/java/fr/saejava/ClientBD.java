@@ -27,11 +27,6 @@ public class ClientBD {
         st.executeUpdate("");
     }
 
-    public Set<Livre> getHistoriqueLivresClients(){
-        return null;
-        // A implementer
-    }
-
     public Set<Livre> onVousRecommande(Client client){
         // requete SQL pour récuperer les livres des clients qui ont au moins un livre en commun avec le client passé en parametre
         // donc ne pas hésiter a faires des requetes SQL pour ce genre de méthodes

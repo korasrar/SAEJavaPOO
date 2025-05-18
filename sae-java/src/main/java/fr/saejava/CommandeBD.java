@@ -3,6 +3,7 @@ package fr.saejava;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
 
 public class CommandeBD {
     ConnexionMySQL connexion;
@@ -22,11 +23,10 @@ public class CommandeBD {
             if (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
                 derniereCommande = new Commande(client, magasin);
-                
                 // detail de la dernière commande
                 int numcom = r.getInt("numcom");
                 Statement stDetailCommande = connexion.createStatement();                
-                ResultSet rDetailCommande = stDetailCommande.executeQuery("");
+                ResultSet rDetailCommande = stDetailCommande.executeQuery("SELECT numlig, qte, isbn, titre, nbpages, datepubli, prix from DETAILCOMMANDE natural join LIVRE where numcom = "+numcom+" order by numlig");
                 while (rDetailCommande.next()) {
                     Livre livre = new Livre(rDetailCommande.getInt("isbn"), rDetailCommande.getString("titre"), rDetailCommande.getInt("nbPages"), rDetailCommande.getString("datePubli"), rDetailCommande.getDouble("prix"));
                     DetailCommande detail = new DetailCommande(rDetailCommande.getInt("qte"), livre, derniereCommande);
