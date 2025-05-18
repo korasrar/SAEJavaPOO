@@ -38,9 +38,7 @@ public class CommandeBD {
             r.close();
             st.close();
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération de la dernière commande pour le client " + 
-                              client.getNom() + " " + client.getPrenom() + ": " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Erreur lors de la récupération de la dernière commande pour le client ");
         }
         return derniereCommande;
     }

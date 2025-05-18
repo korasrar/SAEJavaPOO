@@ -47,7 +47,9 @@ public class Client extends Personne{
 
     // pas sur de cette méthode
     public void modeDeReception(){
-        
+    }
 
+    public void editerFacture(Commande commande){
+        
     }
 }
