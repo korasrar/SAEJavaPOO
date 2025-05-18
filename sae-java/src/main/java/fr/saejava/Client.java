@@ -1,10 +1,15 @@
 package fr.saejava;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class Client extends Personne{
     
@@ -50,6 +55,16 @@ public class Client extends Personne{
     }
 
     public void editerFacture(Commande commande){
-        
+        Document document = new Document();
+        try{
+            PdfWriter.getInstance(document, new FileOutputStream("./facture/facture_client_"+this.num+"_commande_"+commande.getNumcom()+".pdf"));
+            document.open();
+            Font font = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
+            // Flemme de continuer
+
+        }
+        catch(Exception e){
+            System.out.println("Erreur lors de la création du fichier PDF");
+        }
     }
 }

@@ -5,11 +5,13 @@ import java.util.List;
 
 public class Commande {
     // Map<Livre, Integer> contenu; peut etre ?
+    int numcom;
     List<DetailCommande> contenue;
     Client client;
     Magasin magasin;
 
-    public Commande(Client client,Magasin magasin){
+    public Commande(int numcom, Client client,Magasin magasin){
+        this.numcom=numcom;
         this.contenue=new ArrayList<>();
         this.client=client;
         this.magasin=magasin;
@@ -25,6 +27,10 @@ public class Commande {
 
     List<DetailCommande> getContenue(){
         return this.contenue;
+    }
+
+    int getNumcom(){
+        return this.numcom;
     }
 
     void setClient(Client client) {
