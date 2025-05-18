@@ -1,7 +1,6 @@
 package fr.saejava;
 
 import java.sql.*;
-import java.util.Properties;
 
 public class ConnexionMySQL {
     // Connection avec JDBC 
@@ -20,14 +19,13 @@ public class ConnexionMySQL {
             nomLogin,motDePasse);
             System.out.println("Connection réussi");
             } catch (SQLException ex){
-                System.out.println("Msg:"+ex.getMessage()+
+                System.out.println("Voici le message d'erreur : "+ex.getMessage()+
                 ex.getErrorCode());
             }
 		this.connecte=this.mysql!=null;
 	}
     
 	public void close() throws SQLException {
-		// fermer la connexion
 		this.connecte=false;
 	}
 
@@ -39,9 +37,4 @@ public class ConnexionMySQL {
 	public PreparedStatement prepareStatement(String requete) throws SQLException{
 		return this.mysql.prepareStatement(requete);
 	}
-    public static void main(String[] args) throws SQLException, ClassNotFoundException{
-        
-    }
-
-    // Application avec menu 
 }

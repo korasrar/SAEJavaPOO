@@ -2,7 +2,7 @@
 
 ## Fonctionnalité à implémenter  
 ### Client 👤
-- [-] Passer une commande (en magasin ou en ligne)  
+- [ ] Passer une commande (en magasin ou en ligne)  
 - [ ] Choisir le mode de réception (retrait en magasin ou livraison à domicile)  
 - [ ] Consulter le catalogue des livres disponibles  
 ### Vendeur 🏪  
@@ -13,7 +13,7 @@
 - [ ] Transférer un livre d’une autre librairie pour satisfaire une commande client.  
 ### Administrateur ou administratrice 🛠️  
 - [X] Créer un compte vendeur et l’affecter à une librairie  
-- [ ] Ajouter une nouvelle librairie au réseau  
+- [X] Ajouter une nouvelle librairie au réseau  
 - [ ] Gérer les stocks globaux de toutes les librairies  
 - [ ] Consulter les statistiques de vente  
 

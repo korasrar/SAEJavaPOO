@@ -50,9 +50,5 @@ public class Magasin{
         return this.id==magasin.getId() && this.nom.equals(magasin.getNom()) && this.ville.equals(magasin.getVille());
     }
     /*====================================*/
-
-    public int getQte(Livre l){
-        return stockMagasin.get(l);
-    }
     
 }

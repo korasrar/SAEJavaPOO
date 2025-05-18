@@ -10,4 +10,9 @@ public class ApplicationTerminal {
     void finaliseCommande(){
         //ajoute la commande en cour a la BD
     }
+    
+    public void startConnexionTest(){
+        ConnexionMySQL connexion = new ConnexionMySQL();
+        // Commencer a implémenter des tests dans cette classe et créer des classes de test unitaire Junit
+    }
 }

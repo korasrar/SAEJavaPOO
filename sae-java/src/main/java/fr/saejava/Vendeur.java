@@ -1,14 +1,13 @@
 package fr.saejava;
-import java.util.*;
 
 public class Vendeur extends Personne{
     
     private int idVendeur;
     private Magasin magasin;
 
-    public Vendeur(String nom, String prenom, Magasin magasin){
+    public Vendeur(int idVendeur, String nom, String prenom, Magasin magasin){
         super(nom, prenom);
-        this.idVendeur++;
+        this.idVendeur = idVendeur;
         this.magasin = magasin;
     }
 
