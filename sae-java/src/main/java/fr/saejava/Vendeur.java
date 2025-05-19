@@ -1,12 +1,12 @@
 package fr.saejava;
 
-public class Vendeur extends Personne{
+public class Vendeur extends Utilisateur{
     
     private int idVendeur;
     private Magasin magasin;
 
-    public Vendeur(int idVendeur, String nom, String prenom, Magasin magasin){
-        super(nom, prenom);
+    public Vendeur(int idVendeur, String nom, String prenom,String pseudo, String motDePasse, Magasin magasin){
+        super(nom, prenom, pseudo, motDePasse);
         this.idVendeur = idVendeur;
         this.magasin = magasin;
     }

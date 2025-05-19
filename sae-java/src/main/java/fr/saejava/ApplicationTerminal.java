@@ -18,14 +18,26 @@ public class ApplicationTerminal {
     
     public static void startConnexionTest(){
         try{
+            // Connexion
         ConnexionMySQL connexion = new ConnexionMySQL();
         connexion.connecter("servinfo-maria", "Librairie", "maubert", "maubert");
+
+            // Partage de la connexion aux autres classes
         VendeurBD vendeurConnexion = new VendeurBD(connexion);
         AdminBD adminConnexion = new AdminBD(connexion);
+        CommandeBD commandeConnexion = new CommandeBD(connexion);
+        ClientBD clientConnexion = new ClientBD(connexion);
+
+            // Test d'une requête
         Statement st = connexion.createStatement();
         ResultSet r = st.executeQuery("select * from CLIENT");
         while (r.next()){
             System.out.println(r.getString("nomcli"));
+        }
+
+            // Fermeture de la connexion
+        if (connexion.isConnecte()){
+            connexion.close();
         }
         }
         catch (Exception e){

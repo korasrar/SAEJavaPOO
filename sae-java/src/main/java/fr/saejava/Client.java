@@ -11,15 +11,15 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.PdfWriter;
 
-public class Client extends Personne{
+public class Client extends Utilisateur{
     
     private int num;
     private String adresse;
     private String ville;
     private int codePostal;
 
-    public Client(String adresse, String ville, int codePostal, String nom, String prenom){
-        super(nom, prenom);
+    public Client(String adresse, String ville, int codePostal, String nom, String prenom, String pseudo, String motDePasse){
+        super(nom, prenom, pseudo, motDePasse);
         this.num++;
         this.adresse = adresse;
         this.ville = ville;
