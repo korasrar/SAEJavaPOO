@@ -9,9 +9,14 @@ public class AdminBD {
     Statement st;
     ResultSet r;
 
+    public AdminBD(ConnexionMySQL connexion){
+        this.connexion = connexion;
+    }
 
-    public void creeCompteVendeur(Magasin magasin, String nom, String prenom){
-        // Ajout d'un vendeur
+    public void creeCompteVendeur(Magasin magasin, String nom, String prenom) throws SQLException{
+        st = connexion.createStatement();
+        
+
     }
 
     public void ajouterNouvelleLibrairie(Magasin magasin) throws SQLException{
