@@ -1,0 +1,17 @@
+SELECT isbn, titre, nbpages, datepubli, prix
+FROM LIVRE NATURAL JOIN DETAILCOMMANDE NATURAL JOIN COMMANDE
+WHERE idcli IN (
+    SELECT DISTINCT idcli
+    FROM COMMANDE NATURAL JOIN DETAILCOMMANDE
+    WHERE isbn IN (
+        SELECT DC1.isbn
+        FROM DETAILCOMMANDE NATURAL JOIN COMMANDE
+        WHERE idcli != "idcliparam"
+    )
+)
+AND isbn NOT IN (
+    SELECT isbn
+    FROM DETAILCOMMANDE NATURAL JOIN COMMANDE
+    WHERE idcli = "idcliparam"
+)
+ORDER BY datecom DESC;

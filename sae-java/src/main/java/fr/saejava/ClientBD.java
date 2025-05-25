@@ -1,6 +1,7 @@
 package fr.saejava;
 
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -28,6 +29,10 @@ public class ClientBD {
     }
 
     public Set<Livre> onVousRecommande(Client client){
+        Set<Livre> livresRecommandes = new HashSet<>();
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM CLIENT NATURAL JOIN COMMANDE NATURAL JOIN DETAILCOMMANDE NATURAL JOIN LIVRE");
+
         // requete SQL pour récuperer les livres des clients qui ont au moins un livre en commun avec le client passé en parametre
         // donc ne pas hésiter a faires des requetes SQL pour ce genre de méthodes
         // liste de tt les clients du magasin?, faire une copi de la liste et enlever le client en paramettre

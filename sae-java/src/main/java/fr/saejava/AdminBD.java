@@ -34,6 +34,19 @@ public class AdminBD {
         // plusieurs méthodes
     }
 
+    public void ajouteLivre(Livre l, int qte){
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM livre WHERE isbn = '"+ l.getIsbn() +"'");
+        if(r.next()){
+            int qteActuelle = r.getInt("qte");
+            int nouvelleQte = qteActuelle + qte;
+            st.executeUpdate("UPDATE livre SET qte = "+ nouvelleQte +" WHERE isbn = '"+ l.getIsbn() +"'");
+        } 
+        else {
+            st.executeUpdate("INSERT INTO livre (isbn, titre, auteur, editeur, annee, prix) VALUES ('" + l.getIsbn() + "', '" + l.getTitre() + "', '" + l.getAuteur() + "', '" + l.getEditeur() + "', " + l.getAnnee() + ", " + l.getPrix() + ")");
+        }
+    } // code redondant, à revoir
+
     public void statVente(){
         // diagramme
     }
