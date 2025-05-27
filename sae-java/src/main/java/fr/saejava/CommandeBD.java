@@ -77,7 +77,7 @@ public class CommandeBD {
         List<Commande> listCommandes = new ArrayList<>();
         try {
             st = connexion.createStatement();
-            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + " and numcom = " + numCommande + ";");
+            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + ";");
             while (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
                 Commande commande = new Commande(r.getInt("numcom"), client, magasin);
@@ -97,8 +97,6 @@ public class CommandeBD {
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des commandes pour le client");
         }
-        r.close();
-        st.close();
         return listCommandes;
     }
 }

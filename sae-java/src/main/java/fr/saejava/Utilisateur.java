@@ -2,18 +2,19 @@ package fr.saejava;
 
 public abstract class Utilisateur{
 
+    private int idUtilisateur; // voir quoi en faire
     private String pseudo;
     private String motDePasse;
     private String nom;
     private String prenom;
-    // private Role role;
-    // Envoyer le instanceOf dans la table de la BD utilisateur table;
+    private Role role;
 
-    public Utilisateur (String nom, String prenom, String pseudo, String motDePasse){
+    public Utilisateur (String nom, String prenom, String pseudo, String motDePasse, Role role){
         this.nom = nom;
         this.prenom = prenom;
         this.pseudo = pseudo;
         this.motDePasse = motDePasse;
+        this.role = role;
     }
 
     public String getNom() {
@@ -32,6 +33,10 @@ public abstract class Utilisateur{
         return motDePasse;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     public void setNom(String nom) {
         this.nom = nom;
     }
@@ -46,5 +51,9 @@ public abstract class Utilisateur{
 
     public void setMotDePasse(String motDePasse) {
         this.motDePasse = motDePasse;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

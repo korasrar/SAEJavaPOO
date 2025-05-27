@@ -34,7 +34,7 @@ public class AdminBD {
         // plusieurs méthodes
     }
 
-    public void ajouteLivre(Livre l, int qte){
+    public void ajouteLivre(Livre l, int qte) throws SQLException {
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM livre WHERE isbn = '"+ l.getIsbn() +"'");
         if(r.next()){
@@ -43,7 +43,7 @@ public class AdminBD {
             st.executeUpdate("UPDATE livre SET qte = "+ nouvelleQte +" WHERE isbn = '"+ l.getIsbn() +"'");
         } 
         else {
-            st.executeUpdate("INSERT INTO livre (isbn, titre, auteur, editeur, annee, prix) VALUES ('" + l.getIsbn() + "', '" + l.getTitre() + "', '" + l.getAuteur() + "', '" + l.getEditeur() + "', " + l.getAnnee() + ", " + l.getPrix() + ")");
+            st.executeUpdate("INSERT INTO livre (isbn, titre, auteur, editeur, annee, prix) VALUES ('" + l.getIsbn() + "', '" + l.getTitre() + "', '" + l.getAuteurs() + "', '" + l.getEditeurs() + "', " + l.getDatePubli() + ", " + l.getPrix() + ")");
         }
     } // code redondant, à revoir
 

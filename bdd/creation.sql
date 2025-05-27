@@ -20,22 +20,32 @@ CREATE TABLE CLASSIFICATION (
   nomclass varchar(50)
 );
 
+-- redoadnce des données
+CREATE TABLE UTILISATEUR (
+  PRIMARY KEY (idutilisateur),
+  idutilisateur int NOT NULL,
+  nom varchar(50),
+  prenom varchar(50),
+  username varchar(50) NOT NULL UNIQUE,
+  motdepasse varchar(100) NOT NULL,
+  role varchar(20) NOT NULL 
+);
+
+-- nom, prenom retirer car redondance des données avec UTILISATEUR
 CREATE TABLE CLIENT (
   PRIMARY KEY (idcli),
   idcli      int NOT NULL,
-  nomcli     varchar(50),
-  prenomcli  varchar(30),
   adressecli varchar(100),
   codepostal varchar(5),
-  villecli   varchar(100)
+  villecli   varchar(100),
+  idutilisateur int NOT NULL
 );
 
--- CREATE TABLE UTILISATEUR (
---     ,
---     login varchar(50) unique,
---     motdepasse varchar(100),
---     role varchar(20)
--- );
+CREATE TABLE ADMIN (
+  PRIMARY KEY (idadmin),
+  idadmin int AUTO_INCREMENT PRIMARY KEY,
+  idutilisateur int NOT NULL
+);
 
 CREATE TABLE COMMANDE (
   PRIMARY KEY (numcom),
@@ -44,7 +54,7 @@ CREATE TABLE COMMANDE (
   enligne char(1),
   livraison char(1),
   idcli   int NOT NULL,
-  idmag   VARCHAR(42) NOT NULL
+  idmag   varchar(42) NOT NULL
 );
 
 CREATE TABLE DETAILCOMMANDE (
@@ -85,14 +95,22 @@ CREATE TABLE LIVRE (
 
 CREATE TABLE MAGASIN (
   PRIMARY KEY (idmag),
-  idmag    VARCHAR(42) NOT NULL,
-  nommag   VARCHAR(42),
-  villemag VARCHAR(42)
+  idmag    varchar(42) NOT NULL,
+  nommag   varchar(42),
+  villemag varchar(42)
+);
+
+-- a besoin de idmagasin
+CREATE TABLE VENDEUR (
+  PRIMARY KEY (idvendeur),
+  idvendeur int NOT NULL,
+  idutilisateur int NOT NULL,
+  idmagasin varchar(42) NOT NULL,
 );
 
 CREATE TABLE POSSEDER (
   PRIMARY KEY (idmag, isbn),
-  idmag VARCHAR(42) NOT NULL,
+  idmag varchar(42) NOT NULL,
   isbn  varchar(13) NOT NULL,
   qte   int
 );
@@ -120,3 +138,10 @@ ALTER TABLE POSSEDER ADD FOREIGN KEY (idmag) REFERENCES MAGASIN (idmag);
 
 ALTER TABLE THEMES ADD FOREIGN KEY (iddewey) REFERENCES CLASSIFICATION (iddewey);
 ALTER TABLE THEMES ADD FOREIGN KEY (isbn) REFERENCES LIVRE (isbn);
+
+ALTER TABLE VENDEUR ADD FOREIGN KEY (idutilisateur) REFERENCES UTILISATEUR (idutilisateur);
+ALTER TABLE VENDEUR ADD FOREIGN KEY (idmagasin) REFERENCES MAGASIN (idmag);
+
+ALTER TABLE ADMIN ADD FOREIGN KEY (idutilisateur) REFERENCES UTILISATEUR (idutilisateur);
+
+ALTER TABLE CLIENT ADD FOREIGN KEY (idutilisateur) REFERENCES UTILISATEUR (idutilisateur);

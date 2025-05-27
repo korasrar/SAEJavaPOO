@@ -56,7 +56,14 @@ public class Auteur {
         if(obj==this){return true;}
         if(!(obj instanceof Auteur)){return false;}
         Auteur auteur=(Auteur) obj;
-        return this.idAuteur==auteur.getIdAuteur() && this.nomAuteur.equals(auteur.getNomAuteur());
+        return this.idAuteur==auteur.getIdAuteur();
     }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(idAuteur);
+    }
+
+
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Stream;
 import java.util.Map.Entry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,6 +33,8 @@ public class ClientBD {
         st.executeUpdate("");
     }
 
+    // *------------------------ Méthode pour onVousRecommande() ------------------------* //
+
     public int proximiteClient(Client client1, Client client2) throws SQLException{
         int valProximite = 0;
         CommandeBD commandeBD = new CommandeBD(connexion);
@@ -52,42 +55,54 @@ public class ClientBD {
     public Map<Client, Integer> clientLesPlusProches(Client client) throws SQLException{
         Map<Client, Integer> clientProches = new HashMap<>();
         st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM CLIENT");
+        r = st.executeQuery("SELECT * FROM CLIENT NATURAL JOIN UTILISATEUR WHERE numcli != " + client.getNum());
         while(r.next()){
-            Client clientBD = new Client(r.getString("adressecli"), r.getString("villecli"), r.getInt("codepostal"), r.getString("nomcli"), r.getString("prenomcli"));
+            Client clientBD = new Client(r.getInt("numcli"), r.getString("adressecli"), r.getString("villecli"), r.getInt("codepostal"), r.getString("nom"), r.getString("prenom"), r.getString("username"), r.getString("motDePasse"));
             int valProxi = this.proximiteClient(client, clientBD);
-            if(clientProches.keySet().size()<10){
+            if(valProxi > 0){
                 clientProches.put(clientBD, valProxi);
             }
-            else{
-                for(Map.Entry<Client,Integer> coupleVal : clientProches.entrySet())
-                if(coupleVal.getValue()<valProxi){
-                    clientProches.replace(clientBD, null);
-                }
-            }
+        }
+        // trie de la map
+        Stream<Map.Entry<Client,Integer>> clientProchesSorted = clientProches.entrySet().stream().sorted(Map.Entry.comparingByValue());
+        clientProches = new HashMap<>();
+        // ajoute les 10 premiers clients plus proche
+        // utilisation de iterator pour parcours
+        for(int i = 0; i<10 && clientProchesSorted.iterator().hasNext(); i++){
+            Entry<Client, Integer> entry = clientProchesSorted.iterator().next();
+            clientProches.put(entry.getKey(), entry.getValue());
+            
         }
         return clientProches;
     }
 
-    // Calculer proxi avec notre client
-    // faire méthode pour ca
-    // parcours des client, calcul proxi, les 10 plus proches, recup livre
-
-    public Set<Livre> onVousRecommande(Client client){
+    public Set<Livre> onVousRecommande(Client client) throws SQLException {
         Set<Livre> livresRecommandes = new HashSet<>();
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM CLIENT NATURAL JOIN COMMANDE NATURAL JOIN DETAILCOMMANDE NATURAL JOIN LIVRE");
+        Map<Client, Integer> clientsProches = clientLesPlusProches(client);
 
-        // requete SQL pour récuperer les livres des clients qui ont au moins un livre en commun avec le client passé en parametre
-        // donc ne pas hésiter a faires des requetes SQL pour ce genre de méthodes
-        // liste de tt les clients du magasin?, faire une copi de la liste et enlever le client en paramettre
+        // livre deja commandé par le client
+        CommandeBD commandeBD = new CommandeBD(connexion);
+        List<Commande> commandesClient = commandeBD.getCommandes(client);
+        Set<Livre> livresClient = new HashSet<>();
+        for (Commande c : commandesClient) {
+            for (DetailCommande comDet : c.getContenue()) {
+                livresClient.add(comDet.getLivre());
+            }
+        }
 
-        // recuperer la liste de commandes de chaques client de la liste et du client passe en paramettre
-
-        // comparer les listes
-
-        // faire une liste avec les livres qui ne sont pas en commun pour chaque client qui a au moins un 
-        // livre en commun avec la liste du client passe en paramettre   
-        return null;
+        // recup livre pas deja commandé
+        for (Client clientProche : clientsProches.keySet()) {
+            List<Commande> commandesProche = commandeBD.getCommandes(clientProche);
+            for (Commande com : commandesProche) {
+                for (DetailCommande comDet : com.getContenue()) {
+                    Livre livre = comDet.getLivre();
+                    if (!livresClient.contains(livre)) {
+                        livresRecommandes.add(livre);
+                    }
+                }
+            }
+        }
+        return livresRecommandes;  
     }
 }
+

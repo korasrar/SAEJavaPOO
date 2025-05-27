@@ -19,9 +19,9 @@ public class Client extends Utilisateur{
     private String ville;
     private int codePostal;
 
-    public Client(String adresse, String ville, int codePostal, String nom, String prenom){
-        super(nom, prenom, pseudo, motDePasse);
-        this.num++;
+    public Client(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse){
+        super(nom, prenom, username, motDePasse);
+        this.num = num;
         this.adresse = adresse;
         this.ville = ville;
         this.codePostal = codePostal;
