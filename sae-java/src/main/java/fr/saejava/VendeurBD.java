@@ -9,9 +9,21 @@ public class VendeurBD {
     ConnexionMySQL connexion;
     Statement st;
     ResultSet r;
+    MagasinBD magasinBD;
 
     public VendeurBD(ConnexionMySQL connexion){
         this.connexion = connexion;
+        this.magasinBD = new MagasinBD(connexion);
+    }
+
+    public void ajouteLivre(Livre l) throws SQLException{ //execption a corriger
+        magasinBD.ajoutStock(magasin, l, 1);
+        // Appelle ajouteStock de magasin et qte = 1 par default
+    }
+
+    public void ajouteLivre(Livre l, int qte) throws SQLException{ //execption a corriger
+        magasinBD.ajoutStock(magasin, l, qte);
+        // Appelle ajouteStock de magasin
     }
 
     public void commander(List<Livre> livres, int qte, Client client){
@@ -51,4 +63,6 @@ public class VendeurBD {
         else {return false;}
         // Vérifier si un livre est présent dans stockmagasin d'un magasin (récup id ?)
     }
+
+    public Magasin
 }

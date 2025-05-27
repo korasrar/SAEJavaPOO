@@ -6,13 +6,11 @@ public class Vendeur extends Utilisateur{
     
     private int idVendeur;
     private Magasin magasin;
-    private MagasinBD magasinBD;
 
-    public Vendeur(int idVendeur, String nom, String prenom,String username, String motDePasse, Magasin magasin, MagasinBD magasinBD){
+    public Vendeur(int idVendeur, String nom, String prenom,String username, String motDePasse, Magasin magasin){
         super(nom, prenom, username, motDePasse, Role.VENDEUR);
         this.idVendeur = idVendeur;
         this.magasin = magasin;
-        this.magasinBD = magasinBD;
     }
 
     public int getIdVendeur() {
@@ -32,16 +30,6 @@ public class Vendeur extends Utilisateur{
     }
 
     // --------------------------- //
-
-    public void ajouteLivre(Livre l) throws SQLException{ //execption a corriger
-        magasinBD.ajoutStock(magasin, l, 1);
-        // Appelle ajouteStock de magasin et qte = 1 par default
-    }
-
-    public void ajouteLivre(Livre l, int qte) throws SQLException{ //execption a corriger
-        magasinBD.ajoutStock(magasin, l, qte);
-        // Appelle ajouteStock de magasin
-    }
 
     @Override
     public boolean equals(Object obj){

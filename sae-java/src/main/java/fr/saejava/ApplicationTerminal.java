@@ -89,7 +89,7 @@ public class ApplicationTerminal {
                 System.out.println("Veuillez votre mot de passe : ");
                 String motDePasse = scanner.nextLine();
                 System.out.println("Connexion en cours...");
-
+                
                 // Vérifier que les login existe peut etre
                 break;
             case "2":
