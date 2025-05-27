@@ -34,13 +34,19 @@ public class Editeur{
     public String toString() {
         return this.idEdit+" "+this.nomEdit;
     }
+    
     @Override
     public boolean equals(Object obj){
         if(obj==null){return false;}
         if(obj==this){return true;}
         if(!(obj instanceof Editeur)){return false;}
         Editeur editeur=(Editeur) obj;
-        return this.idEdit==editeur.getIdEdit() && this.nomEdit.equals(editeur.getNomEdit());
+        return this.idEdit==editeur.getIdEdit();
+    } 
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(idEdit);
     }
             
 }

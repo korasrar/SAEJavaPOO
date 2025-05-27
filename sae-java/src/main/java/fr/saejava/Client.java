@@ -20,7 +20,7 @@ public class Client extends Utilisateur{
     private int codePostal;
 
     public Client(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse){
-        super(nom, prenom, username, motDePasse);
+        super(nom, prenom, username, motDePasse, Role.CLIENT);
         this.num = num;
         this.adresse = adresse;
         this.ville = ville;
@@ -49,6 +49,20 @@ public class Client extends Utilisateur{
     }
     public void setCodePostal(int codePostal){
         this.codePostal = codePostal;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj == null){return false;}
+        if(obj == this){return true;}
+        if(!(obj instanceof Client)){return false;}
+        Client client = (Client) obj;
+        return this.num == client.getNum();
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(num);
     }
 
 

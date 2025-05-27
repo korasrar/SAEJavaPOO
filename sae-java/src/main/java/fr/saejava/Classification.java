@@ -27,4 +27,18 @@ public class Classification {
     public String toString() {
         return this.idDewey+" "+this.nomClass;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj==null){return false;}
+        if(obj==this){return true;}
+        if(!(obj instanceof Classification)){return false;}
+        Classification classification=(Classification) obj;
+        return this.idDewey==classification.getIdDewey();
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(idDewey);
+    }
 }
