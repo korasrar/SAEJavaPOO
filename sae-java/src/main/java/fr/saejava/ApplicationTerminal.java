@@ -147,16 +147,17 @@ public class ApplicationTerminal {
                 System.out.println("Veuillez réessayer.\n");
             }
         }
+        if(estConnecte){
+        // test 
+        
 
+        
+
+        
         // Afficher le menu de connexion utilisateur
         String role = menuConnexionUtilisateur();
-
-        // mettre les menus en fontion du role
-        switch (role) {
-            case "admin":
-            case "vendeur":
-            case "client":
         }
+        // mettre les menus en fontion du role
     }
 
     public static void main(String[] args) {

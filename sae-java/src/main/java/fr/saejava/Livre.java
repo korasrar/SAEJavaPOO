@@ -8,9 +8,9 @@ public class Livre {
     private int nbPages;
     private String datePubli;
     private double prix;
-    private List<Auteur> lesAuteurs;
-    private List<Classification> lesClassifications;
-    private List<Editeur> lesEditeurs;
+    private List<Auteur> lesAuteurs; //
+    private List<Classification> lesClassifications; //
+    private List<Editeur> lesEditeurs; //
     //private List<StockMagasin> lesMagasin;
     //private List<DetailCommande> lesCommandes;
 

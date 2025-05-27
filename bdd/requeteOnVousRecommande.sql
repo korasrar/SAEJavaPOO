@@ -4,7 +4,7 @@ WHERE idcli IN (
     SELECT DISTINCT idcli
     FROM COMMANDE NATURAL JOIN DETAILCOMMANDE
     WHERE isbn IN (
-        SELECT DC1.isbn
+        SELECT isbn
         FROM DETAILCOMMANDE NATURAL JOIN COMMANDE
         WHERE idcli != "idcliparam"
     )

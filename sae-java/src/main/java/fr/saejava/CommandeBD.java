@@ -3,6 +3,8 @@ package fr.saejava;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class CommandeBD {
@@ -69,5 +71,34 @@ public class CommandeBD {
             System.out.println("Erreur lors de la récupération de la commande pour le client");
         }
         return commande;
+    }
+
+    public List<Commande> getCommandes(Client client){
+        List<Commande> listCommandes = new ArrayList<>();
+        try {
+            st = connexion.createStatement();
+            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + " and numcom = " + numCommande + ";");
+            while (r.next()) {
+                Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
+                Commande commande = new Commande(r.getInt("numcom"), client, magasin);
+                // detail de la dernière commande
+                int numcom = r.getInt("numcom");
+                Statement stDetailCommande = connexion.createStatement();                
+                ResultSet rDetailCommande = stDetailCommande.executeQuery("SELECT numlig, qte, isbn, titre, nbpages, datepubli, prix from DETAILCOMMANDE natural join LIVRE where numcom = "+numcom+" order by numlig");
+                while (rDetailCommande.next()) {
+                    Livre livre = new Livre(rDetailCommande.getInt("isbn"), rDetailCommande.getString("titre"), rDetailCommande.getInt("nbPages"), rDetailCommande.getString("datePubli"), rDetailCommande.getDouble("prix"));
+                    DetailCommande detail = new DetailCommande(rDetailCommande.getInt("qte"), livre, commande);
+                    commande.ajouterDetailCommande(detail);
+                }
+                rDetailCommande.close();
+                stDetailCommande.close();
+                listCommandes.add(commande);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des commandes pour le client");
+        }
+        r.close();
+        st.close();
+        return listCommandes;
     }
 }

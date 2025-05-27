@@ -62,4 +62,14 @@ public class Commande {
         return this.client.equals(commande.getClient()) && this.magasin.equals(commande.getMagasin()) && this.contenue.equals(commande.getContenue());
     }
 // faire hashcode
+
+    // *----------------------------* //
+    public boolean contientLivre(Livre livre){
+        for(DetailCommande detail : this.contenue){
+            if(detail.getLivre().equals(livre)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

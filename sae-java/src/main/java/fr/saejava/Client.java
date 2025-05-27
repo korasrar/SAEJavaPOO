@@ -1,6 +1,7 @@
 package fr.saejava;
 
 import java.io.FileOutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,7 +19,7 @@ public class Client extends Utilisateur{
     private String ville;
     private int codePostal;
 
-    public Client(String adresse, String ville, int codePostal, String nom, String prenom, String pseudo, String motDePasse){
+    public Client(String adresse, String ville, int codePostal, String nom, String prenom){
         super(nom, prenom, pseudo, motDePasse);
         this.num++;
         this.adresse = adresse;
@@ -50,6 +51,8 @@ public class Client extends Utilisateur{
         this.codePostal = codePostal;
     }
 
+
+    // *--------------------------------* //
     // pas sur de cette méthode
     public void modeDeReception(){
     }
