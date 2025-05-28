@@ -6,6 +6,12 @@ import java.util.Scanner;
 
 public class ApplicationTerminal {
 
+    Utilisateur utilisateurConnecter;
+    UtilisateurBD utilisateurConnexion;
+    VendeurBD vendeurConnexion; 
+    AdminBD adminConnexion;
+    CommandeBD commandeConnexion; 
+    ClientBD clientConnexion;
     boolean estConnecte;
     Scanner scanner;
 
@@ -50,10 +56,12 @@ public class ApplicationTerminal {
             this.estConnecte = true;
             
             // Partage de la connexion aux autres classes
-            VendeurBD vendeurConnexion = new VendeurBD(connexion);
-            AdminBD adminConnexion = new AdminBD(connexion);
-            CommandeBD commandeConnexion = new CommandeBD(connexion);
-            ClientBD clientConnexion = new ClientBD(connexion);
+            utilisateurConnexion = new UtilisateurBD(connexion);
+            vendeurConnexion = new VendeurBD(connexion);
+            adminConnexion = new AdminBD(connexion);
+            commandeConnexion = new CommandeBD(connexion);
+            clientConnexion = new ClientBD(connexion);
+            System.out.println("Partage de la connexion réussie ! ");
         } else {
             System.out.println("Échec de la connexion à la base de données. Veuillez réessayer.");
         }
@@ -71,8 +79,8 @@ public class ApplicationTerminal {
         //}
     }
 
-    public String menuConnexionUtilisateur() {
-        String role = "";
+    public Utilisateur menuConnexionUtilisateur() throws SQLException{
+        Utilisateur util = null;
         System.out.println("---- MENU CONNEXION UTILISATEUR ----");
         System.out.println("|                                  |");
         System.out.println("| > Se connecter                   |");
@@ -83,14 +91,25 @@ public class ApplicationTerminal {
         System.out.print("Veuillez choisir une option (1-3) : ");
         String choix = scanner.nextLine();
         switch (choix) {
+            // Connexion, trouve si ADMIN, VENDEUR, CLIENT
             case "1":
                 System.out.println("Veuillez votre email/username : ");
-                String email = scanner.nextLine();
+                String username = scanner.nextLine();
                 System.out.println("Veuillez votre mot de passe : ");
                 String motDePasse = scanner.nextLine();
                 System.out.println("Connexion en cours...");
-                
-                // Vérifier que les login existe peut etre
+                try{
+                util = utilisateurConnexion.getUtilisateur(username, motDePasse);
+                }
+                catch(UtilisateurIntrouvableException e){
+                    System.out.println("Utilisateur Introuvable");
+                }
+                catch(MotDePasseIncorrectException e){
+                    System.out.println("Mot de passe incorrect");
+                }
+                catch(VendeurSansMagasinException e){
+                    System.out.println("Votre compte Vendeur n'a pas de magasin associé");
+                }
                 break;
             case "2":
                 System.out.println("Inscription en cours...");
@@ -102,7 +121,7 @@ public class ApplicationTerminal {
                 System.out.println("Choix invalide, veuillez réessayer.");
                 menuConnexionUtilisateur();
         }
-        return role;
+        return util;
     }
 
     public void menuAdminMain() {
@@ -155,7 +174,12 @@ public class ApplicationTerminal {
 
         
         // Afficher le menu de connexion utilisateur
-        String role = menuConnexionUtilisateur();
+        try{
+        utilisateurConnecter = menuConnexionUtilisateur();
+        }
+        catch(SQLException e){
+            System.out.println("Voici le message d'erreur : "+ e.getMessage());
+        }
         }
         // mettre les menus en fontion du role
     }

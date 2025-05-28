@@ -64,5 +64,14 @@ public class VendeurBD {
         // Vérifier si un livre est présent dans stockmagasin d'un magasin (récup id ?)
     }
 
-    public Magasin
+    public Magasin getMagasin(int idVendeur) throws SQLException, VendeurSansMagasinException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM VENDEUR NATURAL JOIN MAGASIN WHERE idVendeur =" +idVendeur);
+        if(r.next()){
+            return new Magasin(r.getInt("idmag"), r.getString("nommag"), r.getString("villemag"));
+        }
+        else{
+            throw new VendeurSansMagasinException();
+        }
+    }
 }
