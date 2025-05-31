@@ -1,12 +1,14 @@
 package fr.saejava;
 
-public class Vendeur extends Personne{
+import java.sql.SQLException;
+
+public class Vendeur extends Utilisateur{
     
     private int idVendeur;
     private Magasin magasin;
 
-    public Vendeur(int idVendeur, String nom, String prenom, Magasin magasin){
-        super(nom, prenom);
+    public Vendeur(int idVendeur, String nom, String prenom,String username, String motDePasse, Magasin magasin){
+        super(nom, prenom, username, motDePasse, Role.VENDEUR);
         this.idVendeur = idVendeur;
         this.magasin = magasin;
     }
@@ -29,12 +31,18 @@ public class Vendeur extends Personne{
 
     // --------------------------- //
 
-    public void ajouteLivre(Livre l){
-        // Appelle ajouteStock de magasin et qte = 1 par default
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){return true;}
+        if(obj == null){return false;}
+        if(!(obj instanceof Vendeur)){return false;}
+        Vendeur tmp = (Vendeur) obj;
+        return this.idVendeur == tmp.idVendeur;
     }
 
-    public void ajouteLivre(Livre l, int qte){
-        // Appelle ajouteStock de magasin
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(idVendeur);
     }
 
 }

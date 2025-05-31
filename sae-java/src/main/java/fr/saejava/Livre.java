@@ -8,9 +8,9 @@ public class Livre {
     private int nbPages;
     private String datePubli;
     private double prix;
-    private List<Auteur> lesAuteurs;
-    private List<Classification> lesClassifications;
-    private List<Editeur> lesEditeurs;
+    private List<Auteur> lesAuteurs; //
+    private List<Classification> lesClassifications; //
+    private List<Editeur> lesEditeurs; //
     //private List<StockMagasin> lesMagasin;
     //private List<DetailCommande> lesCommandes;
 
@@ -74,8 +74,12 @@ public class Livre {
         if(!(obj instanceof Livre)){return false;}
 
         Livre tmp = (Livre) obj;
-        return tmp.isbn==this.isbn && tmp.titre.equals(this.titre) && 
-        tmp.nbPages==this.nbPages && tmp.datePubli.equals(this.datePubli);
+        return tmp.isbn==this.isbn;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(isbn);
     }
 }
 

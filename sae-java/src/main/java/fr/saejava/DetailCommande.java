@@ -72,4 +72,9 @@ public class DetailCommande {
         DetailCommande detailCommande=(DetailCommande) obj;
         return this.numLig==detailCommande.getNumLig() && this.livre.equals(detailCommande.getLivre()) && this.prixVente==detailCommande.getPrixVente() && this.qte==detailCommande.getQte();
     }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(numLig) + livre.hashCode() + Double.hashCode(prixVente) + Integer.hashCode(qte);
+    }
 }

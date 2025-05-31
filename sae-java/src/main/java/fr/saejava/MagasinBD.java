@@ -7,23 +7,46 @@ import java.sql.Statement;
 public class MagasinBD {
     ConnexionMySQL connexion;
     Statement st;
-    ResultSet r;
+    ResultSet rs;
 
     public MagasinBD(ConnexionMySQL connexion){
         this.connexion = connexion;
     }
 
-    public void ajoutStock(Magasin magasin, Livre l, Integer qte) throws SQLException{
+    public void ajoutStock(Magasin magasin, Livre l, Integer qte) throws SQLException{ 
         st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = "+l.getIsbn()+" AND idmag = "+magasin.getId());
-        if(r.next()){
-            int qteExistante = r.getInt("qte");
+        rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = '"+magasin.getId()+"'");
+        System.out.println(rs);
+        /*if(rs.next()){
+            int qteExistante = rs.getInt("qte");
             int nouvelleQte = qteExistante+qte;
             st.executeUpdate("UPDATE POSSEDER SET qte ="+nouvelleQte+" WHERE isbn = "+l.getIsbn()+" AND igmag = "+magasin.getId());
         } 
         else {
             st.executeUpdate("INSERT INTO POSSEDER (isbn, idmag, qte) VALUES ("+l.getIsbn()+", " + magasin.getId()+", "+qte+")");
-        }
+        }*/
         // Requete d'insert de stock, vérifier si le livre est deja dans la bd, sinon le rajouter, si oui modifier la table stock magasin
     }
 }
+
+
+
+
+
+/* Regarder si les éditeurs du livres sont dans la base, idem pour les classification et les auteurs (boucle for)
+
+
+
+
+
+*/
+/* 
+    public void ajoutStock(Magasin magasin, Livre l, Integer qte) throws SQLException{
+        st = connexion.createStatement();
+        rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = '"+magasin.getId()+"'");
+
+    }
+
+    		PreparedStatement pstmt = laConnexion.prepareStatement("INSERT INTO JOUEUR VALUES ("+(maxNumJoueur()+1)+",'"+j.getPseudo()+"','"+j.getMotdepasse()+"','"+value+"','"+j.getMain()+"',"+j.getNiveau()+")");
+		pstmt.executeUpdate();
+*/

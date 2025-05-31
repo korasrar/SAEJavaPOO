@@ -47,8 +47,14 @@ public class Magasin{
         if(obj==this){return true;}
         if(!(obj instanceof Magasin)){return false;}
         Magasin magasin=(Magasin) obj;
-        return this.id==magasin.getId() && this.nom.equals(magasin.getNom()) && this.ville.equals(magasin.getVille());
+        return this.id==magasin.getId();
     }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
+
     /*====================================*/
     
 }

@@ -3,6 +3,8 @@ package fr.saejava;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 public class Commande {
     // Map<Livre, Integer> contenu; peut etre ?
     int numcom;
@@ -59,7 +61,22 @@ public class Commande {
         if(obj==this){return true;}
         if(!(obj instanceof Commande)){return false;}
         Commande commande=(Commande) obj;
-        return this.client.equals(commande.getClient()) && this.magasin.equals(commande.getMagasin()) && this.contenue.equals(commande.getContenue());
+        return this.numcom==commande.numcom && this.client.equals(commande.getClient()) && this.magasin.equals(commande.getMagasin()) && this.contenue.equals(commande.getContenue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(numcom) + client.hashCode() + magasin.hashCode() + contenue.hashCode();
     }
 // faire hashcode
+
+    // *----------------------------* //
+    public boolean contientLivre(Livre livre){
+        for(DetailCommande detail : this.contenue){
+            if(detail.getLivre().equals(livre)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
