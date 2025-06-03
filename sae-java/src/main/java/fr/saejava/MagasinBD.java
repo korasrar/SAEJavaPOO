@@ -29,7 +29,7 @@ public class MagasinBD {
             st.executeUpdate("insert into LIVRE(isbn, titre, nbpages, fatepubli, prix) values ('"+l.getIsbn()+"','"+l.getTitre()+"',"+l.getNbPages()+","+l.getDatePubli()+","+l.getPrix()+");");
             List<Editeur> editeursL = l.getEditeurs();
             List<Auteur> auteursL = l.getAuteurs();
-            List<Classification> classficationsL = l.getClassifications();
+            List<Classification> classificationsL = l.getClassifications();
 
             // Ajout de tout les nouveaux éditeurs
             for(Editeur editeur: editeursL){
@@ -57,46 +57,16 @@ public class MagasinBD {
             }
 
             // Ajout de toutes les nouvelles classfications
-            for(Editeur editeur: editeursL){
-                rs = st.executeQuery("SELECT * FROM AUTEUR WHERE idauteur"+editeur.getIdEdit());
+            for(Classification classification : classificationsL){
+                rs = st.executeQuery("SELECT * FROM CLASSIFICAtiON WHERE iddewey"+classification.getIdDewey());
                 if(rs.next()){continue;}
                 else{
-                    // ajout de l'éditeur si il n'existe pas
-                    st.executeUpdate("insert into EDITEUR(nomedit,idedit) values ("+editeur.getNomEdit()+","+editeur.getIdEdit()+");");
+                    // ajout de la classification si elle n'existe pas
+                    st.executeUpdate("insert into CLASSIFICATION(iddewey, nomclass) values ("+classification+",'"+classification.getNomClass()+"');");
+                    st.executeUpdate("insert into THEMES(isbn,iddewey) values ('"+l.getIsbn()+"',"+classification.getIdDewey()+")");
+                    System.out.println("Ajout de la classification "+ classification.getNomClass());
                 }
             }
-            rs = st.executeQuery("SELECT * FROM LIVRE NATURAL JOIN ECRIRE NATURAL JOIN AUTEUR NATURAL JOIN THEMES NATURAL JOIN CLASSIFICATION NATURAL JOIN EDITER NATURAL JOIN EDITEUR WHERE isbn="l)
         }
-        /*if(rs.next()){
-            int qteExistante = rs.getInt("qte");
-            int nouvelleQte = qteExistante+qte;
-            st.executeUpdate("UPDATE POSSEDER SET qte ="+nouvelleQte+" WHERE isbn = "+l.getIsbn()+" AND igmag = "+magasin.getId());
-        } 
-        else {
-            st.executeUpdate("INSERT INTO POSSEDER (isbn, idmag, qte) VALUES ("+l.getIsbn()+", " + magasin.getId()+", "+qte+")");
-        }*/
-        // Requete d'insert de stock, vérifier si le livre est deja dans la bd, sinon le rajouter, si oui modifier la table stock magasin
     }
 }
-
-
-
-
-
-/* Regarder si les éditeurs du livres sont dans la base, idem pour les classification et les auteurs (boucle for)
-
-
-
-
-
-*/
-/* 
-    public void ajoutStock(Magasin magasin, Livre l, Integer qte) throws SQLException{
-        st = connexion.createStatement();
-        rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = '"+magasin.getId()+"'");
-
-    }
-
-    		PreparedStatement pstmt = laConnexion.prepareStatement("INSERT INTO JOUEUR VALUES ("+(maxNumJoueur()+1)+",'"+j.getPseudo()+"','"+j.getMotdepasse()+"','"+value+"','"+j.getMain()+"',"+j.getNiveau()+")");
-		pstmt.executeUpdate();
-*/
