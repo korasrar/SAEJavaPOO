@@ -24,7 +24,7 @@ public class CommandeBD {
             r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN NATURAL JOIN COMMANDE NATURAL JOIN CLIENT WHERE idcli =" + client.getNum() + " ORDER BY datecom DESC;");
             if (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
-                derniereCommande = new Commande(r.getInt("numcom"), client, magasin);
+                derniereCommande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin);
                 // detail de la dernière commande
                 int numcom = r.getInt("numcom");
                 Statement stDetailCommande = connexion.createStatement();                
@@ -52,7 +52,7 @@ public class CommandeBD {
             r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + " and numcom = " + numCommande + ";");
             if (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
-                commande = new Commande(r.getInt("numcom"), client, magasin);
+                commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin);
                 // detail de la dernière commande
                 int numcom = r.getInt("numcom");
                 Statement stDetailCommande = connexion.createStatement();                
@@ -80,7 +80,7 @@ public class CommandeBD {
             r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + ";");
             while (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
-                Commande commande = new Commande(r.getInt("numcom"), client, magasin);
+                Commande commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin);
                 // detail de la dernière commande
                 int numcom = r.getInt("numcom");
                 Statement stDetailCommande = connexion.createStatement();                
