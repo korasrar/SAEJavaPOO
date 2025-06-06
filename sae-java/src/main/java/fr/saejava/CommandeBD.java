@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class CommandeBD {
     ConnexionMySQL connexion;
@@ -15,6 +14,13 @@ public class CommandeBD {
     public CommandeBD(ConnexionMySQL connexion){
         this.connexion = connexion;
     }    
+
+    /**
+     * retourne la dernière commande d'un client
+     * @param client le client dont on veut récupérer la dernière commande
+     * @return la dernière commande du client
+     * @throws SQLException si une erreur SQL se produit
+     */
     
     public Commande getDerniereCommande(Client client) throws SQLException{
         Commande derniereCommande = null;
@@ -72,6 +78,12 @@ public class CommandeBD {
         }
         return commande;
     }
+
+    /**
+     * retourne la liste des commandes d'un client
+     * @param client le client 
+     * @return la liste des commandes du client
+     */
 
     public List<Commande> getCommandes(Client client){
         List<Commande> listCommandes = new ArrayList<>();

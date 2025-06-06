@@ -1,17 +1,15 @@
 package fr.saejava;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Stream;
-import java.util.Map.Entry;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class ClientBD {
     ConnexionMySQL connexion;
@@ -22,9 +20,19 @@ public class ClientBD {
         this.connexion = connexion;
     }
 
+
+    /**
+     * pour que le client consulte le catalogue de livre
+     */
     public void consulterCatalogue(){
-        // List de livre, requete dans la table livre de tout les livres, les afficher peut etre 5 par 5
+        
     }
+
+
+    /**
+     * pour passer une commande
+     * @param commande la commande à passer
+     */
 
     public void passerCommande(Commande commande) throws SQLException{
         //ajoute la commande a la BD
@@ -34,6 +42,15 @@ public class ClientBD {
     }
 
     // *------------------------ Méthode pour onVousRecommande() ------------------------* //
+
+
+    /**
+     * calcule la proximité entre deux clients
+     * @param client1 le premier client
+     * @param client2 le deuxième client
+     * @return la proximité entre les deux clients
+     * @throws SQLException si une erreur SQL se produit
+     */
 
     public int proximiteClient(Client client1, Client client2) throws SQLException{
         int valProximite = 0;
@@ -51,6 +68,14 @@ public class ClientBD {
         }
         return valProximite;
     }
+
+
+    /**
+     * retourne les 10 clients les plus proches du client passé en paramètre
+     * @param client le client pour lequel on cherche les clients proches
+     * @return un dico contenant les clients proches et leur proximité
+     * @throws SQLException si une erreur SQL se produit
+     */
 
     public Map<Client, Integer> clientLesPlusProches(Client client) throws SQLException{
         Map<Client, Integer> clientProches = new HashMap<>();
@@ -76,6 +101,13 @@ public class ClientBD {
         return clientProches;
     }
 
+    /**
+     * retourne les livres recommandés pour le client passé en paramètre
+     * @param client le client pour lequel on cherche les livres recommandés
+     * @return un ensemble de livres recommandés
+     * @throws SQLException si une erreur SQL se produit
+     */
+    
     public Set<Livre> onVousRecommande(Client client) throws SQLException {
         Set<Livre> livresRecommandes = new HashSet<>();
         Map<Client, Integer> clientsProches = clientLesPlusProches(client);

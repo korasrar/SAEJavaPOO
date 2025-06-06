@@ -71,6 +71,10 @@ public class Client extends Utilisateur{
     public void modeDeReception(){
     }
 
+    /**
+     * édite la facture d'une commande et peut etre genérer un PDF
+     * @param commande la commande à éditer
+     */
     public void editerFacture(Commande commande){
         Document document = new Document();
         try{

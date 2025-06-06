@@ -3,8 +3,6 @@ package fr.saejava;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 public class Commande {
     // Map<Livre, Integer> contenu; peut etre ?
     int numcom;
@@ -71,6 +69,12 @@ public class Commande {
 // faire hashcode
 
     // *----------------------------* //
+
+    /**
+     * vérifie si la commande contient un livre spécifique
+     * @param livre le livre à vérifier
+     * @return true si le livre est dans la commande, false sinon
+     */
     public boolean contientLivre(Livre livre){
         for(DetailCommande detail : this.contenue){
             if(detail.getLivre().equals(livre)){
