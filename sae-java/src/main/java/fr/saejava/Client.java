@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class Client extends Utilisateur{
@@ -80,12 +81,58 @@ public class Client extends Utilisateur{
         try{
             PdfWriter.getInstance(document, new FileOutputStream("./facture/facture_client_"+this.num+"_commande_"+commande.getNumcom()+".pdf"));
             document.open();
-            Font font = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
-            // Flemme de continuer
-
+            Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
+            Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            Font paraFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
+            // header
+            document.add(new Paragraph("FACTURE", titleFont));
+            document.add(new Paragraph(" "));
+            // info client
+            document.add(new Paragraph(this.getNom()+ " " + this.getPrenom(), headerFont));
+            document.add(new Paragraph(this.adresse, paraFont));
+            document.add(new Paragraph(this.ville + " " +this.codePostal, paraFont));
+            document.add(new Paragraph("Commande n° " + commande.getNumcom(), paraFont));
+            document.add(new Paragraph(" "));
+            
+            // info du livre
+            document.add(new Paragraph("ISBN | Titre | Auteur | Quantité | Prix | Prix total", headerFont));
+            document.add(new Paragraph("--------------------------------------------------------------", paraFont));
+            
+            double total = 0;
+            int totalLivres = 0;
+            
+            // parcours de la commande
+            for(DetailCommande detail : commande.getContenue()) {
+                Livre livre = detail.getLivre();
+                int quantite = detail.getQte();
+                double prixUnitaire = livre.getPrix();
+                double prixTotal = detail.getPrixVente();
+                
+                total += prixTotal;
+                totalLivres += quantite;
+                
+                // je prend le premier auteur du livre si yen a un
+                String auteur = "";
+                if(!livre.getAuteurs().isEmpty()) {
+                    auteur = livre.getAuteurs().get(0).getNomAuteur();
+                }
+                
+                String lignePdf = livre.getIsbn() + " | " +livre.getTitre() + " | " + auteur + " | " + quantite + " | " + prixUnitaire + " | " + prixTotal;
+                document.add(new Paragraph(lignePdf, paraFont));
+            }
+            document.add(new Paragraph("--------------------------------------------------------------", paraFont));
+            document.add(new Paragraph("Total: " + total + "€", headerFont));
+            document.add(new Paragraph("Nombre de livres: " + totalLivres, paraFont));
+            
         }
         catch(Exception e){
-            System.out.println("Erreur lors de la création du fichier PDF");
+            System.out.println("Erreur lors de la création du fichier PDF: " + e.getMessage());
+        }
+        finally {
+            // ferme document dans tout les cas
+            if(document.isOpen()) {
+                document.close();
+            }
         }
     }
 }

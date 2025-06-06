@@ -1,20 +1,23 @@
 package fr.saejava;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Commande {
     // Map<Livre, Integer> contenu; peut etre ?
     int numcom;
+    Date dateCom;
     List<DetailCommande> contenue;
     Client client;
     Magasin magasin;
 
-    public Commande(int numcom, Client client,Magasin magasin){
+    public Commande(int numcom, Date dateCom, Client client,Magasin magasin){
         this.numcom=numcom;
         this.contenue=new ArrayList<>();
         this.client=client;
         this.magasin=magasin;
+        this.dateCom=dateCom;
     }
 
     Client getClient(){
@@ -33,11 +36,18 @@ public class Commande {
         return this.numcom;
     }
 
+    public  Date getDateCommande(){
+        return this.dateCom;
+    }
+
     void setClient(Client client) {
         this.client = client;
     }
     void setMagasin(Magasin magasin) {
         this.magasin = magasin;
+    }
+    public void setDateCommande(Date dateCommande) {
+        this.dateCom = dateCommande;
     }
 
     void ajouterDetailCommande(DetailCommande ajout){

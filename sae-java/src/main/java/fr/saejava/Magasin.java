@@ -9,7 +9,6 @@ public class Magasin{
     private String nom;
     private String ville;
     private Map<Livre, Integer> stockMagasin;
-    // private List<StockMagasin> stock; //liste de livre?
 
     public Magasin(int id,String nom,String ville){
         this.id = id;
