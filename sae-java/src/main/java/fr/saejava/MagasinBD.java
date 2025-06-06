@@ -14,6 +14,13 @@ public class MagasinBD {
         this.connexion = connexion;
     }
 
+    /**
+     * permet de consulter le catalogue de livres d'un magasin
+     * @param magasin le magasin dont on veut consulter le catalogue
+     * @return un ensemble contenant les livres du catalogue
+     * @throws SQLException si une erreur SQL se produit
+     */
+
     public void ajoutStock(Magasin magasin, Livre l, Integer qte) throws SQLException{ 
         st = connexion.createStatement();
         rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = '"+magasin.getId()+"'");

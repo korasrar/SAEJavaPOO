@@ -15,10 +15,15 @@ public class AdminBD {
 
     public void creeCompteVendeur(Magasin magasin, String nom, String prenom) throws SQLException{
         st = connexion.createStatement();
-        
-
     }
 
+    /**
+     * ajoute une nouvelle librairie dans la base de données
+     * 
+     * @param magasin le magasin à ajouter
+     * @throws SQLException pour gérer si il y a une erreur SQL
+     */
+    
     public void ajouterNouvelleLibrairie(Magasin magasin) throws SQLException{
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM magasin WHERE idMagasin = " + magasin.getId());
@@ -31,8 +36,16 @@ public class AdminBD {
     }
 
     public void gererLesStocks(){
-        // plusieurs méthodes
+    
     }
+
+    /**
+     * ajoute un livre dans la base de données
+     * 
+     * @param l le livre à ajouter
+     * @param qte la quantité de livres à ajouter
+     * @throws SQLException pour gérer si il y a une erreur SQL
+     */
 
     public void ajouteLivre(Livre l, int qte) throws SQLException {
         st = connexion.createStatement();
