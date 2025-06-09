@@ -21,7 +21,7 @@ public class Client extends Utilisateur{
     private int codePostal;
 
     public Client(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse){
-        super(nom, prenom, username, motDePasse, Role.CLIENT);
+        super(nom, prenom, username, motDePasse, Role.client);
         this.num = num;
         this.adresse = adresse;
         this.ville = ville;
@@ -72,6 +72,10 @@ public class Client extends Utilisateur{
     public void modeDeReception(){
     }
 
+    /**
+     * Permet de créer une facture au format .pdf a partir de la commande en paramètre
+     * @param commande
+     */
     public void editerFacture(Commande commande){
         Document document = new Document();
         try{
