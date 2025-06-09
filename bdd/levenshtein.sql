@@ -1,3 +1,5 @@
+-- source :
+-- https://lucidar.me/fr/web-dev/levenshtein-distance-in-mysql/
 DELIMITER $$
 CREATE FUNCTION levenshtein( s1 VARCHAR(255), s2 VARCHAR(255) )
     RETURNS INT
