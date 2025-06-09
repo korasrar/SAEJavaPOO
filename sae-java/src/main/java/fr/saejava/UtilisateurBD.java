@@ -13,6 +13,17 @@ public class UtilisateurBD {
         this.connexion = connexion;
     }
 
+    /**
+     * récupère un utilisateur à partir de son nom d'utilisateur et mot de passe
+     *
+     * @param username le nom d'utilisateur
+     * @param mdp le mot de passe
+     * @return l'utilisateur en question soit un Admin, Vendeur ou Client
+     * @throws SQLException si erreur SQL 
+     * @throws UtilisateurIntrouvableException si l'utilisateur n'est pas trouvé
+     * @throws VendeurSansMagasinException si le vendeur n'a pas de magasin associé
+     * @throws MotDePasseIncorrectException si le mot de passe est incorrect
+     */
     public Utilisateur getUtilisateur(String username, String mdp) throws SQLException, UtilisateurIntrouvableException, VendeurSansMagasinException, MotDePasseIncorrectException {
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM UTILISATEUR NATURAL LEFT JOIN VENDEUR NATURAL LEFT JOIN ADMIN NATURAL LEFT JOIN CLIENT WHERE username = '" + username + "'");

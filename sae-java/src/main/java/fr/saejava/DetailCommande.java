@@ -15,7 +15,7 @@ public class DetailCommande {
         this.prixVente = livre.getPrix()*qte;
     }
 
-    DetailCommande( Livre livre, Commande commande){ // constructeur qte de 1 par defaut
+    DetailCommande(Livre livre, Commande commande){ // constructeur qte de 1 par defaut
         this.commande = commande;
         this.numLig = commande.getContenue().size()+1;
         this.qte = 1;

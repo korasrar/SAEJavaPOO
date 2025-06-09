@@ -14,6 +14,7 @@ public class Auteur {
         this.idAuteur=idAuteur;
         this.nomAuteur=nomAuteur;
     }
+
     Auteur(int idAuteur,String nomAuteur,int anneeNais,int anneeDeces){
         this.idAuteur=idAuteur;
         this.nomAuteur=nomAuteur;
@@ -21,6 +22,7 @@ public class Auteur {
         this.anneeDeces=anneeDeces;
         this.livres = new ArrayList<>();
     }
+    
     public int getIdAuteur() {
         return idAuteur;
     }

@@ -1,9 +1,10 @@
 package fr.saejava;
 
-import java.sql.*;
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
+import java.sql.Statement;
 
 public class ConnexionMySQL {
     // Connection avec JDBC 
@@ -32,8 +33,16 @@ public class ConnexionMySQL {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 	}
 
+	/**
+	 * pour connecter tout à la base de données MySQL
+	 * @param nomServeur le nom du serveur 
+	 * @param nomBase le nom de la base 
+	 * @param nomLogin le nom d'utilisateur 
+	 * @param motDePasse le mot de passe 
+	 * @throws SQLException si une erreur SQL se produit lors de la connexion
+	 */
 	public void connecter(String nomServeur, String nomBase, String nomLogin, String motDePasse) throws SQLException {
-        System.out.println("Tentative de connection...");
+        System.out.println("Tentative de connexion...");
         try {
             mysql=DriverManager.getConnection(
             "jdbc:mysql://"+nomServeur+":3306/"+nomBase+"?useSSL=false&serverTimezone=UTC",

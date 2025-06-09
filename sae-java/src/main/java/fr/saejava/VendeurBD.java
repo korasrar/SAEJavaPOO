@@ -26,6 +26,14 @@ public class VendeurBD {
     //    // Appelle ajouteStock de magasin
     //}
 
+    /**
+     * pour passer une commande de livres
+     *
+     * @param livres la liste des livres à commander
+     * @param qte la quantité de chaque livre 
+     * @param client le client qui passe la commande
+     */
+
     public void commander(List<Livre> livres, int qte, Client client){
         //Commande commande = new Commande(client, this.magasin);
         //for (Livre l : livres){
@@ -43,6 +51,14 @@ public class VendeurBD {
         // Ajoute une commande dans la table commande avec l'id du client mis paramètre
     }
 
+    /**
+     * met à jour la quantité d'un livre dans le stock
+     *
+     * @param l le livre à mettre à jour
+     * @param qte la nouvelle quantité
+     * @throws LivrePasDansStockMagasinExecption si le livre n'est pas dans le stock
+     */
+
     public void mettreAJour(Livre l, int qte) throws LivrePasDansStockMagasinExecption{
         // Vérifie si le livre est présent dans le stock avec un appelle de estDispo() et si true alors on modifie stock magasin, sinon on fait rien
     }
@@ -51,6 +67,14 @@ public class VendeurBD {
         // Supprime le livre du stock du magasin actuelle ou si il en reste plus de 1 enlever 1 de stock ? (co méthode) et le rajouter dans le stock de l'autre magasin
     }
 
+    /**
+     * vérifie si un livre est disponible dans le stock du magasin
+     *
+     * @param magasin le magasin à vérifier
+     * @param l le livre à vérifier
+     * @return true si le livre est disponible, false sinon
+     * @throws SQLException si une erreur SQL se produit
+     */
     public boolean verifierDispo(Magasin magasin, Livre l) throws SQLException{
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasin.getId());
@@ -77,6 +101,14 @@ public class VendeurBD {
         // Vérifier si un livre est présent dans stockmagasin d'un magasin (récup id ?)
     }
 
+    /**
+     * récupère le magasin du vendeur
+     *
+     * @param idVendeur l'identifiant du vendeur
+     * @return le magasin du vendeur
+     * @throws SQLException si une erreur SQL se produit
+     * @throws VendeurSansMagasinException si le vendeur n'a pas de magasin associé
+     */
     public Magasin getMagasin(int idVendeur) throws SQLException, VendeurSansMagasinException{
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM VENDEUR NATURAL JOIN MAGASIN WHERE idVendeur =" +idVendeur);
