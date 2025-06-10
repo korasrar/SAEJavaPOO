@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Livre {
-    private int isbn;
+    private String isbn;
     private String titre;
     private int nbPages;
     private String datePubli;
@@ -12,7 +12,7 @@ public class Livre {
     private List<Classification> lesClassifications; //
     private List<Editeur> lesEditeurs; //
 
-    public Livre(int isbn, String titre, int nbPages, String datePubli, double prix) {
+    public Livre(String isbn, String titre, int nbPages, String datePubli, double prix) {
         this.isbn = isbn;
         this.titre = titre;
         this.nbPages = nbPages;
@@ -24,7 +24,7 @@ public class Livre {
 
     }
 
-    public int getIsbn(){
+    public String getIsbn(){
         return this.isbn;
     }
     public String getTitre(){
@@ -49,7 +49,7 @@ public class Livre {
         return this.lesEditeurs;
     }
 
-    public void setIsbn(int isbn){
+    public void setIsbn(String isbn){
         this.isbn = isbn;
     }
     public void setTitre(String titre){
@@ -64,6 +64,8 @@ public class Livre {
     public void setPrix(double prix){
         this.prix = prix;
     }
+
+    // *---------------------------------------* //
     
     @Override
     public boolean equals(Object obj){
@@ -77,7 +79,13 @@ public class Livre {
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(isbn);
+        return String.valueOf(isbn).hashCode();
     }
+
+    @Override
+    public String toString() {
+        return this.titre + " (" + this.isbn + ") - " + this.nbPages + " pages - " + this.datePubli + " - " + this.prix + "€"; 
+    }
+
 }
 

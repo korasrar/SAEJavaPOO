@@ -30,18 +30,18 @@ public class UtilisateurBD {
         if (r.next()) {
             String nom = r.getString("nom");
             String prenom = r.getString("prenom");
-            String motDePasse = r.getString("mdp");
+            String motDePasse = r.getString("motdepasse");
             Role role = Role.valueOf(r.getString("role"));
             if(motDePasse.equals(mdp)){
             switch (role) {
-                case ADMIN:
+                case admin:
                     int idAdmin = r.getInt("idAdmin");
                     return new Admin(idAdmin, nom, prenom, username, motDePasse);
-                case VENDEUR:
+                case vendeur:
                     int idVendeur = r.getInt("idVendeur");
                     VendeurBD vendeurBD = new VendeurBD(connexion);
                     return new Vendeur(idVendeur, nom, prenom, username, motDePasse, vendeurBD.getMagasin(idVendeur));
-                case CLIENT:
+                case client:
                     int idCli = r.getInt("idcli");
                     return new Client(idCli, motDePasse, motDePasse, r.getInt("codepostal"), nom, prenom, username, motDePasse);
                 default:return null;

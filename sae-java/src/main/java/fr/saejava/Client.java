@@ -21,7 +21,7 @@ public class Client extends Utilisateur{
     private int codePostal;
 
     public Client(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse){
-        super(nom, prenom, username, motDePasse, Role.CLIENT);
+        super(nom, prenom, username, motDePasse, Role.client);
         this.num = num;
         this.adresse = adresse;
         this.ville = ville;

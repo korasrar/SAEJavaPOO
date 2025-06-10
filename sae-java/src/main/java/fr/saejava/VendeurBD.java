@@ -16,15 +16,15 @@ public class VendeurBD {
         this.magasinBD = new MagasinBD(connexion);
     }
 
-    public void ajouteLivre(Livre l) throws SQLException{ //execption a corriger
-        //magasinBD.ajoutStock(magasin, l, 1);
-        // Appelle ajouteStock de magasin et qte = 1 par default
-    }
-
-    public void ajouteLivre(Livre l, int qte) throws SQLException{ //execption a corriger
-       // magasinBD.ajoutStock(magasin, l, qte);
-        // Appelle ajouteStock de magasin
-    }
+    //public void ajouteLivre(Livre l) throws SQLException{ //execption a corriger
+    //    magasinBD.ajoutStock(magasin, l, 1);
+    //    // Appelle ajouteStock de magasin et qte = 1 par default
+    //}
+    
+    //public void ajouteLivre(Livre l, int qte) throws SQLException{ //execption a corriger
+    //    magasinBD.ajoutStock(magasin, l, qte);
+    //    // Appelle ajouteStock de magasin
+    //}
 
     /**
      * pour passer une commande de livres
@@ -77,7 +77,20 @@ public class VendeurBD {
      */
     public boolean verifierDispo(Magasin magasin, Livre l) throws SQLException{
         st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = "+l.getIsbn()+" AND idmag = "+magasin.getId());
+        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasin.getId());
+        if (r.next()){
+            int qte = r.getInt("qte");
+            // seconde verif de si sqt pas 0 ? vérifier dans une autre méthode la qte a 0 = sup le livre ou garder dans catalogue quand même ?
+            if (qte > 0){return true;}
+            else {return false;}
+            }
+        else {return false;}
+        // Vérifier si un livre est présent dans stockmagasin d'un magasin (récup id ?)
+    }
+
+    public boolean verifierDispo(Livre l) throws SQLException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"'");
         if (r.next()){
             int qte = r.getInt("qte");
             // seconde verif de si sqt pas 0 ? vérifier dans une autre méthode la qte a 0 = sup le livre ou garder dans catalogue quand même ?

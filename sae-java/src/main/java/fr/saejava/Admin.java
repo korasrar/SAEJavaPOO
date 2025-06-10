@@ -5,7 +5,7 @@ public class Admin extends Utilisateur{
     private int idAdmin;
 
     public Admin(int idAdmin, String nom, String prenom, String pseudo, String motDePasse){
-        super(nom, prenom, pseudo, motDePasse, Role.ADMIN);
+        super(nom, prenom, pseudo, motDePasse, Role.admin);
         this.idAdmin = idAdmin;
     }
 
