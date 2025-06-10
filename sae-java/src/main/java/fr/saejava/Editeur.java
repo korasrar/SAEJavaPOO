@@ -8,7 +8,7 @@ public class Editeur{
     String nomEdit;
     List<Livre> livres;
 
-    Editeur(int idEdit,String nomEdit){
+    public Editeur(int idEdit,String nomEdit){
         this.idEdit=idEdit;
         this.nomEdit=nomEdit;
         this.livres = new ArrayList<>();

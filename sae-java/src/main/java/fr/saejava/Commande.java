@@ -50,7 +50,7 @@ public class Commande {
         this.dateCom = dateCommande;
     }
 
-    void ajouterDetailCommande(DetailCommande ajout){
+    public void ajouterDetailCommande(DetailCommande ajout){
         this.contenue.add(ajout);
     }
 
