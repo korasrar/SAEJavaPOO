@@ -37,7 +37,7 @@ cd SAEJavaPOO
 
 # Compiler le projet Java en .jar
 cd sae-java
-mvn clean compile
+mvn clean package
 cd ..
 
 # Build l'application avec Docker Compose
