@@ -59,7 +59,7 @@ public class VendeurBD {
      * @throws LivrePasDansStockMagasinExecption si le livre n'est pas dans le stock
      */
 
-    public void mettreAJour(Livre l, int qte) throws LivrePasDansStockMagasinExecption{
+    public void mettreAJour(Livre l, int qte) throws LivrePasDansStockMagasinException{
         // Vérifie si le livre est présent dans le stock avec un appelle de estDispo() et si true alors on modifie stock magasin, sinon on fait rien
     }
 
