@@ -40,5 +40,11 @@
             <artifactId>pdfbox</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.4.2</version>
+            <type>maven-plugin</type>
+        </dependency>
     </dependencies>
 </project>

@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: sae_db
+      MYSQL_USER: sae_user
+      MYSQL_PASSWORD: sae_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  app:
+    build: .
+    depends_on:
+      - mysql
+    environment:
+      JDBC_DATABASE_URL: jdbc:mysql://mysql:3306/sae_db
+      JDBC_DATABASE_USERNAME: sae_user
+      JDBC_DATABASE_PASSWORD: sae_password
+    volumes:
+      - ./facture:/app/facture
+    stdin_open: true      
+    tty: true            
+
+volumes:
+  dbdata:

@@ -23,3 +23,7 @@ tableau de bord de votre SAE « Exploitation d’une base de données », de gé
 ## MAVEN PROJECT
 
 Cette SAE utilise MAVEN, il faut donc installer l'extension Java de microsoft sur VSCode !
+
+## Docker
+Build docker : ``docker-compose build``
+Lancer docker en mode intéractif : ``docker run -it``
