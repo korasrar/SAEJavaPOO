@@ -20,6 +20,9 @@ public class ClientBD {
         this.connexion = connexion;
     }
 
+    /*public void creeCompteClient(String nom, String prenom) throws SQLException{
+        st = connexion.createStatement();
+    }*/
 
     /**
      * pour que le client consulte le catalogue de livre
