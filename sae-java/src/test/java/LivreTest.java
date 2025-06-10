@@ -1,6 +1,8 @@
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+import java.sql.Date;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import fr.saejava.Client;
@@ -8,6 +10,7 @@ import fr.saejava.Commande;
 import fr.saejava.DetailCommande;
 import fr.saejava.Editeur;
 import fr.saejava.Livre;
+import fr.saejava.LivrePasDansStockMagasinException;
 import fr.saejava.Magasin;
 
 public class LivreTest {
@@ -35,7 +38,7 @@ public class LivreTest {
     @Test
     public void testCommandeVide() {
         Date date = Date.valueOf("2025-01-01");
-        Client client = new Client("Infinitty", "Nikki", "infinitynikki", "soleil123", Role.CLIENT, "nikki@gmail.com", "paris");
+        Client client = new Client(2,"Praire", "Paris",91000, "Infinity", "Nikki", "infinitynikki", "mdp");
         Magasin magasin = new Magasin(1, "Librairie Jsp", "paris");
         Commande commande = new Commande(1, date, client, magasin);
         Livre livre = new Livre(1, "Test", 200, "01/01/2020", 15.0);
@@ -45,11 +48,11 @@ public class LivreTest {
     @Test
     public void testCommande() {
         Date date = Date.valueOf("2025-01-08");
-        Client client = new Client("Lune", "Obscure", "clairobscure", "peintresse", Role.CLIENT, "lune@gmail.com", "Lumiere");
+        Client client = new Client(1,"Vallons", "Lumiere",99000, "Obscure", "Lune", "clairobscure", "mdp1");
         Magasin magasin = new Magasin(1, "Librairie Truc", "Lumiere");
         Commande commande = new Commande(1, date, client, magasin);
         Livre livre = new Livre(1, "Test", 200, "01/01/1899", 19.0);
-        DetailCommande detail = new DetailCommande(livre, 2, 19.0);
+        DetailCommande detail = new DetailCommande(2, livre, commande);
         commande.ajouterDetailCommande(detail);
         assertTrue(commande.contientLivre(livre));
     }
@@ -58,14 +61,14 @@ public class LivreTest {
     @Test
     public void testCommandeLivres() {
         Date date = Date.valueOf("2024-05-01");
-        Client client = new Client("Gustave", "Clair", "clairobscure2", "peintresse2", Role.CLIENT, "gustave@gmail.com", "Indigo");
+        Client client = new Client(3,"Indigo", "Lumiere",99000, "Obscure", "Gustave", "clairobscure3", "mdp3");
         Magasin magasin = new Magasin(1, "Librairie", "Indigo");
         Commande commande = new Commande(1, date, client, magasin);
         Livre livre1 = new Livre(1, "Livre1", 200, "01/01/2020", 5.0);
         Livre livre2 = new Livre(2, "Livre2", 300, "01/02/2020", 10.0);
         Livre livre3 = new Livre(3, "Livre3", 400, "01/03/2020", 25.0);
-        commande.ajouterDetailCommande(new DetailCommande(livre1, 1, 5.0));
-        commande.ajouterDetailCommande(new DetailCommande(livre2, 2, 10.0));
+        commande.ajouterDetailCommande(new DetailCommande(1, livre1, commande));
+        commande.ajouterDetailCommande(new DetailCommande(2, livre2, commande));
         assertTrue(commande.contientLivre(livre1));
         assertTrue(commande.contientLivre(livre2));
         assertFalse(commande.contientLivre(livre3));

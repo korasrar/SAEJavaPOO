@@ -17,12 +17,12 @@ public class VendeurBD {
     }
 
     public void ajouteLivre(Livre l) throws SQLException{ //execption a corriger
-        magasinBD.ajoutStock(magasin, l, 1);
+        //magasinBD.ajoutStock(magasin, l, 1);
         // Appelle ajouteStock de magasin et qte = 1 par default
     }
 
     public void ajouteLivre(Livre l, int qte) throws SQLException{ //execption a corriger
-        magasinBD.ajoutStock(magasin, l, qte);
+       // magasinBD.ajoutStock(magasin, l, qte);
         // Appelle ajouteStock de magasin
     }
 
