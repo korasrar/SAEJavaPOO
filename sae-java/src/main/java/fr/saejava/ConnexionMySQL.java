@@ -18,9 +18,8 @@ public class ConnexionMySQL {
 	public void connecter(String nomServeur, String nomBase, String nomLogin, String motDePasse) throws SQLException {
         System.out.println("Tentative de connection...");
         try {
-            mysql=DriverManager.getConnection( // prbm a corriger
+            mysql=DriverManager.getConnection(
             "jdbc:mysql://"+nomServeur+":3306/"+nomBase+"?allowPublicKeyRetrieval=true&useSSL=false",
-            "jdbc:mariadb://"+nomServeur+":3306/"+nomBase,
             nomLogin,motDePasse);
             System.out.println("Connection réussi");
             } catch (SQLException ex){

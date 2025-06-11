@@ -87,11 +87,12 @@ public class ApplicationTerminal {
 
     public void menuConnexionBD() throws SQLException, ClassNotFoundException, NoSuchElementException {
             // Récupère les infos pour se connecter
-        System.out.println("---- APPLICATION LIBRAIRIE ----");
+        System.out.println("                         ");
+        System.out.println("|--< APPLICATION LIBRAIRIE >--|");
         System.out.println("|                             |");
         System.out.println("| > Connexion Base de Données |");
         System.out.println("|                             |");
-        System.out.println("-------------------------------");
+        System.out.println("|-----------------------------|");
         System.out.println("Entrez le nom du serveur : ");
         String adresse = scanner.nextLine();
         System.out.println("Entrez le nom de la base : ");
@@ -138,13 +139,13 @@ public class ApplicationTerminal {
     public Utilisateur menuConnexionUtilisateur() throws SQLException{
         Utilisateur util = null;
     //    System.out.println("| > S'inscrire en tant que Vendeur |");
-        System.out.println("_____MENU CONNEXION UTILISATEUR_____");
+        System.out.println("|--< MENU CONNEXION UTILISATEUR >--|");
         System.out.println("|                                  |");
         System.out.println("| > Se connecter                   |");
         System.out.println("| > S'inscrire en tant que Client  |");
         System.out.println("| > Quitter                        |");
         System.out.println("|                                  |");
-        System.out.println("'\'"+"__________________________________/");
+        System.out.println("|----------------------------------|");
         System.out.print("Veuillez choisir une option (1-3) : ");
         String choix = scanner.nextLine();
         switch (choix) {
@@ -205,12 +206,76 @@ public class ApplicationTerminal {
     }
 
     public void menuAdminMain() {
-        // TO DO
+        System.out.println("------- MENU ADMIN -------");
+        System.out.println("|                        |");
+
+        System.out.println("|                        |");
+        System.out.println("--------------------------");    
     }
 
     public void menuVendeurMain() {
-        // TO DO
+        System.out.println("--------- MENU VENDEUR ----------");
+        System.out.println("|                               |");
+        System.out.println("| > Rechercher un livre         |");
+        System.out.println("| > Catalogue                   |");
+        System.out.println("| > Mes recommandations         |");
+        System.out.println("| > Voir panier                 |");
+        System.out.println("| > Mes commandes               |");
+        System.out.println("| > Mon profil                  |");
+        System.out.println("| > Transferer un livre         |");
+        System.out.println("| > Maj des stocks              |");
+        System.out.println("| > Verifier les disponibilités |");
+        System.out.println("| > Se déconnecter              |");
+        System.out.println("|                               |");
+        System.out.println("---------------------------------"); 
+        System.out.print("Veuillez choisir une option (1-11) : ");
+        String choix = scanner.nextLine();
+        switch (choix) {
+            case "1":
+                menuRechercherLivre();
+                break;
+            case "2":
+                menuCatalogue();
+                break;
+            case "3":
+                menuMesRecommandations();
+                break;
+            case "4":
+                menuPanier();
+                break;
+            case "5":
+                menuMesCommandes();
+                break;
+            case "6":
+                menuProfil();
+                break;
+            case "7":
+                menuTransfertLivre();
+                break;
+            case "8":
+                menuMajStock();
+                break;
+            case "9":
+                menuDispo();
+                break;
+            case "10":
+                System.out.println("Déconnexion...");
+                estConnecteUtil = false;
+                utilisateurConnecter = null;
+                try{
+                    menuConnexionUtilisateur();
+                }
+                catch(SQLException e){
+                    System.out.println("Erreur lors de la connexion : " + e.getMessage());
+                }
+                
+                break;
+            default:
+                System.out.println("Choix invalide, veuillez réessayer.");
+                menuClientMain();
+        }
     }
+
 
     public void menuClientMain() {
         System.out.println("------ MENU CLIENT ------");
@@ -363,6 +428,18 @@ public class ApplicationTerminal {
        // TO DO
        // Voir ces infos (Les afficher par défaut)
        // Pouvoir modiofier ces informations (Créer la méthode pour dans UtilisateurBD peut etre ?)
+    }
+
+    public void menuTransfertLivre(){
+        // a coder
+    }
+
+    public void menuMajStock(){
+        // a coder
+    }
+
+    public void menuDispo(){
+        // a coder
     }
 
     public void afficherLivre(Map<Livre, Boolean> livres) {
