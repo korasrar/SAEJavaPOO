@@ -27,6 +27,10 @@ public class ClientBD {
         pstmt = this.connexion.prepareStatement("insert into CLIENT values ("+num+", '"+adresse+"', '"+codePostal+"', '"+ville+"'),");
         pstmt.executeUpdate();	
     }
+=======
+    /*public void creeCompteClient(String nom, String prenom) throws SQLException{
+        st = connexion.createStatement();
+    }*/
 
     /**
      * pour que le client consulte le catalogue de livre
