@@ -1,5 +1,6 @@
 package fr.saejava;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,6 +21,13 @@ public class ClientBD {
         this.connexion = connexion;
     }
 
+    public void creeCompteClient(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse) throws SQLException{
+        PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+num+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','client'),");
+        pstmt.executeUpdate();
+        pstmt = this.connexion.prepareStatement("insert into CLIENT values ("+num+", '"+adresse+"', '"+codePostal+"', '"+ville+"'),");
+        pstmt.executeUpdate();	
+    }
+=======
     /*public void creeCompteClient(String nom, String prenom) throws SQLException{
         st = connexion.createStatement();
     }*/
@@ -111,8 +119,9 @@ public class ClientBD {
      * @throws SQLException si une erreur SQL se produit
      */
     
-    public Set<Livre> onVousRecommande(Client client) throws SQLException {
-        Set<Livre> livresRecommandes = new HashSet<>();
+    public Map<Livre,Boolean> onVousRecommande(Client client) throws SQLException {
+        VendeurBD connexionVendeur = new VendeurBD(connexion);
+        Map<Livre,Boolean> livresRecommandes = new HashMap<>();
         Map<Client, Integer> clientsProches = clientLesPlusProches(client);
 
         // livre deja commandé par le client
@@ -132,7 +141,7 @@ public class ClientBD {
                 for (DetailCommande comDet : com.getContenue()) {
                     Livre livre = comDet.getLivre();
                     if (!livresClient.contains(livre)) {
-                        livresRecommandes.add(livre);
+                        livresRecommandes.put(livre,connexionVendeur.verifierDispo(livre));
                     }
                 }
             }

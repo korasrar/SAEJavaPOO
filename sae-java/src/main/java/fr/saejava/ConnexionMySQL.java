@@ -19,6 +19,8 @@ public class ConnexionMySQL {
         System.out.println("Tentative de connection...");
         try {
             mysql=DriverManager.getConnection(
+            "jdbc:mysql://"+nomServeur+":3306/"+nomBase+"?allowPublicKeyRetrieval=true&useSSL=false",
+=======
             "jdbc:mariadb://"+nomServeur+":3306/"+nomBase,
             nomLogin,motDePasse);
             System.out.println("Connection réussi");
