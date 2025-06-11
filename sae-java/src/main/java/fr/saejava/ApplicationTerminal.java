@@ -1,14 +1,18 @@
 package fr.saejava;
 
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 
+
 public class ApplicationTerminal {
 
+    ConnexionMySQL connexion;
     Utilisateur utilisateurConnecter;
     UtilisateurBD utilisateurConnexion;
     VendeurBD vendeurConnexion; 
@@ -18,27 +22,61 @@ public class ApplicationTerminal {
     LivreBD livreConnexion;
     Scanner scanner;
 
+    Statement st;
+    ResultSet r;
+
     boolean estConnecteBD;
     boolean estConnecteUtil;
 
     Commande panier;
     
 
-    void créeCommande(Client client,Date date,Magasin magasin){
-        //this.panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin);
+    void créeCommande(Client client,Date date,Magasin magasin) throws SQLException{
+        this.panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin);
     }
     void commander(Livre livre){
+        // Vérifier si le livre est dans le magasin de la commande, si oui
+        // si oui : continuer la commande/ajouter le detailCommande
+        // si non : vérfifier que le livre est dispo
         //ajoute a la commande en cour le livre*qte
-        this.panier.ajouterDetailCommande(new DetailCommande(livre,this.panier));
+        if(this.panier.contientLivre(livre)){
+            DetailCommande detail=this.panier.livreDansCommande(livre);
+            detail.setQte(detail.getQte()+1);
+        }
+        else{this.panier.ajouterDetailCommande(new DetailCommande(livre,this.panier));
+}
     }
+    
     void commander(Livre livre,int qte){
         //ajoute a la commande en cour le livre*qte
-        this.panier.ajouterDetailCommande(new DetailCommande(qte,livre,this.panier));
+    if(this.panier.contientLivre(livre)){
+            DetailCommande detail=this.panier.livreDansCommande(livre);
+            detail.setQte(detail.getQte()+qte);
+        }
+        else{this.panier.ajouterDetailCommande(new DetailCommande(qte,livre,this.panier));
+}
     }
-    void finaliseCommande(){
-        String ajout="insert into COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) values";
-        
-        
+    
+    void finaliseCommande() throws SQLException{
+        String ajout1="insert into COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) values\n";
+        ajout1+=ajout1+"("+this.panier.getNumcom()+","+panier.getDateCommande()+","+"O"+","+"C"+","+panier.getClient().getNum()+","+panier.getMagasin().getId()+")\n";
+        ajout1=ajout1+"insert into DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) values;\n";
+        int numlig=0;
+        String ajout2="";
+        for(DetailCommande detail:this.panier.contenue){
+            ajout2=ajout2+"("+this.panier.numcom+","+numlig+","+detail.getLivre().getIsbn().toString()+","+detail.getLivre().getPrix()+")";
+            if(numlig+1!=this.panier.getContenue().size()){
+                ajout2+=ajout2+",\n";
+            }
+            else{
+                ajout2=ajout2+";";
+            }
+            numlig+=1;  
+        }
+        this.st = connexion.createStatement();
+        this.st.executeUpdate(ajout1);
+        this.st.executeUpdate(ajout2);
+        this.payer();
     }
 
     public ApplicationTerminal() {
@@ -64,7 +102,7 @@ public class ApplicationTerminal {
         String motDePasse = scanner.nextLine();
         
             // Connexion
-        ConnexionMySQL connexion = new ConnexionMySQL();
+        connexion = new ConnexionMySQL();
         connexion.connecter(adresse, nomBD, nomUtilisateur, motDePasse);
         
         // Vérifier si la connexion a réussi
@@ -103,10 +141,11 @@ public class ApplicationTerminal {
         System.out.println("|                                  |");
         System.out.println("| > Se connecter                   |");
         System.out.println("| > S'inscrire en tant que Client  |");
+    //    System.out.println("| > S'inscrire en tant que Vendeur |");
         System.out.println("| > Quitter                        |");
         System.out.println("|                                  |");
         System.out.println("------------------------------------");
-        System.out.print("Veuillez choisir une option (1-3) : ");
+        System.out.print("Veuillez choisir une option (1-4) : ");
         String choix = scanner.nextLine();
         switch (choix) {
             // Connexion, trouve si ADMIN, VENDEUR, CLIENT
@@ -130,7 +169,21 @@ public class ApplicationTerminal {
                 }
                 break;
             case "2":
-                System.out.println("Inscription en cours...");
+                System.out.println("Veuillez indiquer votre nom :");
+                String nom = scanner.nextLine();
+                System.out.println("Veuillez indiquer votre prenom :");
+                String prenom = scanner.nextLine();
+                System.out.println("Veuillez indiquer votre nomDUtilisateur :");
+                String nomDUtilisateur = scanner.nextLine();
+                System.out.println("Veuillez indiquer votre mot de passe :");
+                String mdp = scanner.nextLine();
+                System.out.println("Veuillez indiquer votre adresse :");
+                String adresse = scanner.nextLine();
+                System.out.println("Veuillez indiquer votre ville :");
+                String ville = scanner.nextLine();
+                System.out.println("Veuillez indiquer votre codePostal :");
+                String codePostal = scanner.nextLine();
+                this.clientConnexion.creeCompteClient()
                 break;
             case "3":
                 System.out.println("Au revoir !");
@@ -385,6 +438,10 @@ public class ApplicationTerminal {
         // Si connexion utilisateur réussie
 
         // mettre les menus en fontion du role
+    }
+
+    public void payer(){
+        System.out.println("payer");
     }
 
     public static void main(String[] args) {

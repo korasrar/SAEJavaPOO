@@ -1,5 +1,6 @@
 package fr.saejava;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,8 +14,11 @@ public class AdminBD {
         this.connexion = connexion;
     }
 
-    public void creeCompteVendeur(Magasin magasin, String nom, String prenom) throws SQLException{
-        st = connexion.createStatement();
+    public void creeCompteVendeur(int idVendeur, String nom, String prenom,String username, String motDePasse, Magasin magasin) throws SQLException{
+        PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+idVendeur+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','vendeur'),");
+        pstmt.executeUpdate();
+        pstmt = this.connexion.prepareStatement("insert into VENDEUR values ("+idVendeur+", '"+magasin+"'),");
+        pstmt.executeUpdate();	
     }
 
     /**

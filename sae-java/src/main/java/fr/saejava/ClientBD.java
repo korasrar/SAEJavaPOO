@@ -1,5 +1,6 @@
 package fr.saejava;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,6 +21,12 @@ public class ClientBD {
         this.connexion = connexion;
     }
 
+    public void creeCompteClient(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse) throws SQLException{
+        PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+num+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','client'),");
+        pstmt.executeUpdate();
+        pstmt = this.connexion.prepareStatement("insert into CLIENT values ("+num+", '"+adresse+"', '"+codePostal+"', '"+ville+"'),");
+        pstmt.executeUpdate();	
+    }
 
     /**
      * pour que le client consulte le catalogue de livre
