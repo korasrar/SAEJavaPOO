@@ -74,7 +74,7 @@ public class Livre {
         if(!(obj instanceof Livre)){return false;}
 
         Livre tmp = (Livre) obj;
-        return tmp.isbn==this.isbn;
+        return tmp.isbn.equals(this.isbn);
     }
 
     @Override

@@ -85,6 +85,12 @@ public class ApplicationTerminal {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Plus Utile car Docker !
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws NoSuchElementException
+     */
     public void menuConnexionBD() throws SQLException, ClassNotFoundException, NoSuchElementException {
             // Récupère les infos pour se connecter
         System.out.println("---- APPLICATION LIBRAIRIE ----");
@@ -157,15 +163,19 @@ public class ApplicationTerminal {
                 System.out.println("Connexion en cours...");
                 try{
                 util = utilisateurConnexion.getUtilisateur(username, motDePasse);
+                System.out.println("test");
                 }
                 catch(UtilisateurIntrouvableException e){
                     System.out.println("Utilisateur Introuvable");
+                    menuConnexionUtilisateur();
                 }
                 catch(MotDePasseIncorrectException e){
                     System.out.println("Mot de passe incorrect");
+                    menuConnexionUtilisateur();
                 }
                 catch(VendeurSansMagasinException e){
                     System.out.println("Votre compte Vendeur n'a pas de magasin associé");
+                    menuConnexionUtilisateur();
                 }
                 break;
             case "2":
@@ -183,7 +193,7 @@ public class ApplicationTerminal {
                 String ville = scanner.nextLine();
                 System.out.println("Veuillez indiquer votre codePostal :");
                 String codePostal = scanner.nextLine();
-                this.clientConnexion.creeCompteClient();
+                //this.clientConnexion.creeCompteClient();
                 break;
             case "3":
                 System.out.println("Au revoir !");
@@ -204,6 +214,14 @@ public class ApplicationTerminal {
     }
 
     public void menuClientMain() {
+        // Test de méthode
+        //try {
+        //    System.out.println(commandeConnexion.getDerniereCommande((Client) utilisateurConnecter));
+        //} catch (SQLException e) {
+        //    System.out.println("Erreur lors des tests " + e.getMessage());
+        //}	
+        
+        // Fin des tests
         System.out.println("------ MENU CLIENT ------");
         System.out.println("|                       |");
         System.out.println("| > Rechercher un livre |");
@@ -242,6 +260,7 @@ public class ApplicationTerminal {
                 utilisateurConnecter = null;
                 try{
                     menuConnexionUtilisateur();
+                    return;
                 }
                 catch(SQLException e){
                     System.out.println("Erreur lors de la connexion : " + e.getMessage());
@@ -370,6 +389,7 @@ public class ApplicationTerminal {
         catch(SQLException e ){
             System.out.println("Erreur lors de la récupération des livres a recommandé : "+e.getMessage());
         }
+        return;
     }
 
     public void menuMesCommandes(){
@@ -447,11 +467,29 @@ public class ApplicationTerminal {
 
     public void main(){
         System.out.println("Bienvenue dans l'application de gestion de librairie !");
-
         // Connexion à la base de données
         while(!estConnecteBD){
             try{
-                menuConnexionBD();
+                connexion = new ConnexionMySQL();
+                connexion.connecter("","","","");
+
+                
+                // Vérifier si la connexion a réussi
+                if (connexion.isConnecte()) {
+                    System.out.println("Connexion à la base de données réussie !");
+                    this.estConnecteBD = true;
+                    
+                    // Partage de la connexion aux autres classes
+                    utilisateurConnexion = new UtilisateurBD(connexion);
+                    vendeurConnexion = new VendeurBD(connexion);
+                    adminConnexion = new AdminBD(connexion);
+                    commandeConnexion = new CommandeBD(connexion);
+                    clientConnexion = new ClientBD(connexion);
+                    livreConnexion = new LivreBD(connexion);
+                    System.out.println("Partage de la connexion réussie ! ");
+                } else {
+                    System.out.println("Échec de la connexion à la base de données. Veuillez réessayer.");
+                }
                 if (!estConnecteBD) {
                     System.out.println("\nVoulez-vous réessayer ? (o/n) : ");
                     String reponse = scanner.nextLine().toLowerCase();
@@ -481,7 +519,7 @@ public class ApplicationTerminal {
                 try{
                 utilisateurConnecter = menuConnexionUtilisateur();
                 estConnecteUtil=true;
-
+                System.out.println("test2");
                 }
                 catch(SQLException e){
                     System.out.println("Voici le message d'erreur : "+ e.getMessage());
