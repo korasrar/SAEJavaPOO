@@ -208,9 +208,78 @@ public class ApplicationTerminal {
     public void menuAdminMain() {
         System.out.println("------- MENU ADMIN -------");
         System.out.println("|                        |");
-
+        System.out.println("| > Rechercher un livre         |");
+        System.out.println("| > Catalogue                   |");
+        System.out.println("| > Mes recommandations         |");
+        System.out.println("| > Voir panier                 |");
+        System.out.println("| > Mes commandes               |");
+        System.out.println("| > Mon profil                  |");
+        System.out.println("| > Transferer un livre         |");
+        System.out.println("| > Maj des stocks              |");
+        System.out.println("| > Verifier les disponibilités |");
+        System.out.println("| > Ajouter une librairie       |");
+        System.out.println("| > Créer un compte vendeur     |");
+        System.out.println("| > Ajouter un livre            |");
+        //System.out.println("| > Statistiques de ventes      |");
+        //System.out.println("| > Gérer les stocks            |");
+        System.out.println("| > Se déconnecter              |");
         System.out.println("|                        |");
-        System.out.println("--------------------------");    
+        System.out.println("--------------------------");  
+        System.out.print("Veuillez choisir une option (1-13) : "); // 15
+        String choix = scanner.nextLine();  
+        switch (choix) {
+            case "1":
+                menuRechercherLivre();
+                break;
+            case "2":
+                menuCatalogue();
+                break;
+            case "3":
+                menuMesRecommandations();
+                break;
+            case "4":
+                menuPanier();
+                break;
+            case "5":
+                menuMesCommandes();
+                break;
+            case "6":
+                menuProfil();
+                break;
+            case "7":
+                menuTransfertLivre();
+                break;
+            case "8":
+                menuMajStock();
+                break;
+            case "9":
+                menuDispo();
+                break;
+            case "10":
+
+                break;
+            case "11":
+
+                break;
+            case "12":
+
+                break;
+            case "13":
+                System.out.println("Déconnexion...");
+                estConnecteUtil = false;
+                utilisateurConnecter = null;
+                try{
+                    menuConnexionUtilisateur();
+                }
+                catch(SQLException e){
+                    System.out.println("Erreur lors de la connexion : " + e.getMessage());
+                }
+                
+                break;
+            default:
+                System.out.println("Choix invalide, veuillez réessayer.");
+                menuClientMain();
+        }
     }
 
     public void menuVendeurMain() {
@@ -228,7 +297,7 @@ public class ApplicationTerminal {
         System.out.println("| > Se déconnecter              |");
         System.out.println("|                               |");
         System.out.println("---------------------------------"); 
-        System.out.print("Veuillez choisir une option (1-11) : ");
+        System.out.print("Veuillez choisir une option (1-10) : ");
         String choix = scanner.nextLine();
         switch (choix) {
             case "1":
