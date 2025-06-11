@@ -60,16 +60,28 @@ public class VendeurBD {
      * @throws LivrePasDansStockMagasinExecption si le livre n'est pas dans le stock
      */
 
-    public void mettreAJour(Livre l, int qte) throws LivrePasDansStockMagasinException{
-        // Vérifie si le livre est présent dans le stock avec un appelle de estDispo() et si true alors on modifie stock magasin, sinon on fait rien
-    }
+    public void mettreAJour(Livre l, int qte, Magasin mag) throws LivrePasDansStockMagasinException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
+        if (r.getInt("qte")<= qte){
+        throw new LivrePasDansStockMagasinException();}
+        if (verifierDispo(mag, l)){
+            r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
+            Integer quantiteInit = r.getInt("qte");
+            Integer nouvelleQte = quantiteInit + qte;
+            r = st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
+        }
+        else {
+            //ok
+
+        }    }
 
     public void transferer(Livre l, Magasin magasinRecoit, Magasin magasinEnvoit, Integer qte) throws SQLException, LivrePasDansStockMagasinException{
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasinEnvoit.getId());
         if (r.getInt("qte")<= qte){
-        throw new LivrePasDansStockMagasinException();
-        //verifier la dispo du livre, si true faire update pour recup la valeur et incremente avec qte et renvoie dans bd
+        throw new LivrePasDansStockMagasinException();}
+        // DONE verifier la dispo du livre, si true faire update pour recup la valeur et incremente avec qte et renvoie dans bd
         // sinon , on fait un insert avec le livre et la qte
         if (verifierDispo(magasinRecoit, l)){
             r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinRecoit.getId());
@@ -77,8 +89,11 @@ public class VendeurBD {
             Integer nouvelleQte = quantiteInit + qte;
             r = st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
         }
+        else {
+            r = st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + 1 +"AND idmag = " + magasinRecoit.getId() +"AND isbn ='" + l.getIsbn() + "'");
+
         }
-    
+        }
 
     /**
      * vérifie si un livre est disponible dans le stock du magasin
@@ -121,5 +136,5 @@ public class VendeurBD {
         }
     }
 
-}
+
 }
