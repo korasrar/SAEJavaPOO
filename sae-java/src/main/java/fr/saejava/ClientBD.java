@@ -108,8 +108,9 @@ public class ClientBD {
      * @throws SQLException si une erreur SQL se produit
      */
     
-    public Set<Livre> onVousRecommande(Client client) throws SQLException {
-        Set<Livre> livresRecommandes = new HashSet<>();
+    public Map<Livre,Boolean> onVousRecommande(Client client) throws SQLException {
+        VendeurBD connexionVendeur = new VendeurBD(connexion);
+        Map<Livre,Boolean> livresRecommandes = new HashMap<>();
         Map<Client, Integer> clientsProches = clientLesPlusProches(client);
 
         // livre deja commandé par le client
@@ -129,7 +130,7 @@ public class ClientBD {
                 for (DetailCommande comDet : com.getContenue()) {
                     Livre livre = comDet.getLivre();
                     if (!livresClient.contains(livre)) {
-                        livresRecommandes.add(livre);
+                        livresRecommandes.put(livre,connexionVendeur.verifierDispo(livre));
                     }
                 }
             }

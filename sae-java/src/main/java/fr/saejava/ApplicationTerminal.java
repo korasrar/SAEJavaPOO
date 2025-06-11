@@ -1,9 +1,11 @@
 package fr.saejava;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+
 
 public class ApplicationTerminal {
 
@@ -18,16 +20,25 @@ public class ApplicationTerminal {
 
     boolean estConnecteBD;
     boolean estConnecteUtil;
+
+    Commande panier;
     
 
-    void CréeCommande(){
-        //crée la commande en cour
+    void créeCommande(Client client,Date date,Magasin magasin){
+        //this.panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin);
     }
-    void commander(){
+    void commander(Livre livre){
         //ajoute a la commande en cour le livre*qte
+        this.panier.ajouterDetailCommande(new DetailCommande(livre,this.panier));
+    }
+    void commander(Livre livre,int qte){
+        //ajoute a la commande en cour le livre*qte
+        this.panier.ajouterDetailCommande(new DetailCommande(qte,livre,this.panier));
     }
     void finaliseCommande(){
-        //ajoute la commande en cour a la BD
+        String ajout="insert into COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) values";
+        
+        
     }
 
     public ApplicationTerminal() {
@@ -161,7 +172,7 @@ public class ApplicationTerminal {
                 menuCatalogue();
                 break;
             case "3":
-                menuPanier();
+                menuMesRecommandations();
                 break;
             case "4":
                 menuPanier();
@@ -266,24 +277,34 @@ public class ApplicationTerminal {
     }
 
     public void menuMesRecommandations(){
-        // TO DO
-        // La méthode onVousRecommande() de ClientBD
+        try{
+        afficherLivre(clientConnexion.onVousRecommande((Client) utilisateurConnecter));
+        }
+        catch(SQLException e ){
+            System.out.println("Erreur lors de la récupération des livres a recommandé : "+e.getMessage());
+        }
     }
 
     public void menuMesCommandes(){
-        // TO DO
-        // Pouvoir créer la facture d'une commande
-        // Voir l'historique des commandes
-        // Voir les détails d'une commande
+        System.out.println("------------ PROFIL -------------");
+        System.out.println("|                               |");
+        System.out.println("| Nom     > Rechercher par titre        |");
+        System.out.println("| Prénom  > Rechercher par auteur       |");
+        System.out.println("| Adresse > Rechercher par ISBN         |");
+        System.out.println("| > Retour au menu principal    |");
+        System.out.println("|                               |");
+        System.out.println("---------------------------------");
     }
 
     public void menuProfil(){
+
        // TO DO
        // Voir ces infos (Les afficher par défaut)
        // Pouvoir modiofier ces informations (Créer la méthode pour dans UtilisateurBD peut etre ?)
     }
 
     public void afficherLivre(Map<Livre, Boolean> livres) {
+        int nbLivre = 0;
         if (livres.isEmpty()) {
             System.out.println("Aucun livre trouvé.");
         } else {
@@ -292,15 +313,17 @@ public class ApplicationTerminal {
             for (Map.Entry<Livre, Boolean> entry : livres.entrySet()) {
                 Livre livre = entry.getKey();
                 boolean disponible = entry.getValue();
+                nbLivre++;
                 if(disponible==true){
-                    System.out.println("| " + livre + " | Disponible : Oui |");
+                    System.out.println("| "+nbLivre+") " + livre + " | Disponible : Oui |");
                 }
                 else{
-                    System.out.println("| " + livre + " | Disponible : Non |");
+                    System.out.println("| "+nbLivre+") "+ livre + " | Disponible : Non |");
                 }
             }
             System.out.println("|                          |");
             System.out.println("----------------------------");
+            System.out.println("Voulez vous commander un de ces livres ? (O/n)");
         }
     }
 
