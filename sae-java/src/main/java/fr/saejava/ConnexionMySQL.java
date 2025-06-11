@@ -45,7 +45,7 @@ public class ConnexionMySQL {
         System.out.println("Tentative de connexion...");
         try {
             mysql=DriverManager.getConnection(
-            "jdbc:mysql://"+nomServeur+":3306/"+nomBase+"?useSSL=false&serverTimezone=UTC",
+            "jdbc:mysql://"+nomServeur+":3306/"+nomBase+"?allowPublicKeyRetrieval=true&useSSL=false",
             nomLogin,motDePasse);
             System.out.println("Connection réussie");
             } catch (SQLException ex){

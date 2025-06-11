@@ -111,4 +111,14 @@ public class CommandeBD {
         }
         return listCommandes;
     }
+
+    public Integer getDerniereIdCommande() throws SQLException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM COMMANDE ORDER BY numcom DESC LIMIT 0, 1");
+        Integer lastNomCom = 0;
+        while(r.next()){
+            lastNomCom = r.getInt("numcom");
+        }
+        return lastNomCom;
+    }
 }
