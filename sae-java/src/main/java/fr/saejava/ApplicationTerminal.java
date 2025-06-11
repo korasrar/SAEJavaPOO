@@ -143,64 +143,65 @@ public class ApplicationTerminal {
 
     public Utilisateur menuConnexionUtilisateur() throws SQLException{
         Utilisateur util = null;
-        System.out.println("---- MENU CONNEXION UTILISATEUR ----");
-        System.out.println("|                                  |");
-        System.out.println("| > Se connecter                   |");
-        System.out.println("| > S'inscrire en tant que Client  |");
-    //    System.out.println("| > S'inscrire en tant que Vendeur |");
-        System.out.println("| > Quitter                        |");
-        System.out.println("|                                  |");
-        System.out.println("------------------------------------");
-        System.out.print("Veuillez choisir une option (1-4) : ");
-        String choix = scanner.nextLine();
-        switch (choix) {
-            // Connexion, trouve si ADMIN, VENDEUR, CLIENT
-            case "1":
-                System.out.println("Veuillez entrer votre email/username : ");
-                String username = scanner.nextLine();
-                System.out.println("Veuillez entrer votre mot de passe : ");
-                String motDePasse = scanner.nextLine();
-                System.out.println("Connexion en cours...");
-                try{
-                util = utilisateurConnexion.getUtilisateur(username, motDePasse);
-                System.out.println("test");
-                }
-                catch(UtilisateurIntrouvableException e){
-                    System.out.println("Utilisateur Introuvable");
-                    menuConnexionUtilisateur();
-                }
-                catch(MotDePasseIncorrectException e){
-                    System.out.println("Mot de passe incorrect");
-                    menuConnexionUtilisateur();
-                }
-                catch(VendeurSansMagasinException e){
-                    System.out.println("Votre compte Vendeur n'a pas de magasin associé");
-                    menuConnexionUtilisateur();
-                }
-                break;
-            case "2":
-                System.out.println("Veuillez indiquer votre nom :");
-                String nom = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre prenom :");
-                String prenom = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre nomDUtilisateur :");
-                String nomDUtilisateur = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre mot de passe :");
-                String mdp = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre adresse :");
-                String adresse = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre ville :");
-                String ville = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre codePostal :");
-                String codePostal = scanner.nextLine();
-                //this.clientConnexion.creeCompteClient();
-                break;
-            case "3":
-                System.out.println("Au revoir !");
-                break;
-            default:
-                System.out.println("Choix invalide, veuillez réessayer.");
-                menuConnexionUtilisateur();
+        while(util==null){
+            System.out.println("---- MENU CONNEXION UTILISATEUR ----");
+            System.out.println("|                                  |");
+            System.out.println("| > Se connecter                   |");
+            System.out.println("| > S'inscrire en tant que Client  |");
+            //System.out.println("| > S'inscrire en tant que Vendeur |");
+            System.out.println("| > Quitter                        |");
+            System.out.println("|                                  |");
+            System.out.println("------------------------------------");
+            System.out.print("Veuillez choisir une option (1-4) : ");
+            String choix = scanner.nextLine();
+            switch (choix) {
+                // Connexion, trouve si ADMIN, VENDEUR, CLIENT
+                case "1":
+                    System.out.println("Veuillez entrer votre email/username : ");
+                    String username = scanner.nextLine();
+                    System.out.println("Veuillez entrer votre mot de passe : ");
+                    String motDePasse = scanner.nextLine();
+                    System.out.println("Connexion en cours...");
+                    try{
+                    util = utilisateurConnexion.getUtilisateur(username, motDePasse);
+                    System.out.println("test");
+                    }
+                    catch(UtilisateurIntrouvableException e){
+                        System.out.println("Utilisateur Introuvable");
+                    }
+                    catch(MotDePasseIncorrectException e){
+                        System.out.println("Mot de passe incorrect");
+                    }
+                    catch(VendeurSansMagasinException e){
+                        System.out.println("Votre compte Vendeur n'a pas de magasin associé");
+                    }
+                    break;
+                case "2":
+                    System.out.println("Veuillez indiquer votre nom :");
+                    String nom = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre prenom :");
+                    String prenom = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre nomDUtilisateur :");
+                    String nomDUtilisateur = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre mot de passe :");
+                    String mdp = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre adresse :");
+                    String adresse = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre ville :");
+                    String ville = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre codePostal :");
+                    String codePostal = scanner.nextLine();
+                    //this.clientConnexion.creeCompteClient();
+                    break;
+                case "3":
+                    System.out.println("Au revoir !");
+                    connexion.close();
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Choix invalide, veuillez réessayer.");
+                    break;
+            }
         }
         return util;
     }
@@ -214,6 +215,7 @@ public class ApplicationTerminal {
     }
 
     public void menuClientMain() {
+        boolean continuer = true;
         // Test de méthode
         //try {
         //    System.out.println(commandeConnexion.getDerniereCommande((Client) utilisateurConnecter));
@@ -222,6 +224,7 @@ public class ApplicationTerminal {
         //}	
         
         // Fin des tests
+        while(continuer) {
         System.out.println("------ MENU CLIENT ------");
         System.out.println("|                       |");
         System.out.println("| > Rechercher un livre |");
@@ -258,82 +261,78 @@ public class ApplicationTerminal {
                 System.out.println("Déconnexion...");
                 estConnecteUtil = false;
                 utilisateurConnecter = null;
-                try{
-                    menuConnexionUtilisateur();
-                    return;
-                }
-                catch(SQLException e){
-                    System.out.println("Erreur lors de la connexion : " + e.getMessage());
-                }
-                
+                continuer = false;
                 break;
             default:
                 System.out.println("Choix invalide, veuillez réessayer.");
-                menuClientMain();
+                break;
+        }
         }
 
     }
 
     public void menuRechercherLivre(){
+        boolean continuer = true;
         Map<Livre, Boolean> livres;
-        System.out.println("------ RECHERCHER UN LIVRE ------");
-        System.out.println("|                               |");
-        System.out.println("| > Rechercher par titre        |");
-        System.out.println("| > Rechercher par auteur       |");
-        System.out.println("| > Rechercher par ISBN         |");
-        System.out.println("| > Retour au menu principal    |");
-        System.out.println("|                               |");
-        System.out.println("---------------------------------");
-        System.out.print("Veuillez choisir une option (1-4) : ");
-        String choix = scanner.nextLine();
-        switch (choix) {
-            case "1":
-                System.out.print("Entrez le titre à rechercher : ");
-                String titre = scanner.nextLine();
-                try{
-                    livres = livreConnexion.rechercherLivre(Filtre.titre,"" , titre ,"" , vendeurConnexion);
-                    afficherLivre(livres);
-                    System.out.print("Appuyez sur Entrée pour continuer...");
-                    scanner.nextLine();
-                }
-                catch(SQLException e){
-                    System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
-                }
-                break;
-            case "2":
-                System.out.print("Entrez le nom de l'auteur à rechercher : ");
-                String auteur = scanner.nextLine();
-                try{
-                    livres = livreConnexion.rechercherLivre(Filtre.auteur,"" , "" , auteur , vendeurConnexion);
-                    afficherLivre(livres);
-                    System.out.print("Appuyez sur Entrée pour continuer...");
-                    scanner.nextLine();
-                }
-                catch(SQLException e){
-                    System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
-                }
-                break;
-            case "3":
-                System.out.print("Entrez l'ISBN du livre à rechercher : ");
-                String isbn = scanner.nextLine();
-                try{
-                    livres = livreConnexion.rechercherLivre(Filtre.isbn, isbn , "" , "" , vendeurConnexion);
-                    afficherLivre(livres);
-                    System.out.print("Appuyez sur Entrée pour continuer...");
-                    scanner.nextLine();
-                }
-                catch(SQLException e){
-                    System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
-                }
-                break;
-            case "4":
-                menuClientMain();
-                return;
-            default:
-                System.out.println("Choix invalide, veuillez réessayer.");
-                break;
+        while(continuer) {
+            System.out.println("------ RECHERCHER UN LIVRE ------");
+            System.out.println("|                               |");
+            System.out.println("| > Rechercher par titre        |");
+            System.out.println("| > Rechercher par auteur       |");
+            System.out.println("| > Rechercher par ISBN         |");
+            System.out.println("| > Retour au menu principal    |");
+            System.out.println("|                               |");
+            System.out.println("---------------------------------");
+            System.out.print("Veuillez choisir une option (1-4) : ");
+            String choix = scanner.nextLine();
+            switch (choix) {
+                case "1":
+                    System.out.print("Entrez le titre à rechercher : ");
+                    String titre = scanner.nextLine();
+                    try{
+                        livres = livreConnexion.rechercherLivre(Filtre.titre,"" , titre ,"" , vendeurConnexion);
+                        afficherLivre(livres);
+                        System.out.print("Appuyez sur Entrée pour continuer...");
+                        scanner.nextLine();
+                    }
+                    catch(SQLException e){
+                        System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+                    }
+                    break;
+                case "2":
+                    System.out.print("Entrez le nom de l'auteur à rechercher : ");
+                    String auteur = scanner.nextLine();
+                    try{
+                        livres = livreConnexion.rechercherLivre(Filtre.auteur,"" , "" , auteur , vendeurConnexion);
+                        afficherLivre(livres);
+                        System.out.print("Appuyez sur Entrée pour continuer...");
+                        scanner.nextLine();
+                    }
+                    catch(SQLException e){
+                        System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+                    }
+                    break;
+                case "3":
+                    System.out.print("Entrez l'ISBN du livre à rechercher : ");
+                    String isbn = scanner.nextLine();
+                    try{
+                        livres = livreConnexion.rechercherLivre(Filtre.isbn, isbn , "" , "" , vendeurConnexion);
+                        afficherLivre(livres);
+                        System.out.print("Appuyez sur Entrée pour continuer...");
+                        scanner.nextLine();
+                    }
+                    catch(SQLException e){
+                        System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+                    }
+                    break;
+                case "4":
+                    continuer = false;
+                    break;
+                default:
+                    System.out.println("Choix invalide, veuillez réessayer.");
+                    break;
+            }
         }
-        menuRechercherLivre();
     }
 
     public void menuCatalogue(){
@@ -468,18 +467,16 @@ public class ApplicationTerminal {
     public void main(){
         System.out.println("Bienvenue dans l'application de gestion de librairie !");
         // Connexion à la base de données
+        // Pas util car automatisé 
         while(!estConnecteBD){
             try{
                 connexion = new ConnexionMySQL();
                 connexion.connecter("","","","");
 
-                
-                // Vérifier si la connexion a réussi
                 if (connexion.isConnecte()) {
                     System.out.println("Connexion à la base de données réussie !");
                     this.estConnecteBD = true;
                     
-                    // Partage de la connexion aux autres classes
                     utilisateurConnexion = new UtilisateurBD(connexion);
                     vendeurConnexion = new VendeurBD(connexion);
                     adminConnexion = new AdminBD(connexion);
@@ -495,7 +492,8 @@ public class ApplicationTerminal {
                     String reponse = scanner.nextLine().toLowerCase();
                     if (!reponse.equals("o") && !reponse.equals("oui")) {
                         System.out.println("Au revoir !");
-                        break;
+                        System.exit(0);
+                        return;
                     }
                 }
             }
@@ -512,20 +510,20 @@ public class ApplicationTerminal {
                 System.out.println("Veuillez réessayer.\n");
             }
         }
+
         // Si connexion BD réussie
-        if(estConnecteBD){
-        // Afficher le menu de connexion utilisateur
-            while(!estConnecteUtil){
+        while(estConnecteBD){
+            if(!estConnecteUtil){
                 try{
-                utilisateurConnecter = menuConnexionUtilisateur();
-                estConnecteUtil=true;
-                System.out.println("test2");
+                    utilisateurConnecter = menuConnexionUtilisateur();
+                    estConnecteUtil=true;
                 }
                 catch(SQLException e){
                     System.out.println("Voici le message d'erreur : "+ e.getMessage());
+                    utilisateurConnecter = null;
                 }
             }
-        }
+        
         if (utilisateurConnecter instanceof Admin) {
             System.out.println("Bienvenue, Admin " + utilisateurConnecter.getNom() + " !");
             menuAdminMain();
@@ -537,6 +535,10 @@ public class ApplicationTerminal {
         else if (utilisateurConnecter instanceof Client) {
             System.out.println("Bienvenue, Client " + utilisateurConnecter.getNom() + " !");
             menuClientMain();
+        }
+        if(!estConnecteUtil) {
+            utilisateurConnecter = null;
+        }
         }
         // Si connexion utilisateur réussie
 
