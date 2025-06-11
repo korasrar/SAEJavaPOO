@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 public class VendeurBD {
     ConnexionMySQL connexion;
@@ -63,9 +64,21 @@ public class VendeurBD {
         // Vérifie si le livre est présent dans le stock avec un appelle de estDispo() et si true alors on modifie stock magasin, sinon on fait rien
     }
 
-    public void transferer(Livre l, Magasin magasin2){
-        // Supprime le livre du stock du magasin actuelle ou si il en reste plus de 1 enlever 1 de stock ? (co méthode) et le rajouter dans le stock de l'autre magasin
-    }
+    public void transferer(Livre l, Magasin magasinRecoit, Magasin magasinEnvoit, Integer qte) throws SQLException, LivrePasDansStockMagasinException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasinEnvoit.getId());
+        if (r.getInt("qte")<= qte){
+        throw new LivrePasDansStockMagasinException();
+        //verifier la dispo du livre, si true faire update pour recup la valeur et incremente avec qte et renvoie dans bd
+        // sinon , on fait un insert avec le livre et la qte
+        if (verifierDispo(magasinRecoit, l)){
+            r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinRecoit.getId());
+            Integer quantiteInit = r.getInt("qte");
+            Integer nouvelleQte = quantiteInit + qte;
+            r = st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
+        }
+        }
+    
 
     /**
      * vérifie si un livre est disponible dans le stock du magasin
@@ -88,18 +101,6 @@ public class VendeurBD {
         // Vérifier si un livre est présent dans stockmagasin d'un magasin (récup id ?)
     }
 
-    public boolean verifierDispo(Livre l) throws SQLException{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"'");
-        if (r.next()){
-            int qte = r.getInt("qte");
-            // seconde verif de si sqt pas 0 ? vérifier dans une autre méthode la qte a 0 = sup le livre ou garder dans catalogue quand même ?
-            if (qte > 0){return true;}
-            else {return false;}
-            }
-        else {return false;}
-        // Vérifier si un livre est présent dans stockmagasin d'un magasin (récup id ?)
-    }
 
     /**
      * récupère le magasin du vendeur
@@ -119,4 +120,6 @@ public class VendeurBD {
             throw new VendeurSansMagasinException();
         }
     }
+
+}
 }
