@@ -182,8 +182,17 @@ public class ApplicationTerminal {
                 System.out.println("Veuillez indiquer votre ville :");
                 String ville = scanner.nextLine();
                 System.out.println("Veuillez indiquer votre codePostal :");
-                String codePostal = scanner.nextLine();
-                this.clientConnexion.creeCompteClient()
+                int codePostal = Integer.parseInt(scanner.nextLine());
+
+                int nb = 0;
+		        st = connexion.createStatement();
+		        ResultSet rs = st.executeQuery("select max(numJoueur) as nb from JOUEUR"); // requete a changer
+		        while (rs.next()){
+			        nb = rs.getInt("nb");
+		        }
+
+                this.clientConnexion.creeCompteClient(nb++, adresse, ville, codePostal, nom, prenom, nomDUtilisateur, mdp); // get le dernier id d'utilisateur et faire ++
+                System.out.println("Votre compte a bien été enregistré");
                 break;
             case "3":
                 System.out.println("Au revoir !");
