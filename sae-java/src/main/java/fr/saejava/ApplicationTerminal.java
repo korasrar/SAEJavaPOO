@@ -183,7 +183,7 @@ public class ApplicationTerminal {
                 String ville = scanner.nextLine();
                 System.out.println("Veuillez indiquer votre codePostal :");
                 String codePostal = scanner.nextLine();
-                this.clientConnexion.creeCompteClient()
+                this.clientConnexion.creeCompteClient();
                 break;
             case "3":
                 System.out.println("Au revoir !");
@@ -322,6 +322,40 @@ public class ApplicationTerminal {
     }
 
     public void menuPanier(){
+        int nbLignes=0;
+        Map<Livre, Boolean> livres;
+        System.out.println("------------- PANIER ------------");
+        System.out.println("|                               |");
+
+        System.out.println("| > Retour au menu principal    |");
+        System.out.println("|                               |");
+        System.out.println("---------------------------------");
+        System.out.print("Veuillez choisir une option (1-"+nbLignes+") : ");
+        String choix = scanner.nextLine();
+        switch (choix) {
+            case "1":
+                System.out.print("Entrez le titre à rechercher : ");
+                String titre = scanner.nextLine();
+            
+                break;
+            case "2":
+                System.out.print("Entrez le nom de l'auteur à rechercher : ");
+                String auteur = scanner.nextLine();
+            
+                break;
+            case "3":
+                System.out.print("Entrez l'ISBN du livre à rechercher : ");
+                String isbn = scanner.nextLine();
+            
+                break;
+            case "4":
+                menuClientMain();
+                return;
+            default:
+                System.out.println("Choix invalide, veuillez réessayer.");
+                break;
+        }
+        menuRechercherLivre();
         // TO DO
         // Voir l'état actuel du panier
         // Pouvoir supprimer un livre
@@ -339,21 +373,52 @@ public class ApplicationTerminal {
     }
 
     public void menuMesCommandes(){
-        System.out.println("------------ PROFIL -------------");
-        System.out.println("|                               |");
-        System.out.println("| Nom     > Rechercher par titre        |");
-        System.out.println("| Prénom  > Rechercher par auteur       |");
-        System.out.println("| Adresse > Rechercher par ISBN         |");
-        System.out.println("| > Retour au menu principal    |");
-        System.out.println("|                               |");
-        System.out.println("---------------------------------");
+        
     }
 
     public void menuProfil(){
-
-       // TO DO
-       // Voir ces infos (Les afficher par défaut)
-       // Pouvoir modiofier ces informations (Créer la méthode pour dans UtilisateurBD peut etre ?)
+        Client clientTempo = new Client(utilisateurConnecter.getId(), null, null, 0, utilisateurConnecter.getNom(), utilisateurConnecter.getPrenom(), utilisateurConnecter.getPseudo(), utilisateurConnecter.getMotDePasse());
+        System.out.println("------------ PROFIL -------------");
+        System.out.println("|                                       |");
+        System.out.println("| Nom      > "+utilisateurConnecter.getNom()+"         |");
+        System.out.println("| Prénom   > "+utilisateurConnecter.getPrenom()+"      |");
+        System.out.println("| Username > "+utilisateurConnecter.getPseudo()+"         |");
+        System.out.println("| Password > "+utilisateurConnecter.getMotDePasse()+"         |");
+        System.out.println("| > Retour au menu principal            |");
+        System.out.println("|                                       |");
+        System.out.println("---------------------------------");
+        System.out.print("Veuillez choisir une informations a modifier (1-4) : ");
+        System.out.print("Q pour retour au menu principal ");
+        String choix = scanner.nextLine().toLowerCase();
+        switch (choix) {
+            case "1":
+                System.out.print("Entrez le nouveau nom : ");
+                String nom = scanner.nextLine();
+                ClientBD.modifierClient(clientTempo);
+                break;
+            case "2":
+                System.out.print("Entrez le nouveau prénom : ");
+                String prénom = scanner.nextLine();
+                ClientBD.modifierClient(clientTempo);
+                break;
+            case "3":
+                System.out.print("Entrez le nouveau username : ");
+                String username = scanner.nextLine();
+                ClientBD.modifierClient(clientTempo);
+                break;
+            case "4":
+                System.out.print("Entrez le nouveau password : ");
+                String password = scanner.nextLine();
+                ClientBD.modifierClient(clientTempo);
+                break;
+            case "q":
+                System.out.println("Informations sauvegardées !");
+                return;
+            default:
+                System.out.println("Choix invalide, veuillez réessayer.");
+                break;
+        }
+        menuProfil();
     }
 
     public void afficherLivre(Map<Livre, Boolean> livres) {

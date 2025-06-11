@@ -144,5 +144,10 @@ public class ClientBD {
         }
         return livresRecommandes;  
     }
+
+    public static void modifierClient(Client clientTempo) {
+        // TO DO
+        // Affecter le changements au client qui a le meme id !
+    }
 }
 
