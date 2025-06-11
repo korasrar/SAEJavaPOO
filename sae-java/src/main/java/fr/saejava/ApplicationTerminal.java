@@ -137,15 +137,15 @@ public class ApplicationTerminal {
 
     public Utilisateur menuConnexionUtilisateur() throws SQLException{
         Utilisateur util = null;
-        System.out.println("---- MENU CONNEXION UTILISATEUR ----");
+    //    System.out.println("| > S'inscrire en tant que Vendeur |");
+        System.out.println("_____MENU CONNEXION UTILISATEUR_____");
         System.out.println("|                                  |");
         System.out.println("| > Se connecter                   |");
         System.out.println("| > S'inscrire en tant que Client  |");
-    //    System.out.println("| > S'inscrire en tant que Vendeur |");
         System.out.println("| > Quitter                        |");
         System.out.println("|                                  |");
-        System.out.println("------------------------------------");
-        System.out.print("Veuillez choisir une option (1-4) : ");
+        System.out.println("'\'"+"__________________________________/");
+        System.out.print("Veuillez choisir une option (1-3) : ");
         String choix = scanner.nextLine();
         switch (choix) {
             // Connexion, trouve si ADMIN, VENDEUR, CLIENT
