@@ -27,6 +27,7 @@ tableau de bord de votre SAE « Exploitation d’une base de données », de gé
 ### Prérequis
 - Docker
 - Docker Compose
+- Vérifier que le port 3306 est disponible !
 
 ### Commandes de lancement
 
