@@ -12,6 +12,8 @@ public class Livre {
     private List<Classification> lesClassifications; //
     private List<Editeur> lesEditeurs; //
 
+
+
     public Livre(String isbn, String titre, int nbPages, String datePubli, double prix) {
         this.isbn = isbn;
         this.titre = titre;

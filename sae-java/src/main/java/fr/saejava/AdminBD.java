@@ -1,5 +1,6 @@
 package fr.saejava;
 
+import java.lang.Thread.State;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,4 +68,20 @@ public class AdminBD {
     public void statVente(){
         // diagramme
     }
-}
+
+    public void creerCompteVendeur(int idVendeur, String nom, String prenom, String username, String motDePasse) throws SQLException {
+         Statement st = connexion.createStatement();
+         ResultSet r = st.executeQuery("SELECT * FROM utilisateur WHERE idUtilisateur =" + idVendeur);
+         if(r.next()) 
+         {throw new SQLException("L'utilisateur existe déjà");} 
+         else {
+            st.executeUpdate("INSERT INTO utilisateur (idUtilisateur, nom, prenom, username, motDePasse, role) VALUES (" + idVendeur + ", '" + nom + "', '" + prenom + "', '" + username + "', '" + motDePasse + "', 'vendeur')");
+            ApplicationTerminal app = new ApplicationTerminal();
+            Magasin magasin = app.menuChoisirMagasin();
+            if (magasin != null) {
+                Statement st1 = connexion.createStatement();
+                st1.executeUpdate("INSERT INTO VENDEUR (idVendeur, idMagasin) VALUES (" + idVendeur + ", " + magasin.getId() + ")");
+            }
+    
+    }
+}}

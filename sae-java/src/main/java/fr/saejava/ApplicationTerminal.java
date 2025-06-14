@@ -221,7 +221,7 @@ public class ApplicationTerminal {
                     System.out.println("Veuillez indiquer votre codePostal :");
                     String codePostal = scanner.nextLine();
                 
-                    this.clientConnexion.creeCompteClient(nb++, adresse, ville, codePostal, nom, prenom, nomDUtilisateur, mdp); // get le dernier id d'utilisateur et faire ++
+                    this.clientConnexion.creeCompteClient(nb++, adresse, ville, codePostal, nom, prenom, nomDUtilisateur, mdp); 
                     System.out.println("Votre compte a bien été enregistré");
                     break;
                 case "3":
@@ -289,11 +289,26 @@ public class ApplicationTerminal {
         System.out.println("| > Créer un compte vendeur   |");
         System.out.println("|                             |");
         System.out.println("-------------------------------");
-        System.out.println("Veuillez entrer les infos du compte vendeur : ");
-        String login = scanner.nextLine();
-        VendeurBD.creerCompteVendeur(login);
-        System.out.println("Le compte vendeur a ete cree avec succes");
-        break;
+        System.out.println("Veuillez entrer le nom du nouveau vendeur : ");
+            String nomVendeur = scanner.nextLine();
+            System.out.println("Veuillez entrer le prénom : ");
+            String prenomVendeur = scanner.nextLine();
+            System.out.println("Veuillez entrer l'username : ");
+            String usernameVendeur = scanner.nextLine();
+            System.out.println("Veuillez entrer le mot de passe : ");
+            String motDePasseVendeur = scanner.nextLine();
+            try {
+                Magasin magasin = menuChoisirMagasin();
+                if (magasin != null) {
+                    adminConnexion.creerCompteVendeur(nb++, nomVendeur, prenomVendeur, usernameVendeur, motDePasseVendeur, magasin);
+                    System.out.println("Compte vendeur créé avec succès.");
+                } else {
+                    System.out.println("Aucun magasin sélectionné. Le compte n'a pas été créé.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Erreur lors de la création du compte vendeur : " + e.getMessage());
+            }
+            continuer = false;
         }
     }
 
@@ -305,10 +320,6 @@ public class ApplicationTerminal {
             System.out.println("| > Ajouter une librairie     |");
             System.out.println("|                             |");
             System.out.println("-------------------------------");
-            System.out.println("Veuillez entrer le nom de la librairie : ");
-            String nomLibrairie = scanner.nextLine();
-           // TrucBD.ajouterLibrairie(nomLibrairie); jsp encore
-            System.out.println("La librairie a ete ajoutee avec succes");
             break;
         }
     }
@@ -328,28 +339,40 @@ public class ApplicationTerminal {
             String choix = scanner.nextLine();
             switch (choix) {
                 case "1":
-                    System.out.println("Veuillez entrer le titre du livre à ajouter : ");
+                    System.out.println("---- AJOUTER UN LIVRE ----");
+                    System.out.println("|                       |");
+                    System.out.println("| > Ajouter un livre    |");
+                    System.out.println("|                       |");
+                    System.out.println("-------------------------");
+                  System.out.print("ISBN : ");
+                    String isbn = scanner.nextLine();
+                    System.out.print("Titre : ");
                     String titre = scanner.nextLine();
-                    LivreBD.ajouterLivre(titre);
-                    System.out.println("Le livre a été ajouté avec succès");
-                    break;
-                case "2":
-                    System.out.println("Veuillez entrer le titre du livre à modifier : ");
-                    String titreModif = scanner.nextLine();
-                    LivreBD.modifierLivre(titreModif);
-                    System.out.println("Le livre a été modifié avec succès");
-                    break;
-                case "3":
-                    System.out.println("Veuillez entrer le titre du livre à supprimer : ");
-                    String titreSupp = scanner.nextLine();
-                    LivreBD.supprimerLivre(titreSupp);
-                    System.out.println("Le livre a été supprimé avec succès");
-                    break;
-                case "4":
-                    continuer = false;
-                    break;
-                default:
-                    System.out.println("Choix invalide, veuillez réessayer.");
+                    System.out.print("Auteurs: ");
+                    String auteurs = scanner.nextLine();
+                    System.out.print("Éditeur : ");
+                    String editeur = scanner.nextLine();
+                    System.out.print("Année de publication : ");
+                    String anneePubli = scanner.nextLine();
+                    System.out.print("Prix : ");
+                    double prix = Double.parseDouble(scanner.nextLine());
+                    Livre livre = new Livre(isbn, titre, 0, anneePubli, prix);
+                    System.out.print("Voulez-vous ajouter un auteur ? (oui/non) : ");
+                    String reponse = scanner.nextLine();
+                    if(reponse.equals("oui") || reponse.equals("o")) {
+                        System.out.print("Nom de l'auteur : ");
+                        String nomAuteur = scanner.nextLine();
+                        System.out.print("Prénom de l'auteur : ");
+                        String prenomAuteur = scanner.nextLine();
+            // trouver l'auteur dans la base de données ou le créer  
+                    }
+                    try {
+                        adminConnexion.ajouteLivre(livre, 1); 
+                        System.out.println("Livre ajouté avec succès.");
+                    } catch (SQLException e) {
+                        System.out.println("Erreur lors de l'ajout du livre : " + e.getMessage());
+                    }
+                    
                     break;
             }
         }
@@ -757,7 +780,7 @@ public class ApplicationTerminal {
         menuProfil();
     }
 
-    private Magasin menuChoisirMagasin() {
+    public Magasin menuChoisirMagasin() {
         List<Magasin> magasins;
         try{
             magasins = magasinConnexion.chargerMagasin();
