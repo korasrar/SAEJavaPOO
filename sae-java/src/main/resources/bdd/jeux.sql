@@ -1121,6 +1121,10 @@ insert into CLIENT (idcli, adressecli, codepostal, villecli) values
 	(499, '12 place de la Paix', '69001', 'Lyon'),
 	(500, '10 quai de la Paix', '33000', 'Bordeaux');
 
+-- les vendeurs
+insert into VENDEUR(idvendeur, idmagasin) values
+	(501, 3);
+	
 -- les éditeurs
 insert into EDITEUR(nomedit,idedit) values
 	('Dargaud', 1),

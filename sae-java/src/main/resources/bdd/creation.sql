@@ -25270,7 +25270,17 @@ insert into DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) values
 	(5025,4,9782012372498,1, 26.6),
 	(5025,5,9782082005746,1,8.29);
 
+-- les vendeurs
+insert into VENDEUR(idvendeur, idmagasin) values
+	(501, 3);
 
+
+
+
+
+
+
+	
 -- création de la fonction levenshtein
 
 
