@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 public class VendeurBD {
     ConnexionMySQL connexion;
@@ -15,16 +16,14 @@ public class VendeurBD {
         this.connexion = connexion;
         this.magasinBD = new MagasinBD(connexion);
     }
-
-    //public void ajouteLivre(Livre l) throws SQLException{ //execption a corriger
-    //    magasinBD.ajoutStock(magasin, l, 1);
-    //    // Appelle ajouteStock de magasin et qte = 1 par default
-    //}
     
-    //public void ajouteLivre(Livre l, int qte) throws SQLException{ //execption a corriger
-    //    magasinBD.ajoutStock(magasin, l, qte);
-    //    // Appelle ajouteStock de magasin
-    //}
+    public void ajouteLivre(int idVendeur,Livre l, int qte) throws VendeurSansMagasinException, SQLException{ //execption a corriger
+        magasinBD.ajoutStock(getMagasin(idVendeur), l, qte);
+    }
+    
+    public void ajouteLivre(int idVendeur,Livre l) throws VendeurSansMagasinException, SQLException{
+        ajouteLivre(idVendeur, l, 1);
+    }
 
     /**
      * pour passer une commande de livres
@@ -59,13 +58,40 @@ public class VendeurBD {
      * @throws LivrePasDansStockMagasinExecption si le livre n'est pas dans le stock
      */
 
-    public void mettreAJour(Livre l, int qte) throws LivrePasDansStockMagasinException{
-        // Vérifie si le livre est présent dans le stock avec un appelle de estDispo() et si true alors on modifie stock magasin, sinon on fait rien
-    }
+    public void mettreAJour(Livre l, int qte, Magasin mag) throws SQLException, LivrePasDansStockMagasinException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
+        if (r.getInt("qte")<= qte){
+        throw new LivrePasDansStockMagasinException();}
+        if (verifierDispo(mag, l)){
+            r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
+            Integer quantiteInit = r.getInt("qte");
+            Integer nouvelleQte = quantiteInit + qte;
+            st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
+        }
+        else {
+            //ok
 
-    public void transferer(Livre l, Magasin magasin2){
-        // Supprime le livre du stock du magasin actuelle ou si il en reste plus de 1 enlever 1 de stock ? (co méthode) et le rajouter dans le stock de l'autre magasin
-    }
+        }    }
+
+    public void transferer(Livre l, Magasin magasinRecoit, Magasin magasinEnvoit, Integer qte) throws SQLException, LivrePasDansStockMagasinException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasinEnvoit.getId());
+        if (r.getInt("qte")<= qte){
+        throw new LivrePasDansStockMagasinException();}
+        // DONE verifier la dispo du livre, si true faire update pour recup la valeur et incremente avec qte et renvoie dans bd
+        // sinon , on fait un insert avec le livre et la qte
+        if (verifierDispo(magasinRecoit, l)){
+            r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinRecoit.getId());
+            Integer quantiteInit = r.getInt("qte");
+            Integer nouvelleQte = quantiteInit + qte;
+            st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
+        }
+        else {
+            st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + 1 +"AND idmag = " + magasinRecoit.getId() +"AND isbn ='" + l.getIsbn() + "'");
+
+        }
+        }
 
     /**
      * vérifie si un livre est disponible dans le stock du magasin
@@ -80,26 +106,42 @@ public class VendeurBD {
         r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasin.getId());
         if (r.next()){
             int qte = r.getInt("qte");
-            // seconde verif de si sqt pas 0 ? vérifier dans une autre méthode la qte a 0 = sup le livre ou garder dans catalogue quand même ?
             if (qte > 0){return true;}
             else {return false;}
             }
         else {return false;}
-        // Vérifier si un livre est présent dans stockmagasin d'un magasin (récup id ?)
     }
 
+    /**
+     * vérifie si un livre est disponible dans le stock du réseau
+     *
+     * @param magasin le magasin à vérifier
+     * @param l le livre à vérifier
+     * @return true si le livre est disponible, false sinon
+     * @throws SQLException si une erreur SQL se produit
+     */
     public boolean verifierDispo(Livre l) throws SQLException{
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"'");
         if (r.next()){
             int qte = r.getInt("qte");
-            // seconde verif de si sqt pas 0 ? vérifier dans une autre méthode la qte a 0 = sup le livre ou garder dans catalogue quand même ?
             if (qte > 0){return true;}
             else {return false;}
             }
         else {return false;}
-        // Vérifier si un livre est présent dans stockmagasin d'un magasin (récup id ?)
     }
+
+    public boolean verifierQteDispo(Livre l, int qte) throws SQLException, PasStockPourLivreException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn");
+        if (r.next()){
+            int qteDispo = r.getInt("qtett");
+            if (qteDispo >= qte){return true;}
+            else {throw new PasStockPourLivreException();}
+            }
+        else {throw new PasStockPourLivreException();}
+    }
+
 
     /**
      * récupère le magasin du vendeur
@@ -119,4 +161,6 @@ public class VendeurBD {
             throw new VendeurSansMagasinException();
         }
     }
+
+
 }

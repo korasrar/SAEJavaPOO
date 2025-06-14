@@ -3,6 +3,7 @@ package fr.saejava;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MagasinBD {
@@ -33,7 +34,7 @@ public class MagasinBD {
         // sinon, vérifier les informations du livre et ajouter ce qui n'est pas dans la bdd
         else{
             // ajout du livre en premier
-            st.executeUpdate("insert into LIVRE(isbn, titre, nbpages, fatepubli, prix) values ('"+l.getIsbn()+"','"+l.getTitre()+"',"+l.getNbPages()+","+l.getDatePubli()+","+l.getPrix()+");");
+            st.executeUpdate("insert into LIVRE(isbn, titre, nbpages, datepubli, prix) values ('"+l.getIsbn()+"','"+l.getTitre()+"',"+l.getNbPages()+","+l.getDatePubli()+","+l.getPrix()+");");
             List<Editeur> editeursL = l.getEditeurs();
             List<Auteur> auteursL = l.getAuteurs();
             List<Classification> classificationsL = l.getClassifications();
@@ -75,5 +76,69 @@ public class MagasinBD {
                 }
             }
         }
+    }
+
+    /**
+     * permet de charger tous les magasins de la base de données
+     * @return la liste des magasins
+     * @throws SQLException
+     */
+    public List<Magasin> chargerMagasin() throws SQLException {
+        st = connexion.createStatement();
+        rs = st.executeQuery("SELECT * FROM MAGASIN");
+        List<Magasin> magasins = new ArrayList<>();
+        while(rs.next()) {
+            int idMagasin = rs.getInt("idmag");
+            String nomMagasin = rs.getString("nommag");
+            String villeMagasin = rs.getString("villemag");
+            magasins.add(new Magasin(idMagasin, nomMagasin, villeMagasin));
+        }
+        return magasins;
+    }
+
+    /**
+     * permet de trouver le meilleur magasin pour une commande
+     * @param commande
+     * @return le meilleur magasin
+     * @throws SQLException
+     */
+    public Magasin trouverMeilleurMagasin(Commande commande) throws SQLException {
+        int nbLivresDispo = 0;
+        int maxLivresDispo = 0;
+        Magasin meilleurMagasin = null;
+        st = connexion.createStatement();
+        List<Magasin> magasins = chargerMagasin();
+        for(DetailCommande detail : commande.getContenue()) {
+            Livre livre = detail.getLivre();
+            int qte = detail.getQte();
+            rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' and qte>="+qte);
+            if(!rs.next()) {
+                throw new SQLException("Le livre " + livre.getTitre() + " n'est pas disponible dans la base de données.");
+            }
+        }
+        for(Magasin magasin : magasins){
+            nbLivresDispo = 0;
+            for(DetailCommande detail : commande.getContenue()) {
+                Livre livre = detail.getLivre();
+                int qte = detail.getQte();
+                rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' and qte>="+qte+" and idmag="+magasin.getId());
+                if(rs.next()) {
+                    nbLivresDispo++;
+                    System.out.println("Livre disponible : " + livre.getTitre() + " en quantité " + qte + " dans le magasin " + magasin.getNom());
+                }
+                else {
+                    System.out.println("Livre non disponible : " + livre.getTitre() + " en quantité " + qte + " dans le magasin " + magasin.getNom());
+                }
+                if(nbLivresDispo> maxLivresDispo) {
+                    maxLivresDispo = nbLivresDispo;
+                    meilleurMagasin = magasin;
+                }
+            }
+        }
+        if(meilleurMagasin == null) {
+            throw new SQLException("Aucun magasin ne peut satisfaire la commande.");
+        }
+        System.out.println("Le meilleur magasin pour la commande est : " + meilleurMagasin);
+        return meilleurMagasin;
     }
 }

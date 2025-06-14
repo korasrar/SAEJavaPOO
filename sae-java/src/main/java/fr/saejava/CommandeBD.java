@@ -27,16 +27,21 @@ public class CommandeBD {
         try {
             st = connexion.createStatement();
             // Tester la requête sur machine IUT
-            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN NATURAL JOIN COMMANDE NATURAL JOIN CLIENT WHERE idcli =" + client.getNum() + " ORDER BY datecom DESC;");
+            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag, livraison FROM MAGASIN NATURAL JOIN COMMANDE NATURAL JOIN CLIENT WHERE idcli ="+client.getNum()+" ORDER BY datecom DESC LIMIT 1");
             if (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
-                derniereCommande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin);
-                // detail de la dernière commande
+                String modeLivraison = r.getString("livraison");
+                if (modeLivraison.equals("C")) {
+                    derniereCommande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin, ModeLivraison.MAISON);
+                }
+                else{
+                    derniereCommande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin, ModeLivraison.MAGASIN);
+                }
                 int numcom = r.getInt("numcom");
                 Statement stDetailCommande = connexion.createStatement();                
                 ResultSet rDetailCommande = stDetailCommande.executeQuery("SELECT numlig, qte, isbn, titre, nbpages, datepubli, prix from DETAILCOMMANDE natural join LIVRE where numcom = "+numcom+" order by numlig");
                 while (rDetailCommande.next()) {
-                    Livre livre = new Livre(rDetailCommande.getString("isbn"), rDetailCommande.getString("titre"), rDetailCommande.getInt("nbPages"), rDetailCommande.getString("datePubli"), rDetailCommande.getDouble("prix"));
+                    Livre livre = new Livre(rDetailCommande.getString("isbn"), rDetailCommande.getString("titre"), rDetailCommande.getInt("nbpages"), rDetailCommande.getString("datepubli"), rDetailCommande.getDouble("prix"));
                     DetailCommande detail = new DetailCommande(rDetailCommande.getInt("qte"), livre, derniereCommande);
                     derniereCommande.ajouterDetailCommande(detail);
                 }
@@ -55,16 +60,21 @@ public class CommandeBD {
         Commande commande = null;
         try {
             st = connexion.createStatement();
-            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + " and numcom = " + numCommande + ";");
+            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag, livraison FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + " and numcom = " + numCommande + ";");
             if (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
-                commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin);
-                // detail de la dernière commande
+                String modeLivraison = r.getString("livraison");
+                if (modeLivraison.equals("C")) {
+                    commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin, ModeLivraison.MAISON);
+                }
+                else{
+                    commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin, ModeLivraison.MAGASIN);
+                }
                 int numcom = r.getInt("numcom");
                 Statement stDetailCommande = connexion.createStatement();                
                 ResultSet rDetailCommande = stDetailCommande.executeQuery("SELECT numlig, qte, isbn, titre, nbpages, datepubli, prix from DETAILCOMMANDE natural join LIVRE where numcom = "+numcom+" order by numlig");
                 while (rDetailCommande.next()) {
-                    Livre livre = new Livre(rDetailCommande.getString("isbn"), rDetailCommande.getString("titre"), rDetailCommande.getInt("nbPages"), rDetailCommande.getString("datePubli"), rDetailCommande.getDouble("prix"));
+                    Livre livre = new Livre(rDetailCommande.getString("isbn"), rDetailCommande.getString("titre"), rDetailCommande.getInt("nbpages"), rDetailCommande.getString("datepubli"), rDetailCommande.getDouble("prix"));
                     DetailCommande detail = new DetailCommande(rDetailCommande.getInt("qte"), livre, commande);
                     commande.ajouterDetailCommande(detail);
                 }
@@ -89,16 +99,24 @@ public class CommandeBD {
         List<Commande> listCommandes = new ArrayList<>();
         try {
             st = connexion.createStatement();
-            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + ";");
+            r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag, livraison FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + ";");
             while (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
-                Commande commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin);
+                String modeLivraison = r.getString("livraison");
+                Commande commande = null;
+                if (modeLivraison.equals("C")) {
+                    commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin, ModeLivraison.MAISON);
+                }
+                else{
+                    commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin, ModeLivraison.MAGASIN);
+                }
+                
                 // detail de la dernière commande
                 int numcom = r.getInt("numcom");
                 Statement stDetailCommande = connexion.createStatement();                
                 ResultSet rDetailCommande = stDetailCommande.executeQuery("SELECT numlig, qte, isbn, titre, nbpages, datepubli, prix from DETAILCOMMANDE natural join LIVRE where numcom = "+numcom+" order by numlig");
                 while (rDetailCommande.next()) {
-                    Livre livre = new Livre(rDetailCommande.getString("isbn"), rDetailCommande.getString("titre"), rDetailCommande.getInt("nbPages"), rDetailCommande.getString("datePubli"), rDetailCommande.getDouble("prix"));
+                    Livre livre = new Livre(rDetailCommande.getString("isbn"), rDetailCommande.getString("titre"), rDetailCommande.getInt("nbpages"), rDetailCommande.getString("datepubli"), rDetailCommande.getDouble("prix"));
                     DetailCommande detail = new DetailCommande(rDetailCommande.getInt("qte"), livre, commande);
                     commande.ajouterDetailCommande(detail);
                 }
@@ -115,9 +133,8 @@ public class CommandeBD {
     public Integer getDerniereIdCommande() throws SQLException{
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM COMMANDE ORDER BY numcom DESC LIMIT 0, 1");
-        st.executeUpdate("REMOVE");
         Integer lastNomCom = 0;
-        while(r.next()){
+        if(r.next()){
             lastNomCom = r.getInt("numcom");
         }
         return lastNomCom;

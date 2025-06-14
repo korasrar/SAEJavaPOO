@@ -763,6 +763,11 @@ insert into UTILISATEUR(idutilisateur, nom, prenom, username, motdepasse, role) 
 	(500,'Garcia','Elodie','Elodie500','625556097Garcia','client'),
 	(501,'Dupond','Jacques','Jacques501','567327814Dupond','vendeur');
 
+-- les vendeurs
+insert into VENDEUR(idvendeur, idmagasin) values
+    (501, 3);
+
+
 -- les clients
 insert into CLIENT (idcli, adressecli, codepostal, villecli) values
 	(1, '188 chemin de la Forêt', '45000', 'Orléans'),

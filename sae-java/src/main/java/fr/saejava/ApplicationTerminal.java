@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -14,6 +16,7 @@ public class ApplicationTerminal {
 
     ConnexionMySQL connexion;
     Utilisateur utilisateurConnecter;
+    MagasinBD magasinConnexion;
     UtilisateurBD utilisateurConnexion;
     VendeurBD vendeurConnexion; 
     AdminBD adminConnexion;
@@ -29,42 +32,75 @@ public class ApplicationTerminal {
     boolean estConnecteUtil;
 
     Commande panier;
+
+    /**
+     * Pour afficher les livres par page
+     */
+    int nbObjetParPage;
+    int pageCourante;
     
 
+    /**
+     * crée le panier du client
+     * @param client
+     * @param date
+     * @param magasin
+     * @throws SQLException
+     */
     void créeCommande(Client client,Date date,Magasin magasin) throws SQLException{
-        this.panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin);
+        this.panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin, null);
     }
+
+    /**
+     * ajoute un livre au panier
+     * @param livre
+     */
     void commander(Livre livre){
-        // Vérifier si le livre est dans le magasin de la commande, si oui
-        // si oui : continuer la commande/ajouter le detailCommande
-        // si non : vérfifier que le livre est dispo
-        //ajoute a la commande en cour le livre*qte
         if(this.panier.contientLivre(livre)){
             DetailCommande detail=this.panier.livreDansCommande(livre);
             detail.setQte(detail.getQte()+1);
         }
-        else{this.panier.ajouterDetailCommande(new DetailCommande(livre,this.panier));
-}
+        else{
+            this.panier.ajouterDetailCommande(new DetailCommande(livre,this.panier));
+        }
     }
     
+    /**
+     * ajoute un livre au panier avec une quantité spécifique
+     * @param livre
+     * @param qte
+     */
     void commander(Livre livre,int qte){
-        //ajoute a la commande en cour le livre*qte
-    if(this.panier.contientLivre(livre)){
+        if(this.panier.contientLivre(livre)){
             DetailCommande detail=this.panier.livreDansCommande(livre);
             detail.setQte(detail.getQte()+qte);
         }
-        else{this.panier.ajouterDetailCommande(new DetailCommande(qte,livre,this.panier));
-}
+        else{
+            this.panier.ajouterDetailCommande(new DetailCommande(qte,livre,this.panier));
+        }
     }
     
-    void finaliseCommande() throws SQLException{
+    void finaliseCommande(ModeLivraison modeLivraison) throws SQLException{
+        this.panier.setModeLivraison(modeLivraison);
+        if(modeLivraison.equals(ModeLivraison.MAGASIN)){
+            System.out.println("test magasin");
+            panier.setMagasin(menuChoisirMagasin());
+        }
+        else if(modeLivraison.equals(ModeLivraison.MAISON)){
+            System.out.println("test maison");
+            panier.setMagasin(magasinConnexion.trouverMeilleurMagasin(panier));
+        }
+        else{
+            throw new SQLException("Mode de livraison inconnu");
+        }
         String ajout1="insert into COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) values\n";
         ajout1+=ajout1+"("+this.panier.getNumcom()+","+panier.getDateCommande()+","+"O"+","+"C"+","+panier.getClient().getNum()+","+panier.getMagasin().getId()+")\n";
         ajout1=ajout1+"insert into DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) values;\n";
-        int numlig=0;
+        int numlig=1;
         String ajout2="";
         for(DetailCommande detail:this.panier.contenue){
-            ajout2=ajout2+"("+this.panier.numcom+","+numlig+","+detail.getLivre().getIsbn().toString()+","+detail.getLivre().getPrix()+")";
+            // Vérifier si le livre est disponible dans le magasin
+            ajout2=ajout2+"("+this.panier.getNumcom()+","+numlig+","+detail.getLivre().getIsbn().toString()+","+detail.getLivre().getPrix()+")";
             if(numlig+1!=this.panier.getContenue().size()){
                 ajout2+=ajout2+",\n";
             }
@@ -79,12 +115,24 @@ public class ApplicationTerminal {
         this.payer();
     }
 
+    /**
+     * Le constructeur de l'application terminal
+     */
     public ApplicationTerminal() {
         this.estConnecteBD = false;
         this.estConnecteUtil = false;
         this.scanner = new Scanner(System.in);
+        this.nbObjetParPage = 5;
+        this.pageCourante = 1;
+        this.panier = null;
     }
 
+    /**
+     * Plus Utile car Docker !
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws NoSuchElementException
+     */
     public void menuConnexionBD() throws SQLException, ClassNotFoundException, NoSuchElementException {
             // Récupère les infos pour se connecter
         System.out.println("                         ");
@@ -122,85 +170,69 @@ public class ApplicationTerminal {
         } else {
             System.out.println("Échec de la connexion à la base de données. Veuillez réessayer.");
         }
-
-            // Test d'une requête
-        //Statement st = connexion.createStatement();
-        //ResultSet r = st.executeQuery("select * from CLIENT");
-        //while (r.next()){
-        //    System.out.println(r.getString("nomcli"));
-
-        //    // Fermeture de la connexion
-        //if (connexion.isConnecte()){
-        //    connexion.close();
-        //}
-        //}
     }
 
     public Utilisateur menuConnexionUtilisateur() throws SQLException{
         Utilisateur util = null;
-    //    System.out.println("| > S'inscrire en tant que Vendeur |");
-        System.out.println("|--< MENU CONNEXION UTILISATEUR >--|");
-        System.out.println("|                                  |");
-        System.out.println("| > Se connecter                   |");
-        System.out.println("| > S'inscrire en tant que CClient  |");
-        System.out.println("| > Quitter                        |");
-        System.out.println("|                                  |");
-        System.out.println("|----------------------------------|");
-        System.out.print("Veuillez choisir une option (1-3) : ");
-        String choix = scanner.nextLine();
-        switch (choix) {
-            // Connexion, trouve si ADMIN, VENDEUR, CLIENT
-            case "1":
-                System.out.println("Veuillez entrer votre email/username : ");
-                String username = scanner.nextLine();
-                System.out.println("Veuillez entrer votre mot de passe : ");
-                String motDePasse = scanner.nextLine();
-                System.out.println("Connexion en cours...");
-                try{
-                util = utilisateurConnexion.getUtilisateur(username, motDePasse);
-                }
-                catch(UtilisateurIntrouvableException e){
-                    System.out.println("Utilisateur Introuvable");
-                }
-                catch(MotDePasseIncorrectException e){
-                    System.out.println("Mot de passe incorrect");
-                }
-                catch(VendeurSansMagasinException e){
-                    System.out.println("Votre compte Vendeur n'a pas de magasin associé");
-                }
-                break;
-            case "2":
-                System.out.println("Veuillez indiquer votre nom :");
-                String nom = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre prenom :");
-                String prenom = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre nomDUtilisateur :");
-                String nomDUtilisateur = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre mot de passe :");
-                String mdp = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre adresse :");
-                String adresse = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre ville :");
-                String ville = scanner.nextLine();
-                System.out.println("Veuillez indiquer votre codePostal :");
-                int codePostal = Integer.parseInt(scanner.nextLine());
-
-                int nb = 0;
-		        st = connexion.createStatement();
-		        ResultSet rs = st.executeQuery("select max(numJoueur) as nb from JOUEUR"); // requete a changer
-		        while (rs.next()){
-			        nb = rs.getInt("nb");
-		        }
-
-                this.clientConnexion.creeCompteClient(nb++, adresse, ville, codePostal, nom, prenom, nomDUtilisateur, mdp); // get le dernier id d'utilisateur et faire ++
-                System.out.println("Votre compte a bien été enregistré");
-                break;
-            case "3":
-                System.out.println("Au revoir !");
-                break;
-            default:
-                System.out.println("Choix invalide, veuillez réessayer.");
-                menuConnexionUtilisateur();
+        while(util==null){
+            System.out.println("---- MENU CONNEXION UTILISATEUR ----");
+            System.out.println("|                                  |");
+            System.out.println("| > Se connecter                   |");
+            System.out.println("| > S'inscrire en tant que Client  |");
+            System.out.println("| > Quitter                        |");
+            System.out.println("|                                  |");
+            System.out.println("------------------------------------");
+            System.out.print("Veuillez choisir une option (1-3) : ");
+            String choix = scanner.nextLine();
+            switch (choix) {
+                case "1":
+                    System.out.println("Veuillez entrer votre email/username : ");
+                    String username = scanner.nextLine();
+                    System.out.println("Veuillez entrer votre mot de passe : ");
+                    String motDePasse = scanner.nextLine();
+                    System.out.println("Connexion en cours...");
+                    try{
+                    util = utilisateurConnexion.getUtilisateur(username, motDePasse);
+                    System.out.println("test");
+                    }
+                    catch(UtilisateurIntrouvableException e){
+                        System.out.println("Utilisateur Introuvable");
+                    }
+                    catch(MotDePasseIncorrectException e){
+                        System.out.println("Mot de passe incorrect");
+                    }
+                    catch(VendeurSansMagasinException e){
+                        System.out.println("Votre compte Vendeur n'a pas de magasin associé");
+                    }
+                    break;
+                case "2":
+                    System.out.println("Veuillez indiquer votre nom :");
+                    String nom = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre prenom :");
+                    String prenom = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre nomDUtilisateur :");
+                    String nomDUtilisateur = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre mot de passe :");
+                    String mdp = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre adresse :");
+                    String adresse = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre ville :");
+                    String ville = scanner.nextLine();
+                    System.out.println("Veuillez indiquer votre codePostal :");
+                    String codePostal = scanner.nextLine();
+                
+                    this.clientConnexion.creeCompteClient(nb++, adresse, ville, codePostal, nom, prenom, nomDUtilisateur, mdp); // get le dernier id d'utilisateur et faire ++
+                    System.out.println("Votre compte a bien été enregistré");
+                    break;
+                case "3":
+                    System.out.println("Au revoir !");
+                    connexion.close();
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Choix invalide, veuillez réessayer.");
+                    break;
+            }
         }
         return util;
     }
@@ -347,10 +379,11 @@ public class ApplicationTerminal {
 
 
     public void menuClientMain() {
+        boolean continuer = true;
+        while(continuer) {
         System.out.println("------ MENU CLIENT ------");
         System.out.println("|                       |");
         System.out.println("| > Rechercher un livre |");
-        System.out.println("| > Catalogue           |");
         System.out.println("| > Mes recommandations |");
         System.out.println("| > Voir panier         |");
         System.out.println("| > Mes commandes       |");
@@ -358,118 +391,238 @@ public class ApplicationTerminal {
         System.out.println("| > Se déconnecter      |");
         System.out.println("|                       |");
         System.out.println("-------------------------");
-        System.out.print("Veuillez choisir une option (1-7) : ");
+        System.out.print("Veuillez choisir une option (1-6) : ");
         String choix = scanner.nextLine();
         switch (choix) {
             case "1":
                 menuRechercherLivre();
                 break;
             case "2":
-                menuCatalogue();
-                break;
-            case "3":
                 menuMesRecommandations();
                 break;
-            case "4":
+            case "3":
                 menuPanier();
                 break;
-            case "5":
+            case "4":
                 menuMesCommandes();
                 break;
-            case "6":
+            case "5":
                 menuProfil();
                 break;
-            case "7":
-                System.out.println("Déconnexion...");
+            case "6":
+                 System.out.println("Déconnexion...");
                 estConnecteUtil = false;
                 utilisateurConnecter = null;
-                try{
-                    menuConnexionUtilisateur();
-                }
-                catch(SQLException e){
-                    System.out.println("Erreur lors de la connexion : " + e.getMessage());
-                }
-                
+                continuer = false;
                 break;
             default:
                 System.out.println("Choix invalide, veuillez réessayer.");
-                menuClientMain();
+                break;
+        }
         }
 
     }
 
     public void menuRechercherLivre(){
+        boolean continuer = true;
         Map<Livre, Boolean> livres;
-        System.out.println("------ RECHERCHER UN LIVRE ------");
-        System.out.println("|                               |");
-        System.out.println("| > Rechercher par titre        |");
-        System.out.println("| > Rechercher par auteur       |");
-        System.out.println("| > Rechercher par ISBN         |");
-        System.out.println("| > Retour au menu principal    |");
-        System.out.println("|                               |");
-        System.out.println("---------------------------------");
-        System.out.print("Veuillez choisir une option (1-4) : ");
-        String choix = scanner.nextLine();
-        switch (choix) {
-            case "1":
-                System.out.print("Entrez le titre à rechercher : ");
-                String titre = scanner.nextLine();
-                try{
-                    livres = livreConnexion.rechercherLivre(Filtre.titre,"" , titre ,"" , vendeurConnexion);
-                    afficherLivre(livres);
-                    System.out.print("Appuyez sur Entrée pour continuer...");
-                    scanner.nextLine();
-                }
-                catch(SQLException e){
-                    System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
-                }
-                break;
-            case "2":
-                System.out.print("Entrez le nom de l'auteur à rechercher : ");
-                String auteur = scanner.nextLine();
-                try{
-                    livres = livreConnexion.rechercherLivre(Filtre.auteur,"" , "" , auteur , vendeurConnexion);
-                    afficherLivre(livres);
-                    System.out.print("Appuyez sur Entrée pour continuer...");
-                    scanner.nextLine();
-                }
-                catch(SQLException e){
-                    System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
-                }
-                break;
-            case "3":
-                System.out.print("Entrez l'ISBN du livre à rechercher : ");
-                String isbn = scanner.nextLine();
-                try{
-                    livres = livreConnexion.rechercherLivre(Filtre.isbn, isbn , "" , "" , vendeurConnexion);
-                    afficherLivre(livres);
-                    System.out.print("Appuyez sur Entrée pour continuer...");
-                    scanner.nextLine();
-                }
-                catch(SQLException e){
-                    System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
-                }
-                break;
-            case "4":
-                menuClientMain();
-                return;
-            default:
-                System.out.println("Choix invalide, veuillez réessayer.");
-                break;
+        while(continuer) {
+            System.out.println("------ RECHERCHER UN LIVRE ------");
+            System.out.println("|                               |");
+            System.out.println("| > Rechercher par titre        |");
+            System.out.println("| > Rechercher par auteur       |");
+            System.out.println("| > Rechercher par ISBN         |");
+            System.out.println("| > Retour au menu principal    |");
+            System.out.println("|                               |");
+            System.out.println("---------------------------------");
+            System.out.print("Veuillez choisir une option (1-4) : ");
+            String choix = scanner.nextLine();
+            switch (choix) {
+                case "1":
+                    System.out.print("Entrez le titre à rechercher : ");
+                    String titre = scanner.nextLine();
+                    try{
+                        livres = livreConnexion.rechercherLivre(Filtre.titre,"" , titre ,"" , vendeurConnexion);
+                        afficherLivre(livres);
+                        System.out.print("Appuyez sur Entrée pour continuer...");
+                        scanner.nextLine();
+                    }
+                    catch(SQLException e){
+                        System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+                    }
+                    break;
+                case "2":
+                    System.out.print("Entrez le nom de l'auteur à rechercher : ");
+                    String auteur = scanner.nextLine();
+                    try{
+                        livres = livreConnexion.rechercherLivre(Filtre.auteur,"" , "" , auteur , vendeurConnexion);
+                        afficherLivre(livres);
+                        System.out.print("Appuyez sur Entrée pour continuer...");
+                        scanner.nextLine();
+                    }
+                    catch(SQLException e){
+                        System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+                    }
+                    break;
+                case "3":
+                    System.out.print("Entrez l'ISBN du livre à rechercher : ");
+                    String isbn = scanner.nextLine();
+                    try{
+                        livres = livreConnexion.rechercherLivre(Filtre.isbn, isbn , "" , "" , vendeurConnexion);
+                        afficherLivre(livres);
+                        System.out.print("Appuyez sur Entrée pour continuer...");
+                        scanner.nextLine();
+                    }
+                    catch(SQLException e){
+                        System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+                    }
+                    break;
+                case "4":
+                    continuer = false;
+                    break;
+                default:
+                    System.out.println("Choix invalide, veuillez réessayer.");
+                    break;
+            }
         }
-        menuRechercherLivre();
-    }
-
-    public void menuCatalogue(){
-        // TO DO
     }
 
     public void menuPanier(){
-        // TO DO
-        // Voir l'état actuel du panier
-        // Pouvoir supprimer un livre
-        // Changer la quantité d'un livre
-        // Finaliser la commande (peut etre faire une autre méthode ?)
+        if (panier == null || panier.getContenue().isEmpty()) {
+            System.out.println("------------- PANIER ------------");
+            System.out.println("|                               |");
+            System.out.println("| Votre panier est vide         |");
+            System.out.println("|                               |");
+            System.out.println("---------------------------------");
+            System.out.println("Appuyez sur Entrée pour retourner au menu principal...");
+            scanner.nextLine();
+            return;
+        }
+
+        int totalPages = (int) panier.getContenue().size()/nbObjetParPage;
+        if(totalPages==0){
+            totalPages=1;
+        }
+        pageCourante = 1;
+        boolean continuer = true;
+        while(continuer){
+            System.out.println("------------- PANIER ------------");
+            System.out.println("|                               |");
+            List<DetailCommande> listeLivres = new ArrayList<>(panier.getContenue());
+            for(int i =(pageCourante-1)*nbObjetParPage;i<nbObjetParPage+(pageCourante-1)*nbObjetParPage && i<listeLivres.size();i++){
+                Livre livre = listeLivres.get(i).getLivre();
+                System.out.println("| "+(i+1)+") " + livre + "| qte : "+listeLivres.get(i).getQte()+"|");
+            }
+            System.out.println("| Page : " + pageCourante + "/" + totalPages + "                    |");
+            System.out.println("|                               |");
+            System.out.println("---------------------------------");
+            System.out.println("Voulez-vous valider la commande ? (O/n)");
+            System.out.println("Pour modifier la commande : m");
+            System.out.println("Pour changer de page : < | >");
+            
+            String reponse = scanner.nextLine().toLowerCase();
+            
+            if (reponse.equals("o") || reponse.equals("oui")) {
+                try {
+                    String modeLivraison =null;
+                    while(modeLivraison==null) {
+                        System.out.println("Veuillez choisir le mode de livraison (M=magasin/C=maison):");
+                        modeLivraison = scanner.nextLine().toLowerCase();
+                        if(modeLivraison.equals("m") || modeLivraison.equals("magasin")) {
+                            finaliseCommande(ModeLivraison.MAGASIN);
+                        } else if(modeLivraison.equals("c") || modeLivraison.equals("maison")) {
+                            finaliseCommande(ModeLivraison.MAISON);
+                        } else {
+                            System.out.println("Mode de livraison invalide, veuillez réessayer.");
+                            modeLivraison=null;
+                        }
+                    }
+                    System.out.println("Commande validée avec succès !");
+                    continuer = false;
+                } catch (SQLException e) {
+                    System.out.println("Erreur lors de la validation de la commande : " + e.getMessage());
+                }
+            } 
+            else {
+                    System.out.println("Commande annulée.");
+            }
+            if (reponse.equals("<")) {
+                if (pageCourante > 1) {
+                    pageCourante--;
+                } else {
+                    System.out.println("Vous êtes déjà à la première page.");
+                }
+            } 
+            else if (reponse.equals(">")) {
+                if (pageCourante < totalPages) {
+                    pageCourante++;
+                } else {
+                    System.out.println("Vous êtes déjà à la dernière page.");
+                }
+            } 
+            else if (reponse.equals("n")) {
+                continuer = false;
+            } 
+            else if (reponse.equals("m")) {
+                System.out.print("Entrez le numéro du livre à modifier (1-"+listeLivres.size()+") : ");
+                String livreSelec = scanner.nextLine();
+                try {
+                    int numLivre = Integer.parseInt(livreSelec);
+                    if (numLivre >= 1 && numLivre <=nbObjetParPage) {
+                        int indexLivre = numLivre - 1 + (pageCourante - 1) * nbObjetParPage;
+                        DetailCommande detail = panier.getContenue().get(indexLivre);
+                        
+                        System.out.println("Livre sélectionné : " + detail.getLivre().getTitre());
+                        System.out.println("Quantité actuelle : " + detail.getQte());
+                        System.out.println();
+                        System.out.println("1 > Modifier la quantité");
+                        System.out.println("2 > Supprimer du panier");
+                        System.out.println("3 > Retour");
+                        String choix = scanner.nextLine();
+                        switch (choix) {
+                            case "1":
+                                System.out.print("Nouvelle quantité : ");
+                                try {
+                                    int nouvelleQte = Integer.parseInt(scanner.nextLine());
+                                    if (nouvelleQte > 0) {
+                                        detail.setQte(nouvelleQte);
+                                        System.out.println("Quantité mise à jour !");
+                                    } else {
+                                        System.out.println("La quantité doit être supérieure à 0.");
+                                    }
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Veuillez entrer un nombre valide.");
+                                }
+                                break;
+                            case "2":
+                                System.out.print("Êtes-vous sûr de supprimer ce livre ? (O/n) : ");
+                                String confirmSuppr = scanner.nextLine().toLowerCase();
+                                if (confirmSuppr.equals("o") || confirmSuppr.equals("oui")) {
+                                    panier.getContenue().remove(indexLivre);
+                                    System.out.println("Livre supprimé du panier !");
+                                    
+                                    totalPages = (int) panier.getContenue().size()/nbObjetParPage;
+                                    
+                                    if (panier.getContenue().isEmpty()) {
+                                        System.out.println("Votre panier est maintenant vide.");
+                                        continuer = false;
+                                    }
+                                }
+                                break;
+                            case "3":
+                                break;
+                            default:
+                                System.out.println("Choix invalide.");
+                                break;
+                        }
+                    } else {
+                        System.out.println("Numéro invalide.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Veuillez entrer un nombre.");
+                }
+            }
+        }
     }
 
     public void menuMesRecommandations(){
@@ -479,24 +632,99 @@ public class ApplicationTerminal {
         catch(SQLException e ){
             System.out.println("Erreur lors de la récupération des livres a recommandé : "+e.getMessage());
         }
+        return;
     }
 
     public void menuMesCommandes(){
-        System.out.println("------------ PROFIL -------------");
-        System.out.println("|                               |");
-        System.out.println("| Nom     > Rechercher par titre        |");
-        System.out.println("| Prénom  > Rechercher par auteur       |");
-        System.out.println("| Adresse > Rechercher par ISBN         |");
-        System.out.println("| > Retour au menu principal    |");
-        System.out.println("|                               |");
-        System.out.println("---------------------------------");
+        // TO DO
     }
 
     public void menuProfil(){
+        Client clientTempo = new Client(utilisateurConnecter.getId(), null, null, 0, utilisateurConnecter.getNom(), utilisateurConnecter.getPrenom(), utilisateurConnecter.getPseudo(), utilisateurConnecter.getMotDePasse());
+        System.out.println("------------ PROFIL -------------");
+        System.out.println("|                                       |");
+        System.out.println("| Nom      > "+utilisateurConnecter.getNom()+"         |");
+        System.out.println("| Prénom   > "+utilisateurConnecter.getPrenom()+"      |");
+        System.out.println("| Username > "+utilisateurConnecter.getPseudo()+"         |");
+        System.out.println("| Password > "+utilisateurConnecter.getMotDePasse()+"         |");
+        System.out.println("| > Retour au menu principal            |");
+        System.out.println("|                                       |");
+        System.out.println("---------------------------------");
+        System.out.println("Veuillez choisir une informations a modifier (1-4) : ");
+        System.out.println("Pour retourner au menu principal : q ");
+        String choix = scanner.nextLine().toLowerCase();
+        switch (choix) {
+            case "1":
+                System.out.print("Entrez le nouveau nom : ");
+                String nom = scanner.nextLine();
+                ClientBD.modifierClient(clientTempo);
+                break;
+            case "2":
+                System.out.print("Entrez le nouveau prénom : ");
+                String prénom = scanner.nextLine();
+                ClientBD.modifierClient(clientTempo);
+                break;
+            case "3":
+                System.out.print("Entrez le nouveau username : ");
+                String username = scanner.nextLine();
+                ClientBD.modifierClient(clientTempo);
+                break;
+            case "4":
+                System.out.print("Entrez le nouveau password : ");
+                String password = scanner.nextLine();
+                ClientBD.modifierClient(clientTempo);
+                break;
+            case "q":
+                System.out.println("Informations sauvegardées !");
+                return;
+            default:
+                System.out.println("Choix invalide, veuillez réessayer.");
+                break;
+        }
+        menuProfil();
+    }
 
-       // TO DO
-       // Voir ces infos (Les afficher par défaut)
-       // Pouvoir modiofier ces informations (Créer la méthode pour dans UtilisateurBD peut etre ?)
+    private Magasin menuChoisirMagasin() {
+        List<Magasin> magasins;
+        try{
+            magasins = magasinConnexion.chargerMagasin();
+        }
+        catch(SQLException e){
+            System.out.println("Erreur lors de la récupération des magasins : " + e.getMessage());
+            return null;
+        }
+        boolean continuer = true;
+        while(continuer) {
+            System.out.println("------ CHOISIR UN MAGASIN ------");
+            System.out.println("|                              |");
+            for(Magasin magasin : magasins) {
+                System.out.println("| " + magasin.getNom() + " - " + magasin.getVille() + " |");
+            }
+            System.out.println("| > Retour au menu principal    |");
+            System.out.println("|                              |");
+            System.out.println("---------------------------------");
+            System.out.print("Veuillez choisir une option (1-"+(magasins.size()+1)+") : ");
+            String choix = scanner.nextLine();
+            if(choix.equals(magasins.size()+1+"")){
+                continuer = false;
+            }
+            else{
+                try{
+                    int indexMagasin = Integer.parseInt(choix) - 1;
+                    if(indexMagasin >= 0 && indexMagasin < magasins.size()) {
+                        System.out.println("Magasin sélectionné : " + magasins.get(indexMagasin));
+                        continuer = false;
+                        return magasins.get(indexMagasin);
+                    } else {
+                        System.out.println("Numéro de magasin invalide, veuillez réessayer.");
+                    }
+                }
+                catch(NumberFormatException e){
+                    System.out.println("Veuillez entrer un nombre valide.");
+                }
+            }
+        }
+        return null;
     }
 
     public void menuTransfertLivre(){
@@ -512,42 +740,117 @@ public class ApplicationTerminal {
     }
 
     public void afficherLivre(Map<Livre, Boolean> livres) {
-        int nbLivre = 0;
-        if (livres.isEmpty()) {
-            System.out.println("Aucun livre trouvé.");
-        } else {
-            System.out.println("------ LIVRES TROUVÉS ------");
-            System.out.println("|                          |");
-            for (Map.Entry<Livre, Boolean> entry : livres.entrySet()) {
-                Livre livre = entry.getKey();
-                boolean disponible = entry.getValue();
-                nbLivre++;
-                if(disponible==true){
-                    System.out.println("| "+nbLivre+") " + livre + " | Disponible : Oui |");
+        int totalPages = (int) livres.size()/nbObjetParPage;
+        if(totalPages==0){
+            totalPages=1;
+        }
+        pageCourante = 1;
+        boolean continuer = true;
+        while(continuer){
+            if (livres.isEmpty()) {
+                System.out.println("Aucun livre trouvé.");
+            } else {
+                System.out.println("------------------- LIVRES TROUVÉS -------------------");
+                System.out.println("|                                                    |");
+                List<Livre> listeLivres = new ArrayList<>(livres.keySet());
+                for(int i =(pageCourante-1)*nbObjetParPage;i<nbObjetParPage+(pageCourante-1)*nbObjetParPage && i<listeLivres.size();i++){
+                    Livre livre = listeLivres.get(i);
+                    boolean disponible = livres.get(livre);
+                    if(disponible==true){
+                        System.out.println("| "+(listeLivres.indexOf(livre)+1)+") " + livre + " | Disponible : Oui |");
+                    }
+                    else{
+                        System.out.println("| "+(listeLivres.indexOf(livre)+1)+") "+ livre + " | Disponible : Non |");
+                    }
                 }
-                else{
-                    System.out.println("| "+nbLivre+") "+ livre + " | Disponible : Non |");
+                System.out.println("| Page : "+pageCourante+"/"+totalPages+"                                           |");
+                System.out.println("|                                                    |");
+                System.out.println("------------------------------------------------------");
+                System.out.println("Voulez vous commander un de ces livres ? (O/n)");
+                System.out.println("Pour changer de page : < | >");
+                String reponse = scanner.nextLine().toLowerCase();
+                if (reponse.equals("o") || reponse.equals("oui")) {
+                    System.out.print("Entrez le numéro du livre à commander (1-" + nbObjetParPage + ") : ");
+                    int choixLivre = Integer.parseInt(scanner.nextLine());
+                    Livre livreChoisi = listeLivres.get(choixLivre-1+(pageCourante - 1) * nbObjetParPage);
+                    System.out.println("Quelle quantité souhaitez-vous commander ? ");
+                    int quantite = Integer.parseInt(scanner.nextLine());
+                    boolean quantiteDisponible = false;
+                    try{
+                        quantiteDisponible = vendeurConnexion.verifierQteDispo(livreChoisi, quantite);
+                    }
+                    catch (SQLException e) {
+                        System.out.println("Problème lors de la vérification de la quantité disponible : " + e.getMessage());
+                    }
+                    catch(PasStockPourLivreException e){
+                        System.out.println("Pas assez de stock pour le livre " + livreChoisi.getTitre() + ". Veuillez choisir une quantité inférieure.");
+                    }
+                    
+                    if(livres.get(livreChoisi)==true && quantiteDisponible==true){
+                        try{
+                        commander(livreChoisi, quantite);
+                        }
+                        catch (IndexOutOfBoundsException e) {
+                            System.out.println("Numéro de livre invalide. Veuillez réessayer.");
+                        }
+                    }
+                    else{
+                        System.out.println("Livre non disponible, veuillez en choisir un autre.");
+                    }
+                    
+                }
+                else if (reponse.equals("<")) {
+                    if (pageCourante > 1) {
+                        pageCourante--;
+                    } else {
+                        System.out.println("Vous êtes déjà à la première page.");
+                    }
+                } else if (reponse.equals(">")) {
+                    if (pageCourante < totalPages) {
+                        pageCourante++;
+                    } else {
+                        System.out.println("Vous êtes déjà à la dernière page.");
+                    }
+                } else if (reponse.equals("n") || reponse.equals("non")) {
+                    continuer = false;
+                } else {
+                    System.out.println("Réponse invalide, veuillez réessayer.");
                 }
             }
-            System.out.println("|                          |");
-            System.out.println("----------------------------");
-            System.out.println("Voulez vous commander un de ces livres ? (O/n)");
         }
     }
 
     public void main(){
         System.out.println("Bienvenue dans l'application de gestion de librairie !");
-
         // Connexion à la base de données
+        // Pas util car automatisé 
         while(!estConnecteBD){
             try{
-                menuConnexionBD();
+                connexion = new ConnexionMySQL();
+                connexion.connecter("","","","");
+
+                if (connexion.isConnecte()) {
+                    System.out.println("Connexion à la base de données réussie !");
+                    this.estConnecteBD = true;
+                    
+                    utilisateurConnexion = new UtilisateurBD(connexion);
+                    vendeurConnexion = new VendeurBD(connexion);
+                    adminConnexion = new AdminBD(connexion);
+                    commandeConnexion = new CommandeBD(connexion);
+                    clientConnexion = new ClientBD(connexion);
+                    livreConnexion = new LivreBD(connexion);
+                    magasinConnexion = new MagasinBD(connexion);
+                    System.out.println("Partage de la connexion réussie ! ");
+                } else {
+                    System.out.println("Échec de la connexion à la base de données. Veuillez réessayer.");
+                }
                 if (!estConnecteBD) {
                     System.out.println("\nVoulez-vous réessayer ? (o/n) : ");
                     String reponse = scanner.nextLine().toLowerCase();
                     if (!reponse.equals("o") && !reponse.equals("oui")) {
                         System.out.println("Au revoir !");
-                        break;
+                        System.exit(0);
+                        return;
                     }
                 }
             }
@@ -564,20 +867,33 @@ public class ApplicationTerminal {
                 System.out.println("Veuillez réessayer.\n");
             }
         }
+        try{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT isbn, titre, nomauteur FROM LIVRE NATURAL JOIN ECRIRE NATURAL JOIN AUTEUR WHERE titre LIKE '%Ron Mueck%' OR nomauteur LIKE '%Ron Mueck%';");
         // Si connexion BD réussie
-        if(estConnecteBD){
-        // Afficher le menu de connexion utilisateur
-            while(!estConnecteUtil){
+        System.out.println("Livres disponibles :");
+            while(r.next()){
+                String isbn = r.getString("isbn");
+                String titre = r.getString("titre");
+                String auteur = r.getString("nomauteur");
+                System.out.println("ISBN: " + isbn + ", Titre: " + titre + ", Auteur: " + auteur);
+            }
+        }
+        catch(SQLException e){
+            System.out.println("Erreur lors de la récupération des livres : " + e.getMessage());
+        }
+        while(estConnecteBD){
+            if(!estConnecteUtil){
                 try{
-                utilisateurConnecter = menuConnexionUtilisateur();
-                estConnecteUtil=true;
-
+                    utilisateurConnecter = menuConnexionUtilisateur();
+                    estConnecteUtil=true;
                 }
                 catch(SQLException e){
                     System.out.println("Voici le message d'erreur : "+ e.getMessage());
+                    utilisateurConnecter = null;
                 }
             }
-        }
+        
         if (utilisateurConnecter instanceof Admin) {
             System.out.println("Bienvenue, Admin " + utilisateurConnecter.getNom() + " !");
             menuAdminMain();
@@ -588,11 +904,19 @@ public class ApplicationTerminal {
         } 
         else if (utilisateurConnecter instanceof Client) {
             System.out.println("Bienvenue, Client " + utilisateurConnecter.getNom() + " !");
+            Date date = new Date(System.currentTimeMillis());
+            try{
+            créeCommande((Client) utilisateurConnecter,date , null);
+            }
+            catch(SQLException e){
+                System.out.println("Erreur lors de la création de la commande : " + e.getMessage());
+            }
             menuClientMain();
         }
-        // Si connexion utilisateur réussie
-
-        // mettre les menus en fontion du role
+        if(!estConnecteUtil) {
+            utilisateurConnecter = null;
+        }
+        }
     }
 
     public void payer(){
