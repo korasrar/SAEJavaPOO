@@ -611,7 +611,8 @@ insert into UTILISATEUR(idutilisateur, nom, prenom, username, motdepasse, role) 
 	(497,'Bouzid','Leonor','Leonor497','1559186993Bouzid','client'),
 	(498,'Lefebvre','Nathan','Nathan498','1439562191Lefebvre','client'),
 	(499,'Vincent','Sophie','Sophie499','947947772Vincent','client'),
-	(500,'Garcia','Elodie','Elodie500','625556097Garcia','client');
+	(500,'Garcia','Elodie','Elodie500','625556097Garcia','client')
+	(501,'Dupond','Jacques','Jacques501','567327814Dupond','vendeur');
 
 -- les clients
 insert into CLIENT (idcli, adressecli, codepostal, villecli) values
@@ -1116,6 +1117,10 @@ insert into CLIENT (idcli, adressecli, codepostal, villecli) values
 	(499, '12 place de la Paix', '69001', 'Lyon'),
 	(500, '10 quai de la Paix', '33000', 'Bordeaux');
 
+-- les vendeurs
+insert into VENDEUR(idvendeur, idmagasin) values
+	(501, 3);
+	
 -- les éditeurs
 insert into EDITEUR(nomedit,idedit) values
 	('Dargaud', 1),

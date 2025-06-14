@@ -142,7 +142,7 @@ public class ApplicationTerminal {
         System.out.println("|--< MENU CONNEXION UTILISATEUR >--|");
         System.out.println("|                                  |");
         System.out.println("| > Se connecter                   |");
-        System.out.println("| > S'inscrire en tant que Client  |");
+        System.out.println("| > S'inscrire en tant que CClient  |");
         System.out.println("| > Quitter                        |");
         System.out.println("|                                  |");
         System.out.println("|----------------------------------|");
