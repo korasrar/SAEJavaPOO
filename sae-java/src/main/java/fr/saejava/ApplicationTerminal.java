@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -15,6 +16,7 @@ public class ApplicationTerminal {
 
     ConnexionMySQL connexion;
     Utilisateur utilisateurConnecter;
+    MagasinBD magasinConnexion;
     UtilisateurBD utilisateurConnexion;
     VendeurBD vendeurConnexion; 
     AdminBD adminConnexion;
@@ -79,6 +81,7 @@ public class ApplicationTerminal {
     }
     
     void finaliseCommande() throws SQLException{
+        panier.setMagasin(magasinConnexion.trouverMeilleurMagasin(panier));
         String ajout1="insert into COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) values\n";
         ajout1+=ajout1+"("+this.panier.getNumcom()+","+panier.getDateCommande()+","+"O"+","+"C"+","+panier.getClient().getNum()+","+panier.getMagasin().getId()+")\n";
         ajout1=ajout1+"insert into DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) values;\n";
@@ -167,7 +170,7 @@ public class ApplicationTerminal {
             System.out.println("| > Quitter                        |");
             System.out.println("|                                  |");
             System.out.println("------------------------------------");
-            System.out.print("Veuillez choisir une option (1-4) : ");
+            System.out.print("Veuillez choisir une option (1-3) : ");
             String choix = scanner.nextLine();
             switch (choix) {
                 case "1":
@@ -338,56 +341,136 @@ public class ApplicationTerminal {
     }
 
     public void menuPanier(){
-        Map<Livre, Boolean> livres;
-        System.out.println("------------- PANIER ------------");
-        System.out.println("|                               |");
-        for(int i = 0; i<nbObjetParPage; i++){
-            if(i<this.panier.getContenue().size()){
-                DetailCommande detail = this.panier.getContenue().get(i);
-                System.out.println("| "+(i+1)+") " + detail.getLivre() + " | Quantité : " + detail.getQte() + " |");
-            }
-            else{
-                System.out.println("| "+(i+1)+") Aucun livre dans le panier |");
-            }
+        if (panier == null || panier.getContenue().isEmpty()) {
+            System.out.println("------------- PANIER ------------");
+            System.out.println("|                               |");
+            System.out.println("| Votre panier est vide         |");
+            System.out.println("|                               |");
+            System.out.println("---------------------------------");
+            System.out.println("Appuyez sur Entrée pour retourner au menu principal...");
+            scanner.nextLine();
+            return;
         }
-        System.out.println("| > Retour au menu principal    |");
-        System.out.println("|        "+pageCourante+"/"+(this.panier.getContenue().size()/nbObjetParPage)+"  |");
-        System.out.println("|                               |");
-        System.out.println("---------------------------------");
-        System.out.print("Veuillez choisir une option (1-"+nbObjetParPage+") : ");
-        String choix = scanner.nextLine();
-        switch (choix) {
-            case "1":
-                System.out.print("Etes vous sur de valider la commande ? (O/n) : ");
-                String confirmation = scanner.nextLine().toLowerCase();
-                if (confirmation.equals("o") || confirmation.equals("oui")) {
-                    try {
-                        finaliseCommande();
-                        System.out.println("Commande validée avec succès !");
-                    } catch (SQLException e) {
-                        System.out.println("Erreur lors de la validation de la commande : " + e.getMessage());
-                    }
-                } else {
-                    System.out.println("Commande annulée.");
+
+        int nbLivre = 0;
+        int totalPages = (int) panier.getContenue().size()/nbObjetParPage;
+        pageCourante = 1;
+        boolean continuer = true;
+        while(continuer){
+            System.out.println("------------- PANIER ------------");
+            System.out.println("|                               |");
+            List<DetailCommande> listeLivres = new ArrayList<>(panier.getContenue());
+                for(int i =pageCourante*nbObjetParPage;i<nbObjetParPage+pageCourante*nbObjetParPage && i<listeLivres.size();i++){
+                    Livre livre = listeLivres.get(i).getLivre();
+                    nbLivre++;
+                    System.out.println("| "+nbLivre+") " + livre + " |");
                 }
+            System.out.println("| Page : " + pageCourante + "/" + totalPages + "                     |");
+            System.out.println("|                               |");
+            System.out.println("---------------------------------");
+            System.out.println("Voulez-vous valider la commande ? (O/n)");
+            System.out.println("Pour modifier la commande : m");
+            System.out.println("Pour changer de page : < | >");
             
-                break;
-            case "2":
-                System.out.print("Quelles livre voulez-vous supprimer ? (1-"+nbObjetParPage+") : ");
+            String reponse = scanner.nextLine().toLowerCase();
             
-                break;
-            case "3":
-                System.out.print("Entrez l'ISBN du livre à rechercher : ");
-            
-                break;
-            case "4":
-                menuClientMain();
-                return;
-            default:
-                System.out.println("Choix invalide, veuillez réessayer.");
-                break;
+            if (reponse.equals("o") || reponse.equals("oui")) {
+                System.out.println("Validation de la commande en cours...");
+                try {
+                    System.out.println("Validation de la commande en cours...");
+                    finaliseCommande();
+                    System.out.println("Commande validée avec succès !");
+                    continuer = false;
+                } catch (SQLException e) {
+                    System.out.println("Erreur lors de la validation de la commande : " + e.getMessage());
+                }
+            } 
+            else {
+                    System.out.println("Commande annulée.");
+            }
+            if (reponse.equals("<")) {
+                if (pageCourante > 1) {
+                    pageCourante--;
+                } else {
+                    System.out.println("Vous êtes déjà à la première page.");
+                }
+            } 
+            else if (reponse.equals(">")) {
+                if (pageCourante < totalPages) {
+                    pageCourante++;
+                } else {
+                    System.out.println("Vous êtes déjà à la dernière page.");
+                }
+            } 
+            else if (reponse.equals("n")) {
+                continuer = false;
+            } 
+            else if (reponse.equals("m")) {
+                System.out.print("Entrez le numéro du livre à modifier (1-"+nbObjetParPage+") : ");
+                String livreSelec = scanner.nextLine();
+                try {
+                    int numLivre = Integer.parseInt(livreSelec);
+                    if (numLivre >= 1 && numLivre <=nbObjetParPage) {
+                        int indexLivre;
+                        if(pageCourante > 1) {
+                            indexLivre = nbObjetParPage+numLivre - 1;
+                        }
+                        else {
+                            indexLivre = numLivre - 1;
+                        }
+                        DetailCommande detail = panier.getContenue().get(indexLivre);
+                        
+                        System.out.println("Livre sélectionné : " + detail.getLivre().getTitre());
+                        System.out.println("Quantité actuelle : " + detail.getQte());
+                        System.out.println();
+                        System.out.println("1 > Modifier la quantité");
+                        System.out.println("2 > Supprimer du panier");
+                        System.out.println("3 > Retour");
+                        String choix = scanner.nextLine();
+                        switch (choix) {
+                            case "1":
+                                System.out.print("Nouvelle quantité : ");
+                                try {
+                                    int nouvelleQte = Integer.parseInt(scanner.nextLine());
+                                    if (nouvelleQte > 0) {
+                                        detail.setQte(nouvelleQte);
+                                        System.out.println("Quantité mise à jour !");
+                                    } else {
+                                        System.out.println("La quantité doit être supérieure à 0.");
+                                    }
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Veuillez entrer un nombre valide.");
+                                }
+                                break;
+                            case "2":
+                                System.out.print("Êtes-vous sûr de supprimer ce livre ? (O/n) : ");
+                                String confirmSuppr = scanner.nextLine().toLowerCase();
+                                if (confirmSuppr.equals("o") || confirmSuppr.equals("oui")) {
+                                    panier.getContenue().remove(indexLivre);
+                                    System.out.println("Livre supprimé du panier !");
+                                    
+                                    totalPages = (int) panier.getContenue().size()/nbObjetParPage;
+                                    
+                                    if (panier.getContenue().isEmpty()) {
+                                        System.out.println("Votre panier est maintenant vide.");
+                                        continuer = false;
+                                    }
+                                }
+                                break;
+                            case "3":
+                                break;
+                            default:
+                                System.out.println("Choix invalide.");
+                                break;
+                        }
+                    } else {
+                        System.out.println("Numéro invalide.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Veuillez entrer un nombre.");
+                }
+            }
         }
-        menuRechercherLivre();
     }
 
     public void menuMesRecommandations(){
@@ -415,8 +498,8 @@ public class ApplicationTerminal {
         System.out.println("| > Retour au menu principal            |");
         System.out.println("|                                       |");
         System.out.println("---------------------------------");
-        System.out.print("Veuillez choisir une informations a modifier (1-4) : ");
-        System.out.print("Q pour retour au menu principal ");
+        System.out.println("Veuillez choisir une informations a modifier (1-4) : ");
+        System.out.println("Pour retourner au menu principal : q ");
         String choix = scanner.nextLine().toLowerCase();
         switch (choix) {
             case "1":
@@ -476,10 +559,10 @@ public class ApplicationTerminal {
                 System.out.println("|                                                    |");
                 System.out.println("------------------------------------------------------");
                 System.out.println("Voulez vous commander un de ces livres ? (O/n)");
-                System.out.println("Ou changer de page ? < | >");
+                System.out.println("Pour changer de page : < | >");
                 String reponse = scanner.nextLine().toLowerCase();
                 if (reponse.equals("o") || reponse.equals("oui")) {
-                    System.out.print("Entrez le numéro du livre à commander (1-" + nbLivre + ") : ");
+                    System.out.print("Entrez le numéro du livre à commander (1-" + nbObjetParPage + ") : ");
                     int choixLivre = Integer.parseInt(scanner.nextLine());
                     try{
                         commander(listeLivres.get(choixLivre - 1), 1);
@@ -528,6 +611,7 @@ public class ApplicationTerminal {
                     commandeConnexion = new CommandeBD(connexion);
                     clientConnexion = new ClientBD(connexion);
                     livreConnexion = new LivreBD(connexion);
+                    magasinConnexion = new MagasinBD(connexion);
                     System.out.println("Partage de la connexion réussie ! ");
                 } else {
                     System.out.println("Échec de la connexion à la base de données. Veuillez réessayer.");
