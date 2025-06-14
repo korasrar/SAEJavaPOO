@@ -224,8 +224,154 @@ public class ApplicationTerminal {
     }
 
     public void menuAdminMain() {
-        // TO DO
+       boolean continuer = true;
+        while(continuer) {
+        System.out.println( "-------- MENU ADMIN --------");
+        System.out.println("|                           |");
+        System.out.println("| > Créer un compte vendeur |");
+        System.out.println("| > Ajouter une  librairie  |");
+        System.out.println("| > Gérer les stocks        |");
+        System.out.println("| > Voir les stats de vente |");
+        System.out.println("| > Mon profil              |");
+        System.out.println("| > Se déconnecter          |");
+        System.out.println("|                           |");
+        System.out.println("-----------------------------");
+        System.out.print("Veuillez choisir une option (1-6) : ");
+        String choix = scanner.nextLine();
+        switch (choix) {
+            case "1":
+                menuCreerCompteVendeur();
+                break;
+            case "2":
+                menuAjouterLibrairie();
+                break;
+            case "3":
+                menuGererStocks();
+                break;
+            case "4":
+                menuStatsDeVentes();
+                break;
+            case "5":
+                menuProfil();
+                break;
+            case "6":
+                 System.out.println("Déconnexion...");
+                estConnecteUtil = false;
+                utilisateurConnecter = null;
+                continuer = false;
+                break;
+            default:
+                System.out.println("Choix invalide, veuillez réessayer.");
+                break;
+        }
+        }
     }
+
+    public void menuCreerCompteVendeur(){
+       boolean continuer = true;
+        while(continuer) {        
+        System.out.println(" ---- CREER COMPTE VENDEUR ----");
+        System.out.println("|                             |");
+        System.out.println("| > Créer un compte vendeur   |");
+        System.out.println("|                             |");
+        System.out.println("-------------------------------");
+        System.out.println("Veuillez entrer les infos du compte vendeur : ");
+        String login = scanner.nextLine();
+        VendeurBD.creerCompteVendeur(login);
+        System.out.println("Le compte vendeur a ete cree avec succes");
+        break;
+        }
+    }
+
+    public void menuAjouterLibrairie() {
+        boolean continuer = true;
+        while(continuer) {
+            System.out.println("---- AJOUTER UNE LIBRAIRIE ----");
+            System.out.println("|                             |");
+            System.out.println("| > Ajouter une librairie     |");
+            System.out.println("|                             |");
+            System.out.println("-------------------------------");
+            System.out.println("Veuillez entrer le nom de la librairie : ");
+            String nomLibrairie = scanner.nextLine();
+           // TrucBD.ajouterLibrairie(nomLibrairie); jsp encore
+            System.out.println("La librairie a ete ajoutee avec succes");
+            break;
+        }
+    }
+
+    public void menuGererStocks() {
+        boolean continuer = true;
+        while(continuer) {
+            System.out.println("---- GÉRER LES STOCKS ----");
+            System.out.println("|                       |");
+            System.out.println("| > Ajouter un livre    |");
+            System.out.println("| > Modifier un livre   |");
+            System.out.println("| > Supprimer un livre  |");
+            System.out.println("| > Retour au menu      |");
+            System.out.println("|                       |");
+            System.out.println("-------------------------");
+            System.out.print("Veuillez choisir une option (1-4) : ");
+            String choix = scanner.nextLine();
+            switch (choix) {
+                case "1":
+                    System.out.println("Veuillez entrer le titre du livre à ajouter : ");
+                    String titre = scanner.nextLine();
+                    LivreBD.ajouterLivre(titre);
+                    System.out.println("Le livre a été ajouté avec succès");
+                    break;
+                case "2":
+                    System.out.println("Veuillez entrer le titre du livre à modifier : ");
+                    String titreModif = scanner.nextLine();
+                    LivreBD.modifierLivre(titreModif);
+                    System.out.println("Le livre a été modifié avec succès");
+                    break;
+                case "3":
+                    System.out.println("Veuillez entrer le titre du livre à supprimer : ");
+                    String titreSupp = scanner.nextLine();
+                    LivreBD.supprimerLivre(titreSupp);
+                    System.out.println("Le livre a été supprimé avec succès");
+                    break;
+                case "4":
+                    continuer = false;
+                    break;
+                default:
+                    System.out.println("Choix invalide, veuillez réessayer.");
+                    break;
+            }
+        }
+    }
+
+    public void menuStatsDeVentes() {
+        boolean continuer = true;
+        while(continuer) {
+            System.out.println("---- STATISTIQUES DE VENTES ----");
+            System.out.println("|                             |");
+            System.out.println("| > Voir les ventes du mois   |");
+            System.out.println("| > Voir les ventes de l'année |");
+            System.out.println("| > Retour au menu principal   |");
+            System.out.println("|                             |");
+            System.out.println("-------------------------------");
+            System.out.print("Veuillez choisir une option (1-3) : ");
+            String choix = scanner.nextLine();
+            switch (choix) {
+                case "1":
+                    // jsp
+                    break;
+                case "2":
+                    // jsp
+                    break;
+                case "3":
+                    continuer = false;
+                    break;
+                default:
+                    System.out.println("Choix invalide, veuillez réessayer.");
+                    break;
+            }
+        }
+    }
+
+
+
 
     public void menuVendeurMain() {
         // TO DO
@@ -591,6 +737,8 @@ public class ApplicationTerminal {
             }
         }
     }
+
+
 
     public void main(){
         System.out.println("Bienvenue dans l'application de gestion de librairie !");
