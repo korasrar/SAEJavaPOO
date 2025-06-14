@@ -26,7 +26,13 @@ public class UtilisateurBD {
      */
     public Utilisateur getUtilisateur(String username, String mdp) throws SQLException, UtilisateurIntrouvableException, VendeurSansMagasinException, MotDePasseIncorrectException {
         st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM UTILISATEUR NATURAL LEFT JOIN VENDEUR NATURAL LEFT JOIN ADMIN NATURAL LEFT JOIN CLIENT WHERE username = '" + username + "'");
+        String query = "SELECT * " +
+                   "FROM UTILISATEUR u " +
+                   "LEFT JOIN VENDEUR v ON u.idutilisateur = v.idvendeur " +
+                   "LEFT JOIN ADMIN a ON u.idutilisateur = a.idadmin " +
+                   "LEFT JOIN CLIENT c ON u.idutilisateur = c.idcli " +
+                   "WHERE u.username = '" + username + "'";
+        r = st.executeQuery(query);
         if (r.next()) {
             String nom = r.getString("nom");
             String prenom = r.getString("prenom");
@@ -43,7 +49,8 @@ public class UtilisateurBD {
                     return new Vendeur(idVendeur, nom, prenom, username, motDePasse, vendeurBD.getMagasin(idVendeur));
                 case client:
                     int idCli = r.getInt("idcli");
-                    return new Client(idCli, motDePasse, motDePasse, r.getInt("codepostal"), nom, prenom, username, motDePasse);
+                    String adresse = r.getString("adressecli");
+                    return new Client(idCli, adresse, motDePasse, r.getInt("codepostal"), nom, prenom, username, motDePasse);
                 default:return null;
             }
             } else{

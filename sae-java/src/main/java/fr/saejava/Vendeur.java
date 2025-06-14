@@ -8,7 +8,7 @@ public class Vendeur extends Utilisateur{
     private Magasin magasin;
 
     public Vendeur(int idVendeur, String nom, String prenom,String username, String motDePasse, Magasin magasin){
-        super(nom, prenom, username, motDePasse, Role.vendeur);
+        super(idVendeur, nom, prenom, username, motDePasse, Role.vendeur);
         this.idVendeur = idVendeur;
         this.magasin = magasin;
     }

@@ -9,12 +9,17 @@ public abstract class Utilisateur{
     private String prenom;
     private Role role;
 
-    public Utilisateur (String nom, String prenom, String pseudo, String motDePasse, Role role){
+    public Utilisateur (int idUtilisateur, String nom, String prenom, String pseudo, String motDePasse, Role role){
+        this.idUtilisateur = idUtilisateur;
         this.nom = nom;
         this.prenom = prenom;
         this.pseudo = pseudo;
         this.motDePasse = motDePasse;
         this.role = role;
+    }
+
+    public int getId(){
+        return idUtilisateur;
     }
 
     public String getNom() {

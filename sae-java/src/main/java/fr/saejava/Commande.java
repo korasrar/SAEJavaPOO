@@ -93,4 +93,13 @@ public class Commande {
         }
         return false;
     }
+
+    public DetailCommande livreDansCommande(Livre livre){
+        for(DetailCommande detail : this.contenue){
+            if(detail.getLivre().equals(livre)){
+                return detail;
+            }
+        }
+        return null;
+    }
 }
