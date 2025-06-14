@@ -108,6 +108,14 @@ public class MagasinBD {
         Magasin meilleurMagasin = null;
         st = connexion.createStatement();
         List<Magasin> magasins = chargerMagasin();
+        for(DetailCommande detail : commande.getContenue()) {
+            Livre livre = detail.getLivre();
+            int qte = detail.getQte();
+            rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' and qte>="+qte);
+            if(!rs.next()) {
+                throw new SQLException("Le livre " + livre.getTitre() + " n'est pas disponible dans la base de données.");
+            }
+        }
         for(Magasin magasin : magasins){
             nbLivresDispo = 0;
             for(DetailCommande detail : commande.getContenue()) {
@@ -116,6 +124,10 @@ public class MagasinBD {
                 rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' and qte>="+qte+" and idmag="+magasin.getId());
                 if(rs.next()) {
                     nbLivresDispo++;
+                    System.out.println("Livre disponible : " + livre.getTitre() + " en quantité " + qte + " dans le magasin " + magasin.getNom());
+                }
+                else {
+                    System.out.println("Livre non disponible : " + livre.getTitre() + " en quantité " + qte + " dans le magasin " + magasin.getNom());
                 }
                 if(nbLivresDispo> maxLivresDispo) {
                     maxLivresDispo = nbLivresDispo;
@@ -123,6 +135,10 @@ public class MagasinBD {
                 }
             }
         }
+        if(meilleurMagasin == null) {
+            throw new SQLException("Aucun magasin ne peut satisfaire la commande.");
+        }
+        System.out.println("Le meilleur magasin pour la commande est : " + meilleurMagasin);
         return meilleurMagasin;
     }
 }

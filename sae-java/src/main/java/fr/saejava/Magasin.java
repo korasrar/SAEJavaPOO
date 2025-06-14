@@ -54,6 +54,11 @@ public class Magasin{
         return Integer.hashCode(id);
     }
 
+    @Override
+    public String toString(){
+        return this.nom + " (" + this.ville + ")";
+    }
+
     /*====================================*/
     
 }

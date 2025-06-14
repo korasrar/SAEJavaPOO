@@ -26,13 +26,7 @@ public class UtilisateurBD {
      */
     public Utilisateur getUtilisateur(String username, String mdp) throws SQLException, UtilisateurIntrouvableException, VendeurSansMagasinException, MotDePasseIncorrectException {
         st = connexion.createStatement();
-        String query = "SELECT * " +
-                   "FROM UTILISATEUR u " +
-                   "LEFT JOIN VENDEUR v ON u.idutilisateur = v.idvendeur " +
-                   "LEFT JOIN ADMIN a ON u.idutilisateur = a.idadmin " +
-                   "LEFT JOIN CLIENT c ON u.idutilisateur = c.idcli " +
-                   "WHERE u.username = '" + username + "'";
-        r = st.executeQuery(query);
+        r = st.executeQuery("SELECT * FROM UTILISATEUR u LEFT JOIN VENDEUR v ON u.idutilisateur = v.idvendeur LEFT JOIN ADMIN a ON u.idutilisateur = a.idadmin LEFT JOIN CLIENT c ON u.idutilisateur = c.idcli WHERE u.username = '" + username + "'");
         if (r.next()) {
             String nom = r.getString("nom");
             String prenom = r.getString("prenom");
@@ -41,10 +35,10 @@ public class UtilisateurBD {
             if(motDePasse.equals(mdp)){
             switch (role) {
                 case admin:
-                    int idAdmin = r.getInt("idAdmin");
+                    int idAdmin = r.getInt("idadmin");
                     return new Admin(idAdmin, nom, prenom, username, motDePasse);
                 case vendeur:
-                    int idVendeur = r.getInt("idVendeur");
+                    int idVendeur = r.getInt("idvendeur");
                     VendeurBD vendeurBD = new VendeurBD(connexion);
                     return new Vendeur(idVendeur, nom, prenom, username, motDePasse, vendeurBD.getMagasin(idVendeur));
                 case client:
