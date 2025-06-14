@@ -37,6 +37,8 @@ public class LivreBD {
             Livre livre = new Livre(r.getString("isbn"), r.getString("titre"), r.getInt("nbpages"), r.getString("datepubli"), r.getDouble("prix"));
             livres.put(livre, connexionVendeur.verifierDispo(livre));
         }
+        r.close();
+        st.close();
         return livres;
     }
 }

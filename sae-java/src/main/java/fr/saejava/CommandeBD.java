@@ -124,6 +124,8 @@ public class CommandeBD {
                 stDetailCommande.close();
                 listCommandes.add(commande);
             }
+            r.close();
+            st.close();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des commandes pour le client");
         }
@@ -137,6 +139,8 @@ public class CommandeBD {
         if(r.next()){
             lastNomCom = r.getInt("numcom");
         }
+        r.close();
+        st.close();
         return lastNomCom;
     }
 }

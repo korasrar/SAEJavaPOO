@@ -110,4 +110,12 @@ public class Commande {
         }
         return null;
     }
+
+    public double prixTotal(){
+        double total=0;
+        for(DetailCommande detail : this.contenue){
+            total+=detail.getPrixVente();
+        }
+        return total;
+    }
 }

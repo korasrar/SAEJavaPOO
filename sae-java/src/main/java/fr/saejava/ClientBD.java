@@ -25,8 +25,10 @@ public class ClientBD {
     public void creeCompteClient(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse) throws SQLException{
         PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+num+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','client'),");
         pstmt.executeUpdate();
+        pstmt.close();
         pstmt = this.connexion.prepareStatement("insert into CLIENT values ("+num+", '"+adresse+"', '"+codePostal+"', '"+ville+"'),");
-        pstmt.executeUpdate();	
+        pstmt.executeUpdate();
+        pstmt.close();
     }
 
     /**
@@ -46,6 +48,7 @@ public class ClientBD {
         st = connexion.createStatement();
         // Demander les informations au client
         st.executeUpdate("");
+        st.close();
     }
 
     // *------------------------ Méthode pour onVousRecommande() ------------------------* //
@@ -103,6 +106,8 @@ public class ClientBD {
                 clientProches.put(clientBD, valProxi);
             }
         }
+        r.close();
+        st.close();
         // trie de la map
         Stream<Map.Entry<Client,Integer>> clientProchesSorted = clientProches.entrySet().stream().sorted(Map.Entry.comparingByValue());
         clientProches = new HashMap<>();
@@ -155,9 +160,23 @@ public class ClientBD {
         return livresRecommandes;  
     }
 
-    public static void modifierClient(Client clientTempo) {
-        // TO DO
-        // Affecter le changements au client qui a le meme id !
+    public void modifierClient(Client clientTempo) throws SQLException {
+        PreparedStatement pstmt = this.connexion.prepareStatement("UPDATE UTILISATEUR SET nom = ?, prenom = ?, username = ?, motdepasse = ? WHERE idutilisateur = ?");
+        pstmt.setString(1, clientTempo.getNom());
+        pstmt.setString(2, clientTempo.getPrenom());
+        pstmt.setString(3, clientTempo.getPseudo());
+        pstmt.setString(4, clientTempo.getMotDePasse());
+        pstmt.setInt(5, clientTempo.getNum());
+        pstmt.executeUpdate();
+        pstmt.close();
+        
+        pstmt = this.connexion.prepareStatement("UPDATE CLIENT SET adressecli = ?, codepostal = ?, villecli = ? WHERE idcli = ?");
+        pstmt.setString(1, clientTempo.getAdresse());
+        pstmt.setInt(2, clientTempo.getCodePostal());
+        pstmt.setString(3, clientTempo.getVille());
+        pstmt.setInt(4, clientTempo.getNum());
+        pstmt.executeUpdate();
+        pstmt.close();
     }
 }
 

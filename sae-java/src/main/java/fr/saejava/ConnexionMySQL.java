@@ -45,7 +45,7 @@ public class ConnexionMySQL {
             mysql=DriverManager.getConnection(
             "jdbc:mysql://mysql:3306/librairie?allowPublicKeyRetrieval=true&useSSL=false",
             "user_saejava","saejava");
-            System.out.println("Connection réussie");
+            System.out.println("Connexion réussie");
             } catch (SQLException ex){
                 System.out.println("Voici le message d'erreur : "+ex.getMessage()+
                 " Code erreur: "+ex.getErrorCode());

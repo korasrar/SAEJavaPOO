@@ -29,10 +29,13 @@ public class MagasinBD {
         if(rs.next()){
             int qteExistante = rs.getInt("qte");
             int nouvelleQte = qteExistante+qte;
+            rs.close();
             st.executeUpdate("UPDATE POSSEDER SET qte ="+nouvelleQte+" WHERE isbn = "+l.getIsbn()+" AND igmag = "+magasin.getId());
+            st.close();
         }
         // sinon, vérifier les informations du livre et ajouter ce qui n'est pas dans la bdd
         else{
+            rs.close();
             // ajout du livre en premier
             st.executeUpdate("insert into LIVRE(isbn, titre, nbpages, datepubli, prix) values ('"+l.getIsbn()+"','"+l.getTitre()+"',"+l.getNbPages()+","+l.getDatePubli()+","+l.getPrix()+");");
             List<Editeur> editeursL = l.getEditeurs();
@@ -42,8 +45,12 @@ public class MagasinBD {
             // Ajout de tout les nouveaux éditeurs
             for(Editeur editeur: editeursL){
                 rs = st.executeQuery("SELECT idedit FROM EDITEUR WHERE idauteur"+editeur.getIdEdit());
-                if(rs.next()){continue;}
+                if(rs.next()){
+                    rs.close();
+                    continue;
+                }
                 else{
+                    rs.close();
                     // ajout de l'éditeur si il n'existe pas
                     st.executeUpdate("insert into EDITEUR(nomedit,idedit) values ('"+editeur.getNomEdit()+"'',"+editeur.getIdEdit()+");");
                     // ajout dans la table association
@@ -55,8 +62,12 @@ public class MagasinBD {
             // Ajout de tout les nouveaux auteurs
             for(Auteur auteur: auteursL){
                 rs = st.executeQuery("SELECT idauteur FROM AUTEUR WHERE idedit"+auteur.getIdAuteur());
-                if(rs.next()){continue;}
+                if(rs.next()){
+                    rs.close();
+                    continue;
+                }
                 else{
+                    rs.close();
                     // ajout de l'auteur si il n'existe pas
                     st.executeUpdate("insert into AUTEUR(idauteur, nomauteur,anneenais,anneedeces) values ('"+auteur.getIdAuteur()+"','"+auteur.getNomAuteur()+"',"+auteur.getAnneeNais()+","+auteur.getAnneeDeces()+");");
                     st.executeUpdate("insert into ECRIRE(isbn,idauteur) values ()");
@@ -67,14 +78,19 @@ public class MagasinBD {
             // Ajout de toutes les nouvelles classfications
             for(Classification classification : classificationsL){
                 rs = st.executeQuery("SELECT * FROM CLASSIFICAtiON WHERE iddewey"+classification.getIdDewey());
-                if(rs.next()){continue;}
+                if(rs.next()){
+                    rs.close();
+                    continue;
+                }
                 else{
+                    rs.close();
                     // ajout de la classification si elle n'existe pas
                     st.executeUpdate("insert into CLASSIFICATION(iddewey, nomclass) values ("+classification+",'"+classification.getNomClass()+"');");
                     st.executeUpdate("insert into THEMES(isbn,iddewey) values ('"+l.getIsbn()+"',"+classification.getIdDewey()+")");
                     System.out.println("Ajout de la classification "+ classification.getNomClass());
                 }
             }
+            st.close();
         }
     }
 
@@ -93,6 +109,8 @@ public class MagasinBD {
             String villeMagasin = rs.getString("villemag");
             magasins.add(new Magasin(idMagasin, nomMagasin, villeMagasin));
         }
+        rs.close();
+        st.close();
         return magasins;
     }
 
@@ -113,8 +131,11 @@ public class MagasinBD {
             int qte = detail.getQte();
             rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' and qte>="+qte);
             if(!rs.next()) {
+                rs.close();
+                st.close();
                 throw new SQLException("Le livre " + livre.getTitre() + " n'est pas disponible dans la base de données.");
             }
+            rs.close();
         }
         for(Magasin magasin : magasins){
             nbLivresDispo = 0;
@@ -129,12 +150,14 @@ public class MagasinBD {
                 else {
                     System.out.println("Livre non disponible : " + livre.getTitre() + " en quantité " + qte + " dans le magasin " + magasin.getNom());
                 }
+                rs.close();
                 if(nbLivresDispo> maxLivresDispo) {
                     maxLivresDispo = nbLivresDispo;
                     meilleurMagasin = magasin;
                 }
             }
         }
+        st.close();
         if(meilleurMagasin == null) {
             throw new SQLException("Aucun magasin ne peut satisfaire la commande.");
         }
