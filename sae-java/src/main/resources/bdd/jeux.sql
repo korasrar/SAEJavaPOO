@@ -611,7 +611,12 @@ insert into UTILISATEUR(idutilisateur, nom, prenom, username, motdepasse, role) 
 	(497,'Bouzid','Leonor','Leonor497','1559186993Bouzid','client'),
 	(498,'Lefebvre','Nathan','Nathan498','1439562191Lefebvre','client'),
 	(499,'Vincent','Sophie','Sophie499','947947772Vincent','client'),
-	(500,'Garcia','Elodie','Elodie500','625556097Garcia','client');
+	(500,'Garcia','Elodie','Elodie500','625556097Garcia','client'),
+	(501,'Dupond','Jacques','Jacques501','567327814Dupond','vendeur');
+
+-- les vendeurs
+insert into VENDEUR(idvendeur, idmagasin) values
+    (501, 3);
 
 -- les clients
 insert into CLIENT (idcli, adressecli, codepostal, villecli) values

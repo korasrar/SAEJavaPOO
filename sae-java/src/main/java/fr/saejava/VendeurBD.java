@@ -131,6 +131,17 @@ public class VendeurBD {
         else {return false;}
     }
 
+    public boolean verifierQteDispo(Livre l, int qte) throws SQLException, PasStockPourLivreException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn");
+        if (r.next()){
+            int qteDispo = r.getInt("qtett");
+            if (qteDispo >= qte){return true;}
+            else {throw new PasStockPourLivreException();}
+            }
+        else {throw new PasStockPourLivreException();}
+    }
+
 
     /**
      * récupère le magasin du vendeur

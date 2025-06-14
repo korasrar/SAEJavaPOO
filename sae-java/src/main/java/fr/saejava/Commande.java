@@ -11,13 +11,15 @@ public class Commande {
     List<DetailCommande> contenue;
     Client client;
     Magasin magasin;
+    ModeLivraison modeLivraison;
 
-    public Commande(int numcom, Date dateCom, Client client,Magasin magasin){
+    public Commande(int numcom, Date dateCom, Client client,Magasin magasin, ModeLivraison modeLivraison){
         this.numcom=numcom;
         this.contenue=new ArrayList<>();
         this.client=client;
         this.magasin=magasin;
         this.dateCom=dateCom;
+        this.modeLivraison=modeLivraison;
     }
 
     Client getClient(){
@@ -36,8 +38,12 @@ public class Commande {
         return this.numcom;
     }
 
-    public  Date getDateCommande(){
+    public Date getDateCommande(){
         return this.dateCom;
+    }
+
+    public ModeLivraison getModeLivraison() {
+        return this.modeLivraison;
     }
 
     void setClient(Client client) {
@@ -48,6 +54,9 @@ public class Commande {
     }
     public void setDateCommande(Date dateCommande) {
         this.dateCom = dateCommande;
+    }
+    public void setModeLivraison(ModeLivraison modeLivraison) {
+        this.modeLivraison = modeLivraison;
     }
 
     public void ajouterDetailCommande(DetailCommande ajout){
@@ -76,7 +85,6 @@ public class Commande {
     public int hashCode() {
         return Integer.hashCode(numcom) + client.hashCode() + magasin.hashCode() + contenue.hashCode();
     }
-// faire hashcode
 
     // *----------------------------* //
 
