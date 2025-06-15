@@ -297,7 +297,7 @@ public class ApplicationTerminal {
             try {
                 Magasin magasin = menuChoisirMagasin();
                 if (magasin != null) {
-                    adminConnexion.creerCompteVendeur((utilisateurConnexion.getDernierID()+1), nomVendeur, prenomVendeur, usernameVendeur, motDePasseVendeur, magasin);
+                    adminConnexion.creeCompteVendeur((utilisateurConnexion.getDernierID()+1), nomVendeur, prenomVendeur, usernameVendeur, motDePasseVendeur, magasin);
                     System.out.println("Compte vendeur créé avec succès.");
                 } else {
                     System.out.println("Aucun magasin sélectionné. Le compte n'a pas été créé.");
@@ -521,7 +521,7 @@ public class ApplicationTerminal {
                     break;    
                 
                 case "2":
-                  System.out.println("----- MODIFIER UN LIVRE -----");
+                    System.out.println("--- MODIFIER UN LIVRE ---");
                     System.out.println("|                       |");
                     System.out.println("| > Modifier un livre   |");
                     System.out.println("|                       |");
@@ -529,30 +529,18 @@ public class ApplicationTerminal {
                     try{
                     menuRechercherLivre();
                     System.out.println("Veuillez entrer les nouvelles informations du livre...");
-                    System.out.print("ISBN : ");
-                    String isbn3 = scanner.nextLine();
                     System.out.print("Titre : ");
                     String titre3 = scanner.nextLine();
                     System.out.print("Nombre de pages : ");
                     int nbPages3 = scanner.nextInt();
-                    System.out.print("Auteurs : ");
-                    String auteurs3 = scanner.nextLine();
-                    System.out.print("Editeurs : ");
-                    String editeurs3 = scanner.nextLine();
                     System.out.print("Annee de publication : ");
                     String annee3 = scanner.nextLine();
-                    System.out.print("Classifications : ");
-                    String classifications3 = scanner.nextLine();
                     System.out.print("Prix : ");
                     double prix3 = scanner.nextDouble();
-                    livreSelectionner.setIsbn(isbn3);
                     livreSelectionner.setTitre(titre3);
                     livreSelectionner.setNbPages(nbPages3);
                     livreSelectionner.setDatePubli(annee3);
-                    livreSelectionner.setPrix(prix3);   
-                    livreSelectionner.setClassifications(livreSelectionner.getClassifications());
-                    livreSelectionner.setAuteurs(livreSelectionner.getAuteurs());
-                    livreSelectionner.setEditeurs(livreSelectionner.getEditeurs()); 
+                    livreSelectionner.setPrix(prix3);
                     adminConnexion.modifierLivre(livreSelectionner);
                     livreSelectionner = null;
                     } catch(SQLException e){
@@ -664,28 +652,10 @@ public class ApplicationTerminal {
         String choix = scanner.nextLine();
         switch (choix) {
             case "1":
-                menuRechercherLivre();
+                menuTransfertLivre(); // check
                 break;
             case "2":
-                // rien
-                break;
-            case "3":
-                menuMesRecommandations();
-                break;
-            case "4":
-                menuPanier();
-                break;
-            case "5":
-                menuMesCommandes();
-                break;
-            case "6":
-                menuProfil();
-                break;
-            case "7":
-                menuTransfertLivre();
-                break;
-            case "2":
-                menuMajStock();
+                menuMajStock(); // check ?
                 break;
             case "3":
                 menuDispo();
@@ -774,17 +744,20 @@ public class ApplicationTerminal {
                     String titre = scanner.nextLine();
                     try{
                         livres = livreConnexion.rechercherLivre(Filtre.titre,"" , titre ,"" , vendeurConnexion);
-                        System.out.println("Est ce que c'est pour commander ? (oui/non)");
+                        System.out.println("Est ce que c'est pour commander ? (O/n)");
                         String reponse = scanner.nextLine().toLowerCase();
                         if(reponse.equals("o") || reponse.equals("oui")){
                             afficherLivre(livres, true);
+                            System.out.println("a commander");
                         }
                         else{
+                            System.out.println("pas a commander");
                             afficherLivre(livres, false);
                         }
                         
                         System.out.print("Appuyez sur Entrée pour continuer...");
                         scanner.nextLine();
+                        continuer = false;
                     }
                     catch(SQLException e){
                         System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
@@ -805,6 +778,7 @@ public class ApplicationTerminal {
                         }
                         System.out.print("Appuyez sur Entrée pour continuer...");
                         scanner.nextLine();
+                        continuer = false;
                     }
                     catch(SQLException e){
                         System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
@@ -822,9 +796,11 @@ public class ApplicationTerminal {
                         }
                         else{
                             afficherLivre(livres, false);
+                            continuer=false;
                         }
                         System.out.print("Appuyez sur Entrée pour continuer...");
                         scanner.nextLine();
+                        continuer = false;
                     }
                     catch(SQLException e){
                         System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
@@ -989,7 +965,13 @@ public class ApplicationTerminal {
     }
 
     public void menuMesCommandes(){
-        List<Commande> commandes = commandeConnexion.getCommandes((Client) utilisateurConnecter);
+        List<Commande> commandes;
+        try{
+            commandes = commandeConnexion.getCommandes((Client) utilisateurConnecter);
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des commandes : " + e.getMessage());
+            return;
+        }
         
         if (commandes.isEmpty()) {
             System.out.println("------------- MES COMMANDES ------------");
@@ -1193,9 +1175,20 @@ public class ApplicationTerminal {
             System.out.print("Entrez l'ISBN du livre à rechercher : ");
             String isbn = scanner.nextLine();
             Map<Livre, Boolean> lesLivres = livreConnexion.rechercherLivre(isbn, titre, auteur, vendeurConnexion, (Vendeur) utilisateurConnecter);
-            afficherLivre(lesLivres);
+            afficherLivre(lesLivres, false);
             List<Magasin> lesMagasins = magasinConnexion.livreDansMagasin(livreSelectionner); // merge
-            afficherLivreMag(livreSelectionner, lesMagasins);
+            try{
+                afficherLivreMag(livreSelectionner, lesMagasins);
+            }
+            catch(SQLException e){
+                System.out.println("Erreur lors de l'affichage des magasins : "+ e.getMessage());
+            }
+            catch(VendeurSansMagasinException e){
+                System.out.println("Vendeur sans magasin !");
+            }
+            catch(LivrePasDansStockMagasinException e){
+                System.out.println(livreSelectionner+"\n"+"N'est pas dans le stock du magasin");
+            }
             System.out.print("Appuyez sur Entrée pour continuer...");
             scanner.nextLine();
             }
@@ -1216,7 +1209,10 @@ public class ApplicationTerminal {
             System.out.print("Entrez l'ISBN du livre à rechercher : ");
             String isbn = scanner.nextLine();
             Map<Livre, Boolean> lesLivres = livreConnexion.rechercherLivre(isbn, titre, auteur, vendeurConnexion, (Vendeur) utilisateurConnecter);
-            majStock(lesLivres);
+            List<Livre> listLivre = new ArrayList<>(lesLivres.keySet());
+            for (int i=0; i<listLivre.size(); i++){
+                majStock(listLivre.get(i));
+            }
             System.out.print("Appuyez sur Entrée pour continuer...");
             scanner.nextLine();
             }
@@ -1231,14 +1227,16 @@ public class ApplicationTerminal {
         Map<Livre, Boolean> livres;
         while(continuer) {
             try {
-            System.out.print("Entrez le titre à rechercher : ");
-            String titre = scanner.nextLine();
-            System.out.print("Entrez le nom de l'auteur à rechercher : ");
-            String auteur = scanner.nextLine();
-            System.out.print("Entrez l'ISBN du livre à rechercher : ");
-            String isbn = scanner.nextLine();
-            Map<Livre, Boolean> lesLivres = livreConnexion.rechercherLivre(isbn, titre, auteur, vendeurConnexion, (Vendeur) utilisateurConnecter);
-            //afficherLivre(livres);
+            menuRechercherLivre();
+            if(!(livreSelectionner==null)){
+                List<Magasin> lesMagasins = magasinConnexion.livreDansMagasin(livreSelectionner);
+                for(Magasin magasin : lesMagasins) {
+                    System.out.println("Livre " + livreSelectionner.getTitre() + " disponible dans le magasin : " + magasin.getNom() + " - " + magasin.getVille());
+                }
+            }
+            else{
+                System.out.println("Aucun livre sélectionné.");
+            }
             System.out.print("Appuyez sur Entrée pour continuer...");
             scanner.nextLine();
             }
@@ -1259,6 +1257,7 @@ public class ApplicationTerminal {
         while(continuer){
             if (livres.isEmpty()) {
                 System.out.println("Aucun livre trouvé.");
+                continuer = false;
             } else {
                 System.out.println("------------------- LIVRES TROUVÉS -------------------");
                 System.out.println("|                                                    |");
@@ -1300,7 +1299,7 @@ public class ApplicationTerminal {
                         
                         if(livres.get(livreChoisi)==true && quantiteDisponible==true){
                             try{
-                            commander(livreChoisi, quantite);
+                                panier.commander(livreChoisi, quantite);
                             }
                             catch (IndexOutOfBoundsException e) {
                                 System.out.println("Numéro de livre invalide. Veuillez réessayer.");
@@ -1312,7 +1311,6 @@ public class ApplicationTerminal {
                     }
                 } else {
                     System.out.println("Voulez vous selectionner un de ces livres ? (O/n)");
-                    System.out.println("Voulez vous commander un de ces livres ? (O/n)");
                     System.out.println("Pour changer de page : < | >");
                     reponse = scanner.nextLine().toLowerCase();
                     if (reponse.equals("o") || reponse.equals("oui")) {
@@ -1321,6 +1319,8 @@ public class ApplicationTerminal {
                         Livre livreChoisi = listeLivres.get(choixLivre-1+(pageCourante - 1) * nbObjetParPage);
                         livreSelectionner = livreChoisi;
                     }
+                    else if (reponse.equals("n") || reponse.equals("non")) {
+                    continuer = false;}
                 }
                 if (reponse.equals("<")) {
                     if (pageCourante > 1) {
@@ -1337,7 +1337,7 @@ public class ApplicationTerminal {
                 } else if (reponse.equals("n") || reponse.equals("non")) {
                     continuer = false;
                 } else {
-                    System.out.println("Réponse invalide, veuillez réessayer.");
+                    continuer = false;
                 }
             }
         }
@@ -1380,15 +1380,15 @@ public class ApplicationTerminal {
                                 System.out.println("La quantité doit être supérieure à 0.");
                                 continue;
                             }
-                            if (!vendeurConnexion.verifierQteDispo(livre, quantite, this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId()))) {
-                                System.out.println("Pas assez de stock pour le livre " + livre.getTitre() + ". Veuillez choisir une quantité inférieure.");
-                                continue;
-                            }
-                            else{
+                            try{
+                                boolean stockVerif = vendeurConnexion.verifierQteDispo(livre, quantite, this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId()));                            
                                 this.vendeurConnexion.transferer(livre, this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId()), lesMagasins.get(Integer.parseInt(choix)-1), quantite);
                                 System.out.println("Transfert en cours...");
                                 continuer = false;
                                 System.out.println("Transfert effectué avec succès !");
+                            }
+                            catch(PasStockPourLivreException e){
+                                System.out.println("Pas assez de stock pour disponible");
                             }
                         }
                 }
@@ -1399,8 +1399,7 @@ public class ApplicationTerminal {
                         
                 }
             }
-        }    
-    }
+        }
 
     public void majStock(Livre livre){
         boolean continuer = true;
@@ -1410,16 +1409,33 @@ public class ApplicationTerminal {
             System.out.println("| "+livre.getIsbn()+" |");
             System.out.println("| "+livre.getTitre()+" |");
             System.out.println("| "+livre.getAuteurs()+" |");
-                Magasin magasinVendeur = this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId());
+            Magasin magasinVendeur = null;
+            try{
+                magasinVendeur = this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId());
+            }
+            catch(VendeurSansMagasinException e ){
+                System.out.println("Vendeur dans magasin !");
+            }
+            catch(SQLException e){
+                System.out.println("Erreur lors de la recherche de magasin du vendeur :"+ e.getMessage());
+            }
                 Map<Livre, Integer> lesStocks = magasinVendeur.getStock();
                 Integer qte = lesStocks.get(livre); 
-            System.out.println("| "+qte+" |");
+            System.out.println("| "+qte+"                                |");
             System.out.println("|                                         |");
             System.out.println("-------------------------------------------");
             System.out.print("Combiens de livres souhaitez vous ajouter? : ");
             int ajout = Integer.parseInt(scanner.nextLine());
-            this.vendeurConnexion.mettreAJour(livre, qte + ajout, magasinVendeur);
-            return;
+            try{
+                this.vendeurConnexion.mettreAJour(livre, qte + ajout, magasinVendeur);
+            }
+            catch(SQLException e){
+                System.out.println("Erreur lors de la mise a jour ");
+            }
+            catch(LivrePasDansStockMagasinException e){
+                System.out.println("Livre pas disponible dans le stock du magasin");
+            }
+            continuer=false;
         }
     }
 

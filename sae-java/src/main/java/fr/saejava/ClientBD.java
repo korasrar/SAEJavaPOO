@@ -15,8 +15,6 @@ import java.util.stream.Stream;
 
 public class ClientBD {
     ConnexionMySQL connexion;
-    Statement st;
-    ResultSet r;
 
     public ClientBD(ConnexionMySQL connexion){
         this.connexion = connexion;
@@ -44,11 +42,13 @@ public class ClientBD {
      */
 
     public void passerCommande(Commande commande) throws SQLException{
-        //ajoute la commande a la BD
-        st = connexion.createStatement();
-        // Demander les informations au client
-        st.executeUpdate("");
-        st.close();
+        Statement st = connexion.createStatement();
+        try {
+            // Demander les informations au client
+            st.executeUpdate("");
+        } finally {
+            if (st != null) st.close();
+        }
     }
 
     // *------------------------ Méthode pour onVousRecommande() ------------------------* //
@@ -97,28 +97,30 @@ public class ClientBD {
 
     public Map<Client, Integer> clientLesPlusProches(Client client) throws SQLException{
         Map<Client, Integer> clientProches = new HashMap<>();
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM CLIENT c JOIN UTILISATEUR u ON c.idcli=u.idutilisateur WHERE idcli != " + client.getNum());
-        while(r.next()){
-            Client clientBD = new Client(r.getInt("idcli"), r.getString("adressecli"), r.getString("villecli"), r.getInt("codepostal"), r.getString("nom"), r.getString("prenom"), r.getString("username"), r.getString("motDePasse"));
-            int valProxi = this.proximiteClient(client, clientBD);
-            if(valProxi > 0){
-                clientProches.put(clientBD, valProxi);
+        Statement st = connexion.createStatement();
+        ResultSet r = null;
+        try {
+            r = st.executeQuery("SELECT * FROM CLIENT c JOIN UTILISATEUR u ON c.idcli=u.idutilisateur WHERE idcli != " + client.getNum());
+            while(r.next()){
+                Client clientBD = new Client(r.getInt("idcli"), r.getString("adressecli"), r.getString("villecli"), r.getInt("codepostal"), r.getString("nom"), r.getString("prenom"), r.getString("username"), r.getString("motDePasse"));
+                int valProxi = this.proximiteClient(client, clientBD);
+                if(valProxi > 0){
+                    clientProches.put(clientBD, valProxi);
+                }
             }
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
         }
-        r.close();
-        st.close();
         // trie de la map
         Stream<Map.Entry<Client,Integer>> clientProchesSorted = clientProches.entrySet().stream().sorted(Map.Entry.comparingByValue());
         clientProches = new HashMap<>();
         // ajoute les 2 premiers clients plus proche
-        // utilisation de iterator pour parcours
         Iterator<Map.Entry<Client,Integer>> clientProchesIter = clientProchesSorted.iterator();
         for(int i = 0; i<2 && clientProchesIter.hasNext(); i++){
             System.out.println(i);
             Entry<Client, Integer> entry = clientProchesIter.next();
             clientProches.put(entry.getKey(), entry.getValue());
-            
         }
         return clientProches;
     }
