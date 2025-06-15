@@ -242,12 +242,12 @@ public class ApplicationTerminal {
         while(continuer) {
         System.out.println( "-------- MENU ADMIN --------");
         System.out.println("|                           |");
-        System.out.println("| > Créer un compte vendeur |");
-        System.out.println("| > Ajouter une  librairie  |");
-        System.out.println("| > Gérer les stocks        |");
+        System.out.println("| > Créer un compte vendeur |"); //fait
+        System.out.println("| > Ajouter un magasin      |");
+        System.out.println("| > Gérer les stocks        |"); 
         System.out.println("| > Voir les stats de vente |");
-        System.out.println("| > Mon profil              |");
-        System.out.println("| > Se déconnecter          |");
+        System.out.println("| > Mon profil              |"); //fait
+        System.out.println("| > Se déconnecter          |"); //fait
         System.out.println("|                           |");
         System.out.println("-----------------------------");
         System.out.print("Veuillez choisir une option (1-6) : ");
@@ -257,7 +257,7 @@ public class ApplicationTerminal {
                 menuCreerCompteVendeur();
                 break;
             case "2":
-                menuAjouterLibrairie();
+                menuAjouterMagasin();
                 break;
             case "3":
                 menuGererStocks();
@@ -291,11 +291,11 @@ public class ApplicationTerminal {
         System.out.println("-------------------------------");
         System.out.println("Veuillez entrer le nom du nouveau vendeur : ");
             String nomVendeur = scanner.nextLine();
-            System.out.println("Veuillez entrer le prénom : ");
+            System.out.println("Veuillez entrer le nouveau prénom : ");
             String prenomVendeur = scanner.nextLine();
-            System.out.println("Veuillez entrer l'username : ");
+            System.out.println("Veuillez entrer le nouvel username : ");
             String usernameVendeur = scanner.nextLine();
-            System.out.println("Veuillez entrer le mot de passe : ");
+            System.out.println("Veuillez entrer le nouveau mot de passe : ");
             String motDePasseVendeur = scanner.nextLine();
             try {
                 Magasin magasin = menuChoisirMagasin();
@@ -312,16 +312,35 @@ public class ApplicationTerminal {
         }
     }
 
-    public void menuAjouterLibrairie() {
-        boolean continuer = true;
-        while(continuer) {
-            System.out.println("---- AJOUTER UNE LIBRAIRIE ----");
-            System.out.println("|                             |");
-            System.out.println("| > Ajouter une librairie     |");
-            System.out.println("|                             |");
-            System.out.println("-------------------------------");
-            break;
+    public void menuAjouterMagasin() {
+    boolean continuer = true;
+    while(continuer) {
+        System.out.println("---- AJOUTER UN MAGASIN ----");
+        System.out.println("|                           |");
+        System.out.println("| > Ajouter un magasin      |");
+        System.out.println("|                           |");
+        System.out.println("-----------------------------");
+        
+        try {
+            System.out.print("Veuillez entrer l'id du magasin : ");
+            int id = Integer.parseInt(scanner.nextLine());
+            System.out.print("Veuillez entrer le nom du magasin : ");
+            String nom = scanner.nextLine();
+            System.out.print("Veuillez entrer la ville du magasin : ");
+            String ville = scanner.nextLine();
+
+            Magasin nouveauMagasin = new Magasin(id, nom, ville);
+            AdminBD.ajouterMagasin(nouveauMagasin);
+            
+            System.out.println("Magasin ajouté avec succès !");
+            
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout du magasin : " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Erreur : " + e.getMessage());
         }
+        continuer = false;
+    }
     }
 
     public void menuGererStocks() {
@@ -332,50 +351,124 @@ public class ApplicationTerminal {
             System.out.println("| > Ajouter un livre    |");
             System.out.println("| > Modifier un livre   |");
             System.out.println("| > Supprimer un livre  |");
-            System.out.println("| > Retour au menu      |");
             System.out.println("|                       |");
             System.out.println("-------------------------");
             System.out.print("Veuillez choisir une option (1-4) : ");
             String choix = scanner.nextLine();
             switch (choix) {
+                
                 case "1":
                     System.out.println("---- AJOUTER UN LIVRE ----");
                     System.out.println("|                       |");
                     System.out.println("| > Ajouter un livre    |");
                     System.out.println("|                       |");
                     System.out.println("-------------------------");
-                  System.out.print("ISBN : ");
+                    System.out.print("Veuillez entrer l'ISBN : ");
                     String isbn = scanner.nextLine();
-                    System.out.print("Titre : ");
+                    System.out.print("Veuillez entrer le titre : ");
                     String titre = scanner.nextLine();
-                    System.out.print("Auteurs: ");
-                    String auteurs = scanner.nextLine();
-                    System.out.print("Éditeur : ");
+                    System.out.print("Veuillez entrer l'auteur: ");
+                    String auteur = scanner.nextLine();
+                    System.out.print("Veuillez entrer l'éditeur : ");
                     String editeur = scanner.nextLine();
-                    System.out.print("Année de publication : ");
+                    System.out.print("Veuillez entrer l'année de publication : ");
                     String anneePubli = scanner.nextLine();
-                    System.out.print("Prix : ");
+                    System.out.print("Veuillez entrer le prix : ");
                     double prix = Double.parseDouble(scanner.nextLine());
-                    Livre livre = new Livre(isbn, titre, 0, anneePubli, prix);
+                    System.out.print("Veuillez entrer le nombre de pages : ");
+                    int pages = Integer.parseInt(scanner.nextLine());
+                    Livre livre = new Livre(isbn, titre, pages, anneePubli, prix);
+
                     System.out.print("Voulez-vous ajouter un auteur ? (oui/non) : ");
                     String reponse = scanner.nextLine();
                     if(reponse.equals("oui") || reponse.equals("o")) {
                         System.out.print("Nom de l'auteur : ");
                         String nomAuteur = scanner.nextLine();
-                        System.out.print("Prénom de l'auteur : ");
-                        String prenomAuteur = scanner.nextLine();
-            // trouver l'auteur dans la base de données ou le créer  
+                        try{
+                            List<Auteur> listAuteur = livreConnexion.rechercheAuteur(nomAuteur);
+                            menuAfficherInfoLivre(listAuteur);
+                        }
+                        catch(SQLException e){
+                            System.out.println("Erreur lors de la recherche de l'auteur");
+                        }
                     }
                     try {
-                        adminConnexion.ajouteLivre(livre, 1); 
-                        System.out.println("Livre ajouté avec succès.");
+                        adminConnexion.ajouteLivre(livre, 1); //ajout stock ?
+                        System.out.println("Le livre a été ajouté avec succès.");
                     } catch (SQLException e) {
                         System.out.println("Erreur lors de l'ajout du livre : " + e.getMessage());
                     }
-                    
                     break;
+
+                    case "2":
+                    System.out.println("--- MODIFIER UN LIVRE ---");
+                    System.out.println("|                       |");
+                    System.out.println("| > Modifier un livre   |");
+                    System.out.println("|                       |");
+                    System.out.println("-------------------------");
+                    System.out.print("Veuillez entrer l'ISBN : ");
+                    String isbn2 = scanner.nextLine();
+                    
+                    // rechercher le livre a modif avec livreBD public Map<Livre,Boolean> rechercherLivre
+                    //puis methode modifier dans adminBD
+                    try {
+                        System.out.println("Le livre a été modifié avec succès.");
+                    } catch (SQLException e) { 
+                        System.out.println("Erreur lors de la modification du livre : " + e.getMessage());}
+                    break;
+
+                    case "3":
+                    System.out.println("----- SUPP UN LIVRE -----");
+                    System.out.println("|                       |");
+                    System.out.println("| > Supprimer un livre  |");
+                    System.out.println("|                       |");
+                    System.out.println("-------------------------");
+                    System.out.print("Veuillez entrer l'ISBN : ");
+                    String isbn3 = scanner.nextLine();
+                    // rechercher le livre a modif avec livreBD public Map<Livre,Boolean> rechercherLivre
+                   // supp avc methode supp dans adminBD
+                   try {
+                        System.out.println("Le livre a été supprimé avec succès.");
+                    } catch (SQLException e) { 
+                        System.out.println("Erreur lors de la suppression du livre : " + e.getMessage());}
+
+                    break;
+
             }
         }
+    }
+
+    public Object menuAfficherInfoLivre(List<Object> listInfo){
+        boolean continuer = true;
+        while(continuer) {
+            System.out.println("-------- AFFICHAGE INFO ---------");
+            System.out.println("|                               |");
+            for(Object info :listInfo){
+                System.out.println("| "+listInfo.indexOf(info)+"> "+info+"      |");
+            }
+            System.out.println("| > Retour au menu principal    |");
+            System.out.println("|                               |");
+            System.out.println("---------------------------------");
+            System.out.print("Veuillez choisir une option (1-"+(listInfo.size()-1)+") : ");
+            System.out.println("Pour retourner au menu principal : q ");
+            String choix = scanner.nextLine().toLowerCase();
+            if(choix.equals("q")){
+                continuer=false;
+            }
+            try{
+            Integer index = Integer.parseInt(choix);
+                if(index>listInfo.size()-1){
+                    return listInfo.get((index-1));
+                }
+                else {
+                    System.out.println("Numéro invalide.");
+                }
+            }
+            catch(NumberFormatException e){
+                System.out.println("Veuillez entrer un nombre.");
+            }
+        }
+        return null;
     }
 
     public void menuStatsDeVentes() {

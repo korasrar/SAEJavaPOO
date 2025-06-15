@@ -44,6 +44,20 @@ public class AdminBD {
     
     }
 
+    public void ajouterMagasin(Magasin magasin) throws SQLException {
+        st = connexion.createStatement();
+        String query = "INSERT INTO MAGASIN(nommag, villemag) VALUES ('"
+                    + magasin.getNom() + "', '"
+                    + magasin.getVille() + "')";
+        st.executeUpdate(query);
+        st.close();
+    }
+
+    public void modifierLivre(Livre l, int qte) throws SQLException{
+        Statement st = connexion.createStatement();
+        st.executeUpdate("INSERT INTO LIVRE (isbn, titre, auteur, editeur, annee, prix) VALUES ");
+    }
+
     /**
      * ajoute un livre dans la base de données
      * 

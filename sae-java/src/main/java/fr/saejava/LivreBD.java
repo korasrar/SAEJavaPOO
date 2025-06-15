@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class LivreBD {
@@ -26,10 +27,10 @@ public class LivreBD {
                 stringBuilder += "WHERE isbn='"+isbn+"'";
                 break;
             case auteur:
-                stringBuilder += "NATURAL JOIN ECRIRE NATURAL JOIN AUTEUR WHERE nomauteur LIKE '%" + auteur + "%' OR levenshtein('"+auteur+"', nomauteur) between 0 and 4";
+                stringBuilder += "NATURAL JOIN ECRIRE NATURAL JOIN AUTEUR WHERE nomauteur LIKE '%" + auteur + "%' OR levenshtein('"+auteur+"', nomauteur) between 0 and 2";
                 break;
             case titre:
-                stringBuilder += "WHERE titre LIKE '%" + titre + "%' OR levenshtein('"+titre+"', titre) between 0 and 4";
+                stringBuilder += "WHERE titre LIKE '%" + titre + "%' OR levenshtein('"+titre+"', titre) between 0 and 2";
                 break;
         }
         r = st.executeQuery(stringBuilder);
@@ -38,5 +39,47 @@ public class LivreBD {
             livres.put(livre, connexionVendeur.verifierDispo(livre));
         }
         return livres;
+    }
+
+    public List<Auteur> rechercheAuteur(String nomAuteur) throws SQLException{
+        List<Auteur> auteurs = new ArrayList<>();
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM AUTEUR WHERE nomauteur LIKE '%"+ nomAuteur +"%' OR levenshtein('" + nomAuteur + "', nomauteur) between 0 and 2");
+        while (r.next()) {
+            auteurs.add(new Auteur(r.getInt("idauteur"), r.getString("nomauteur")));
+        }
+        if (auteurs.isEmpty()) {
+            return null;
+        } else {
+            return auteurs;
+        }
+    }
+
+    public List<Editeur> rechercheEditeur(String nomEditeur) throws SQLException {
+        List<Editeur> editeurs = new ArrayList<>();
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM EDITEUR WHERE nomedit LIKE '%" +nomEditeur + "%' OR levenshtein('" + nomEditeur + "', nomedit) between 0 and 2");
+        while (r.next()) {
+            editeurs.add(new Editeur(r.getInt("idedit"), r.getString("nomedit")));
+        }  
+        if (editeurs.isEmpty()) {
+            return null;
+        } else {
+            return editeurs;
+        }
+    }
+
+    public List<Classification> rechercheClassification(String nomClassification) throws SQLException {
+        List<Classification> classifications = new ArrayList<>();
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT * FROM CLASSIFICATION WHERE nomclass LIKE '%" + nomClassification + "%' OR levenshtein('" + nomClassification + "', nomclass) between 0 and 2");
+        while (r.next()) {
+            classifications.add(new Classification(r.getInt("iddewey"), r.getString("nomclass")));
+        }
+        if (classifications.isEmpty()) {
+            return null;
+        } else {
+            return classifications;
+        }
     }
 }
