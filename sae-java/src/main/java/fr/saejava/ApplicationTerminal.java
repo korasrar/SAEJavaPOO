@@ -39,9 +39,8 @@ public class ApplicationTerminal {
      */
     int nbObjetParPage;
     int pageCourante;
-    
 
-    /**
+        /**
      * crée le panier du client
      * @param client
      * @param date
@@ -49,90 +48,60 @@ public class ApplicationTerminal {
      * @throws SQLException
      */
     void créeCommande(Client client,Date date,Magasin magasin) throws SQLException{
-        this.panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin, null);
+        panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin, null);
     }
-
-    /**
-     * ajoute un livre au panier
-     * @param livre
-     */
-    void commander(Livre livre){
-        if(this.panier.contientLivre(livre)){
-            DetailCommande detail=this.panier.livreDansCommande(livre);
-            detail.setQte(detail.getQte()+1);
+    
+    public void finaliseCommande(ModeLivraison modeLivraison) throws SQLException{
+        this.panier.setModeLivraison(modeLivraison);
+        if(modeLivraison.equals(ModeLivraison.MAGASIN)){
+            panier.setMagasin(menuChoisirMagasin());
+        }
+        else if(modeLivraison.equals(ModeLivraison.MAISON)){
+            panier.setMagasin(magasinConnexion.trouverMeilleurMagasin(panier));
         }
         else{
-            this.panier.ajouterDetailCommande(new DetailCommande(livre,this.panier));
+            throw new SQLException("Mode de livraison inconnu");
         }
-    }
-    
-    /**
-     * ajoute un livre au panier avec une quantité spécifique
-     * @param livre
-     * @param qte
-     */
-    void commander(Livre livre,int qte){
-        if(this.panier.contientLivre(livre)){
-            DetailCommande detail=this.panier.livreDansCommande(livre);
-            detail.setQte(detail.getQte()+qte);
+        
+        String sqlCommande = "INSERT INTO COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement pstCommande = connexion.prepareStatement(sqlCommande);
+        
+        pstCommande.setInt(1, this.panier.getNumcom());
+        pstCommande.setDate(2, panier.getDateCommande());
+        pstCommande.setString(3, "O");
+        pstCommande.setString(4, modeLivraison.equals(ModeLivraison.MAGASIN) ? "M" : "C");
+        pstCommande.setInt(5, panier.getClient().getNum());
+        pstCommande.setInt(6, panier.getMagasin().getId());
+        
+        pstCommande.executeUpdate();
+        System.out.println("Commande insérée avec succès !");
+        
+        String sqlDetail = "INSERT INTO DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pstDetail = connexion.prepareStatement(sqlDetail);
+        
+        int numlig = 1;
+        for(DetailCommande detail : this.panier.contenue){
+            pstDetail.setInt(1, this.panier.getNumcom());
+            pstDetail.setInt(2, numlig);
+            pstDetail.setString(3, detail.getLivre().getIsbn());
+            pstDetail.setInt(4, detail.getQte());
+            pstDetail.setDouble(5, detail.getLivre().getPrix());
+            pstDetail.executeUpdate();
+            numlig++;
         }
-        else{
-            this.panier.ajouterDetailCommande(new DetailCommande(qte,livre,this.panier));
-        }
+        System.out.println("Détails de la commande insérés avec succès !");
+        pstCommande.close();
+        pstDetail.close();
+        // reset du panier
+        Date date = new Date(System.currentTimeMillis());
+        try{
+                créeCommande((Client) utilisateurConnecter,date , null);
+                }
+                catch(SQLException e){
+                    System.out.println("Erreur lors du reset du panier " + e.getMessage());
+                }
+        this.payer();
     }
-    
-    void finaliseCommande(ModeLivraison modeLivraison) throws SQLException{
-    this.panier.setModeLivraison(modeLivraison);
-    if(modeLivraison.equals(ModeLivraison.MAGASIN)){
-        panier.setMagasin(menuChoisirMagasin());
-    }
-    else if(modeLivraison.equals(ModeLivraison.MAISON)){
-        panier.setMagasin(magasinConnexion.trouverMeilleurMagasin(panier));
-    }
-    else{
-        throw new SQLException("Mode de livraison inconnu");
-    }
-    
-    String sqlCommande = "INSERT INTO COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) VALUES (?, ?, ?, ?, ?, ?)";
-    PreparedStatement pstCommande = connexion.prepareStatement(sqlCommande);
-    
-    pstCommande.setInt(1, this.panier.getNumcom());
-    pstCommande.setDate(2, panier.getDateCommande());
-    pstCommande.setString(3, "O");
-    pstCommande.setString(4, modeLivraison.equals(ModeLivraison.MAGASIN) ? "M" : "C");
-    pstCommande.setInt(5, panier.getClient().getNum());
-    pstCommande.setInt(6, panier.getMagasin().getId());
-    
-    pstCommande.executeUpdate();
-    System.out.println("Commande insérée avec succès !");
-    
-    String sqlDetail = "INSERT INTO DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) VALUES (?, ?, ?, ?, ?)";
-    PreparedStatement pstDetail = connexion.prepareStatement(sqlDetail);
-    
-    int numlig = 1;
-    for(DetailCommande detail : this.panier.contenue){
-        pstDetail.setInt(1, this.panier.getNumcom());
-        pstDetail.setInt(2, numlig);
-        pstDetail.setString(3, detail.getLivre().getIsbn());
-        pstDetail.setInt(4, detail.getQte());
-        pstDetail.setDouble(5, detail.getLivre().getPrix());
-        pstDetail.executeUpdate();
-        numlig++;
-    }
-    
-    System.out.println("Détails de la commande insérés avec succès !");
-    pstCommande.close();
-    pstDetail.close();
-    // reset du panier
-    Date date = new Date(System.currentTimeMillis());
-    try{
-            créeCommande((Client) utilisateurConnecter,date , null);
-            }
-            catch(SQLException e){
-                System.out.println("Erreur lors du reset du panier " + e.getMessage());
-            }
-    this.payer();
-}
 
     /**
      * Le constructeur de l'application terminal
@@ -981,7 +950,7 @@ public class ApplicationTerminal {
                     
                     if(livres.get(livreChoisi)==true && quantiteDisponible==true){
                         try{
-                        commander(livreChoisi, quantite);
+                        panier.commander(livreChoisi, quantite);
                         }
                         catch (IndexOutOfBoundsException e) {
                             System.out.println("Numéro de livre invalide. Veuillez réessayer.");

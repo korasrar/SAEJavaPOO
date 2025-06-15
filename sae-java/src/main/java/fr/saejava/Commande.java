@@ -1,6 +1,7 @@
 package fr.saejava;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,5 +118,19 @@ public class Commande {
             total+=detail.getPrixVente();
         }
         return total;
+    }
+
+    /**
+     * ajoute un livre au panier
+     * @param livre
+     */
+    void commander(Livre livre, int qte){
+        if(this.contientLivre(livre)){
+            DetailCommande detail=this.livreDansCommande(livre);
+            detail.setQte(detail.getQte()+1);
+        }
+        else{
+            this.ajouterDetailCommande(new DetailCommande(livre,this));
+        }
     }
 }
