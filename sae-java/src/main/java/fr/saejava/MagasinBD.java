@@ -22,7 +22,7 @@ public class MagasinBD {
                 int qteExistante = rs.getInt("qte");
                 int nouvelleQte = qteExistante+qte;
                 rs.close();
-                st.executeUpdate("UPDATE POSSEDER SET qte ="+nouvelleQte+" WHERE isbn = "+l.getIsbn()+" AND igmag = "+magasin.getId());
+                st.executeUpdate("UPDATE POSSEDER SET qte ="+nouvelleQte+" WHERE isbn = "+l.getIsbn()+" AND idmag = "+magasin.getId());
             }
             else{
                 rs.close();
@@ -78,6 +78,7 @@ public class MagasinBD {
             if (st != null) st.close();
         }
     }
+
 
     public List<Magasin> chargerMagasin() throws SQLException {
         Statement st = connexion.createStatement();

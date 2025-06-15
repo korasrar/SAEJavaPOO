@@ -130,7 +130,7 @@ public class Commande {
             detail.setQte(detail.getQte()+1);
         }
         else{
-            this.ajouterDetailCommande(new DetailCommande(livre,this));
+            this.ajouterDetailCommande(new DetailCommande(qte,livre,this));
         }
     }
 }

@@ -82,23 +82,30 @@ public class VendeurBD {
     public void transferer(Livre l, Magasin magasinRecoit, Magasin magasinEnvoit, Integer qte) throws SQLException, LivrePasDansStockMagasinException{
         Statement st = connexion.createStatement();
         ResultSet r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasinEnvoit.getId());
-        if (r.getInt("qte")<= qte){
+        if(r.next()){
+            if (r.getInt("qte") < qte){
+                if (r != null) r.close();
+                st.close();
+                throw new LivrePasDansStockMagasinException();
+            }
+            if (verifierDispo(magasinRecoit, l)){
+                ResultSet r2 = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinRecoit.getId());
+                Integer quantiteInit = null;
+                if(r2.next()){
+                    quantiteInit = r2.getInt("qte");
+                }
+                Integer nouvelleQte = quantiteInit + qte;
+                if (r2 != null) r2.close();
+                st.executeUpdate("UPDATE POSSEDER SET qte = " + nouvelleQte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinRecoit.getId());
+            } else {
+                st.executeUpdate("INSERT INTO POSSEDER (isbn, idmag, qte) VALUES ('" + l.getIsbn() + "', " + magasinRecoit.getId() + ", " + qte + ")");
+            }
+            st.executeUpdate("UPDATE POSSEDER SET qte = qte - " + qte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinEnvoit.getId());
+            if (r != null) r.close();
+        } else {
             if (r != null) r.close();
             st.close();
             throw new LivrePasDansStockMagasinException();
-        }
-        // DONE verifier la dispo du livre, si true faire update pour recup la valeur et incremente avec qte et renvoie dans bd
-        // sinon , on fait un insert avec le livre et la qte
-        if (verifierDispo(magasinRecoit, l)){
-            r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinRecoit.getId());
-            Integer quantiteInit = r.getInt("qte");
-            Integer nouvelleQte = quantiteInit + qte;
-            if (r != null) r.close();
-            st.executeUpdate("UPDATE POSSEDER SET qte = " + nouvelleQte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinRecoit.getId());
-        }
-        else {
-            if (r != null) r.close();
-            st.executeUpdate("UPDATE POSSEDER SET qte = qte - " + qte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinEnvoit.getId());
         }
         st.close();
     }

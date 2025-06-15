@@ -49,6 +49,11 @@ public class ApplicationTerminal {
         panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin, null);
     }
     
+    /**
+     * Finalise la commande en insérant les données dans la base de données
+     * @param modeLivraison
+     * @throws SQLException
+     */
     public void finaliseCommande(ModeLivraison modeLivraison) throws SQLException{
         this.panier.setModeLivraison(modeLivraison);
         if(modeLivraison.equals(ModeLivraison.MAGASIN)){
@@ -85,6 +90,25 @@ public class ApplicationTerminal {
             pstDetail.setInt(4, detail.getQte());
             pstDetail.setDouble(5, detail.getLivre().getPrix());
             pstDetail.executeUpdate();
+            if(this.magasinConnexion.getQuantiteLivre(detail.getLivre(),this.panier.getMagasin())==0){
+                for(Magasin magasin:magasinConnexion.chargerMagasin()){
+                    if(magasinConnexion.getQuantiteLivre(detail.getLivre(),magasin)>detail.getQte()){
+                        this.magasinConnexion.ajoutStock(magasin,detail.getLivre(),detail.getQte());   
+                    }
+                }  
+            }
+            else if(this.magasinConnexion.getQuantiteLivre(detail.getLivre(),this.panier.getMagasin())<detail.getQte()){
+                int qteRestante=detail.getQte()-this.magasinConnexion.getQuantiteLivre(detail.getLivre(),this.panier.getMagasin());
+                this.magasinConnexion.ajoutStock(this.panier.getMagasin(),detail.getLivre(),detail.getQte()-qteRestante);
+                for(Magasin magasin:magasinConnexion.chargerMagasin()){
+                    if(magasinConnexion.getQuantiteLivre(detail.getLivre(),magasin)>qteRestante){
+                        this.magasinConnexion.ajoutStock(magasin,detail.getLivre(),qteRestante);   
+                    }
+                }  
+            }
+            else{
+                magasinConnexion.ajoutStock(this.panier.getMagasin(),detail.getLivre(),detail.getQte()*-1);
+            }
             numlig++;
         }
         System.out.println("Détails de la commande insérés avec succès !");
@@ -645,6 +669,7 @@ public class ApplicationTerminal {
         System.out.println("| > Transferer un livre         |");
         System.out.println("| > Maj des stocks              |");
         System.out.println("| > Verifier les disponibilités |");
+        System.out.println("| > Commander pour Client       |");
         System.out.println("| > Se déconnecter              |");
         System.out.println("|                               |");
         System.out.println("---------------------------------"); 
@@ -661,6 +686,9 @@ public class ApplicationTerminal {
                 menuDispo();
                 break;
             case "4":
+                //menuCommande();
+                System.out.println("Pas implementé pour le moment");
+            case "5":
                 System.out.println("Déconnexion...");
                 estConnecteUtil = false;
                 utilisateurConnecter = null;
@@ -1165,44 +1193,80 @@ public class ApplicationTerminal {
 
     public void menuTransfertLivre() throws SQLException{
         boolean continuer = true;
-        Map<Livre, Boolean> livres;
         while(continuer) {
-           menuRechercherLivre();
-            if(!(livreSelectionner==null)){
-                Magasin magasinSource = null;
-                try{
-                    magasinSource = vendeurConnexion.getMagasin(utilisateurConnecter.getId());
+            Magasin magasinSource = null;
+            try{
+                magasinSource = vendeurConnexion.getMagasin(utilisateurConnecter.getId());
+            }
+            catch(VendeurSansMagasinException e){
+                System.out.println("Vous n'êtes pas associé à un magasin. Veuillez contacter un administrateur.");
+                return;
+            }
+            menuRechercherLivre();
+            if(livreSelectionner == null){
+                System.out.println("Aucun livre sélectionné pour le transfert.");
+                continuer = false;
+                continue;
+            }
+            try {
+                if(!vendeurConnexion.verifierDispo(magasinSource, livreSelectionner)) {
+                    System.out.println("Le livre " + livreSelectionner.getTitre() + " n'est pas disponible dans votre magasin.");
+                    continuer = false;
+                    continue;
                 }
-                catch(VendeurSansMagasinException e){
-                    System.out.println("Vous n'êtes pas associé à un magasin. Veuillez contacter un administrateur.");
+                List<Magasin> lesMagasins = magasinConnexion.chargerMagasin();
+                System.out.println("Liste des magasins disponibles pour transfert :");
+                for(int i = 0; i < lesMagasins.size(); i++) {
+                    Magasin magasin = lesMagasins.get(i);
+                    if(!(magasin.getId()==magasinSource.getId() && vendeurConnexion.verifierDispo(magasin, livreSelectionner))) {
+                        System.out.println((i+1) + ". " + magasin.getNom() + " - " + magasin.getVille());
+                    }
+                }
+                Integer indexMagasin = null;
+                Magasin magasinDestination = null;
+                while(magasinDestination == null){
+                    System.out.print("Sélectionnez le magasin destination (1-" + lesMagasins.size() + ") : ");
+                    try{
+                        indexMagasin = Integer.parseInt(scanner.nextLine()) - 1;
+                        if(indexMagasin >= 0 && indexMagasin < lesMagasins.size()) {
+                            magasinDestination = lesMagasins.get(indexMagasin);
+                            if(magasinDestination.getId()==magasinSource.getId()) {
+                                System.out.println("Vous ne pouvez pas transférer vers votre propre magasin.");
+                                magasinDestination = null;
+                            }
+                        } else {
+                            System.out.println("Numéro de magasin invalide.");
+                        }
+                    }
+                    catch(NumberFormatException e){
+                        System.out.println("Veuillez entrer un nombre valide.");
+                    }
+                }
+                System.out.print("Entrez la quantité à transférer : ");
+                int quantite = Integer.parseInt(scanner.nextLine());
+                try{
+                    if(vendeurConnexion.verifierQteDispo(livreSelectionner, quantite, magasinSource)) {
+                        vendeurConnexion.transferer(livreSelectionner, magasinSource, magasinDestination, quantite);
+                        System.out.println("Transfert effectué avec succès !");
+                    } else {
+                        System.out.println("Pas assez de stock disponible dans votre magasin.");
+                    }
+                }
+                catch(PasStockPourLivreException e){
+                    System.out.println("Pas assez de stock pour le livre " + livreSelectionner.getTitre() + ". Veuillez choisir une quantité inférieure.");                    
+                }
+                catch(LivrePasDansStockMagasinException e){
+                    System.out.println("Le livre " + livreSelectionner.getTitre() + " n'est pas dans le stock du magasin source.");
+                }
+                System.out.print("Voulez-vous effectuer un autre transfert ? (o/n) : ");
+                String reponse = scanner.nextLine().toLowerCase();
+                if(!reponse.equals("o") && !reponse.equals("oui")) {
                     continuer = false;
                 }
                 
-                Magasin magasinDestination = menuChoisirMagasin();
-                if(magasinDestination==null){
-                    System.out.println("Aucun magasin sélectionné.");
-                    continuer = false;
-                }
-                else{
-                    System.out.print("Entrez la quantité à transférer : ");
-                    int quantite = scanner.nextInt();
-                    try{
-                        vendeurConnexion.verifierQteDispo(livreSelectionner, quantite);
-                        vendeurConnexion.transferer(livreSelectionner, magasinSource, magasinDestination, quantite);
-                        System.out.println("Transfert effectué avec succès !");
-                    }
-                    catch(PasStockPourLivreException e){
-                        System.out.println("Pas assez de stock pour le livre " + livreSelectionner.getTitre() + ". Veuillez choisir une quantité inférieure.");                    
-                    }
-                    catch(SQLException e){
-                        System.out.println("Erreur lors de la vérification de la quantité disponible : " + e.getMessage());
-                    }
-                    catch(LivrePasDansStockMagasinException e){
-                        System.out.println("Le livre " + livreSelectionner.getTitre() + " n'est pas dans le stock du magasin ");
-                    }
-                    
-                    
-                }
+            } catch(SQLException e) {
+                System.out.println("Erreur lors du transfert : " + e.getMessage());
+                continuer = false;
             }
         }
     }
