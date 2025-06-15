@@ -25,14 +25,12 @@ public class ApplicationTerminal {
     ClientBD clientConnexion;
     LivreBD livreConnexion;
     Scanner scanner;
-
     Statement st;
     ResultSet r;
-
     boolean estConnecteBD;
     boolean estConnecteUtil;
-
     Commande panier;
+    Livre livreSelectionner;
 
     /**
      * Pour afficher les livres par page
@@ -181,7 +179,6 @@ public class ApplicationTerminal {
                     System.out.println("Connexion en cours...");
                     try{
                     util = utilisateurConnexion.getUtilisateur(username, motDePasse);
-                    System.out.println("test");
                     }
                     catch(UtilisateurIntrouvableException e){
                         System.out.println("Utilisateur Introuvable");
@@ -209,8 +206,20 @@ public class ApplicationTerminal {
                     System.out.println("Veuillez indiquer votre codePostal :");
                     String codePostal = scanner.nextLine();
                 
-                    //this.clientConnexion.creeCompteClient(nb++, adresse, ville, codePostal, nom, prenom, nomDUtilisateur, mdp); // get le dernier id d'utilisateur et faire ++
+                    this.clientConnexion.creeCompteClient((utilisateurConnexion.getDernierID()+1), adresse, ville, Integer.parseInt(codePostal), nom, prenom, nomDUtilisateur, mdp);
                     System.out.println("Votre compte a bien été enregistré");
+                    try{
+                    util = utilisateurConnexion.getUtilisateur(nomDUtilisateur, mdp);
+                    }
+                    catch(UtilisateurIntrouvableException e){
+                        System.out.println("Utilisateur Introuvable");
+                    }
+                    catch(MotDePasseIncorrectException e){
+                        System.out.println("Mot de passe incorrect");
+                    }
+                    catch(VendeurSansMagasinException e){
+                        System.out.println("Votre compte Vendeur n'a pas de magasin associé");
+                    }
                     break;
                 case "3":
                     System.out.println("Au revoir !");
@@ -230,12 +239,12 @@ public class ApplicationTerminal {
         while(continuer) {
         System.out.println( "-------- MENU ADMIN --------");
         System.out.println("|                           |");
-        System.out.println("| > Créer un compte vendeur |");
-        System.out.println("| > Ajouter une  librairie  |");
-        System.out.println("| > Gérer les stocks        |");
+        System.out.println("| > Créer un compte vendeur |"); 
+        System.out.println("| > Ajouter un magasin      |"); 
+        System.out.println("| > Gérer les stocks        |"); 
         System.out.println("| > Voir les stats de vente |");
-        System.out.println("| > Mon profil              |");
-        System.out.println("| > Se déconnecter          |");
+        System.out.println("| > Mon profil              |"); 
+        System.out.println("| > Se déconnecter          |"); 
         System.out.println("|                           |");
         System.out.println("-----------------------------");
         System.out.print("Veuillez choisir une option (1-6) : ");
@@ -245,7 +254,7 @@ public class ApplicationTerminal {
                 menuCreerCompteVendeur();
                 break;
             case "2":
-                menuAjouterLibrairie();
+                menuAjouterMagasin();
                 break;
             case "3":
                 menuGererStocks();
@@ -277,28 +286,55 @@ public class ApplicationTerminal {
         System.out.println("| > Créer un compte vendeur   |");
         System.out.println("|                             |");
         System.out.println("-------------------------------");
-        System.out.println("Veuillez entrer les infos du compte vendeur : ");
-        String login = scanner.nextLine();
-        //VendeurBD.creerCompteVendeur(login);
-        System.out.println("Le compte vendeur a ete cree avec succes");
-        break;
+        System.out.println("Veuillez entrer le nom du nouveau vendeur : ");
+            String nomVendeur = scanner.nextLine();
+            System.out.println("Veuillez entrer le nouveau prénom : ");
+            String prenomVendeur = scanner.nextLine();
+            System.out.println("Veuillez entrer le nouvel username : ");
+            String usernameVendeur = scanner.nextLine();
+            System.out.println("Veuillez entrer le nouveau mot de passe : ");
+            String motDePasseVendeur = scanner.nextLine();
+            try {
+                Magasin magasin = menuChoisirMagasin();
+                if (magasin != null) {
+                    adminConnexion.creerCompteVendeur((utilisateurConnexion.getDernierID()+1), nomVendeur, prenomVendeur, usernameVendeur, motDePasseVendeur, magasin);
+                    System.out.println("Compte vendeur créé avec succès.");
+                } else {
+                    System.out.println("Aucun magasin sélectionné. Le compte n'a pas été créé.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Erreur lors de la création du compte vendeur : " + e.getMessage());
+            }
+            continuer = false;
         }
     }
 
-    public void menuAjouterLibrairie() {
-        boolean continuer = true;
-        while(continuer) {
-            System.out.println("---- AJOUTER UNE LIBRAIRIE ----");
-            System.out.println("|                             |");
-            System.out.println("| > Ajouter une librairie     |");
-            System.out.println("|                             |");
-            System.out.println("-------------------------------");
-            System.out.println("Veuillez entrer le nom de la librairie : ");
-            String nomLibrairie = scanner.nextLine();
-           // TrucBD.ajouterLibrairie(nomLibrairie); jsp encore
-            System.out.println("La librairie a ete ajoutee avec succes");
-            break;
+    public void menuAjouterMagasin() {
+    boolean continuer = true;
+    while(continuer) {
+        System.out.println("---- AJOUTER UN MAGASIN ----");
+        System.out.println("|                           |");
+        System.out.println("| > Ajouter un magasin      |");
+        System.out.println("|                           |");
+        System.out.println("-----------------------------");
+        
+        try {
+            System.out.print("Veuillez entrer l'id du magasin : ");
+            int id = Integer.parseInt(scanner.nextLine());
+            System.out.print("Veuillez entrer le nom du magasin : ");
+            String nom = scanner.nextLine();
+            System.out.print("Veuillez entrer la ville du magasin : ");
+            String ville = scanner.nextLine();
+            Magasin nouveauMagasin = new Magasin(id, nom, ville);
+            adminConnexion.ajouterMagasin(nouveauMagasin);
+            System.out.println("Magasin ajouté avec succès !");
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout du magasin : " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Erreur : " + e.getMessage());
         }
+        continuer = false;
+    }
     }
 
     public void menuGererStocks() {
@@ -306,64 +342,304 @@ public class ApplicationTerminal {
         while(continuer) {
             System.out.println("---- GÉRER LES STOCKS ----");
             System.out.println("|                       |");
-            System.out.println("| > Ajouter un livre    |");
-            System.out.println("| > Modifier un livre   |");
-            System.out.println("| > Supprimer un livre  |");
-            System.out.println("| > Retour au menu      |");
+            System.out.println("| > Ajouter un livre    |"); 
+            System.out.println("| > Modifier un livre   |"); 
+            System.out.println("| > Supprimer un livre  |"); 
             System.out.println("|                       |");
             System.out.println("-------------------------");
             System.out.print("Veuillez choisir une option (1-4) : ");
             String choix = scanner.nextLine();
+            
             switch (choix) {
                 case "1":
-                    System.out.println("Veuillez entrer le titre du livre à ajouter : ");
+                    System.out.println("---- AJOUTER UN LIVRE ----");
+                    System.out.println("|                       |");
+                    System.out.println("| > Ajouter un livre    |");
+                    System.out.println("|                       |");
+                    System.out.println("-------------------------");
+                    System.out.print("Veuillez entrer l'ISBN : ");
+                    String isbn = scanner.nextLine();
+                    System.out.print("Veuillez entrer le titre : ");
                     String titre = scanner.nextLine();
-                    //LivreBD.ajouterLivre(titre);
-                    System.out.println("Le livre a été ajouté avec succès");
-                    break;
+                    System.out.print("Veuillez entrer l'année de publication : ");
+                    String anneePubli = scanner.nextLine();
+                    System.out.print("Veuillez entrer le prix : ");
+                    double prix = Double.parseDouble(scanner.nextLine());
+                    System.out.print("Veuillez entrer le nombre de pages : ");
+                    int pages = Integer.parseInt(scanner.nextLine());
+                    Livre livre = new Livre(isbn, titre, pages, anneePubli, prix);
+
+                    System.out.print("Voulez-vous ajouter un auteur ? (oui/non) : ");
+                    String reponseAuteur = scanner.nextLine().toLowerCase();
+                    List<Auteur> auteursLivre = new ArrayList<>();
+                    if (reponseAuteur.equals("oui") || reponseAuteur.equals("o")) {
+                        boolean continuerAuteurs = true;
+                        
+                        while (continuerAuteurs) {
+                            System.out.print("Nom de l'auteur : ");
+                            String nomAuteur = scanner.nextLine();
+                            try {
+                                List<Auteur> listAuteur = livreConnexion.rechercheAuteur(nomAuteur);
+                                if (listAuteur.isEmpty()) {
+                                    System.out.println("Aucun auteur trouvé avec ce nom.");
+                                    System.out.print("Voulez-vous créer un nouvel auteur ? (oui/non) : ");
+                                    String creerAuteur = scanner.nextLine().toLowerCase();
+                                    if (creerAuteur.equals("oui") || creerAuteur.equals("o")) {
+                                        System.out.print("Nom de l'auteur : ");
+                                        String nomAuteur2 = scanner.nextLine();
+                                        System.out.print("Annee de naissance: ");
+                                        String dateNaissance = scanner.nextLine();
+                                        System.out.print("Veuillez entrer l'annee de deces, sinon laissez vide: ");
+                                        String dateDeces = scanner.nextLine();
+                                        if (dateDeces.trim().isEmpty()) {
+                                            dateDeces = null;
+                                        }
+                                        Auteur nouvelAuteur = new Auteur((livreConnexion.getDernierIDAuteur()+1), nomAuteur2, Integer.parseInt(dateNaissance), Integer.parseInt(dateDeces));
+                                        livreConnexion.insererNouvelAuteur(nouvelAuteur);
+                                    }
+                                    }
+                                    else {
+                                    System.out.println("Voici les auteurs trouvés :");
+                                    for (int i = 0; i < listAuteur.size(); i++) {
+                                        Auteur auteur = listAuteur.get(i);
+                                        System.out.println((i+1) + ". " + auteur.getNomAuteur());
+                                        }
+                                        System.out.print("Choisissez un auteur (numéro) : ");
+                                        int choixAuteur = Integer.parseInt(scanner.nextLine()) - 1;
+                                    if (choixAuteur >= 0 && choixAuteur < listAuteur.size()) {
+                                        auteursLivre.add(listAuteur.get(choixAuteur));
+                                        System.out.println("Auteur ajouté au livre.");
+                                    } else {
+                                        System.out.println("Choix invalide.");
+                                    }
+                                }
+                            } catch (SQLException e) {
+                                System.out.println("Erreur lors de la recherche de l'auteur : " + e.getMessage());
+                            } catch (NumberFormatException e) {
+                            System.out.println("Veuillez entrer un nombre valide.");
+                            }
+                        }// fin while auteurs
+                        }// fin if reponse auteur
+
+                        System.out.print("Voulez-vous ajouter une classification? (oui/non) : ");
+                        String reponseClassification = scanner.nextLine().toLowerCase();
+                        List<Classification> classificationLivre = new ArrayList<>();
+                
+                        if (reponseClassification.equals("oui") || reponseClassification.equals("o")) {
+                        boolean continuerClassification = true;
+                        
+                        while (continuerClassification) {
+                            System.out.print("Nom de la classification : ");
+                            String nomClassification = scanner.nextLine();
+                            try {
+                                List<Classification> listClassifications = livreConnexion.rechercheClassification(nomClassification);
+                                if (listClassifications.isEmpty()) {
+                                    System.out.println("Aucune classification trouvé avec ce nom.");
+                                    System.out.print("Voulez-vous créer une nouvelle classification ? (oui/non) : ");
+                                    String creerClassification = scanner.nextLine().toLowerCase();
+                                    
+                                    if (creerClassification.equals("oui") || creerClassification.equals("o")) {
+                                        System.out.print("Nom de la classification : ");
+                                        String nomClassification2 = scanner.nextLine();
+                                        Classification nouvelClassification = new Classification((livreConnexion.getDernierIDClassification()+1), nomClassification);
+                                        livreConnexion.insererNouvelleClassification(nouvelClassification);
+                                    }
+                                    } 
+                                    else {
+                                    System.out.println("Voici les classifications trouvées :");
+                                    for (int i = 0; i < listClassifications.size(); i++) {
+                                        Classification classification = listClassifications.get(i);
+                                        System.out.println((i+1) + ". " + classification.getNomClass());
+                                        }
+                                        System.out.print("Choisissez une classification (numéro) : ");
+                                        int choixClass = Integer.parseInt(scanner.nextLine()) - 1;
+                                    if (choixClass >= 0 && choixClass < listClassifications.size()) {
+                                        classificationLivre.add(listClassifications.get(choixClass));
+                                        System.out.println("Classification ajoutée au livre.");
+                                    } else {
+                                        System.out.println("Choix invalide.");
+                                    }
+                                }
+                            } catch (SQLException e3) {
+                                System.out.println("Erreur lors de la recherche de la classification : " + e3.getMessage());
+                            } catch (NumberFormatException e3) {
+                            System.out.println("Veuillez entrer un nombre valide.");
+                            }
+                        }// fin while classifications
+                        }// fin if reponse classification
+                        
+                        System.out.print("Voulez-vous ajouter un éditeur? (oui/non) : ");
+                        String reponseEditeur = scanner.nextLine().toLowerCase();
+                        List<Editeur> editeursLivre = new ArrayList<>();
+                
+                        if (reponseEditeur.equals("oui") || reponseEditeur.equals("o")) {
+                        boolean continuerEditeurs = true;
+                        
+                        while (continuerEditeurs) {
+                            System.out.print("Nom de l'editeur : ");
+                            String nomEditeur = scanner.nextLine();
+                            try {
+                                List<Editeur> listEditeurs = livreConnexion.rechercheEditeur(nomEditeur);
+                                if (listEditeurs.isEmpty()) {
+                                    System.out.println("Aucun editeur trouvé avec ce nom.");
+                                    System.out.print("Voulez-vous créer un nouvel editeur ? (oui/non) : ");
+                                    String creerEditeur = scanner.nextLine().toLowerCase();
+                                    
+                                    if (creerEditeur.equals("oui") || creerEditeur.equals("o")) {
+                                        System.out.print("Nom de l'editeur : ");
+                                        String nomEditeur2 = scanner.nextLine();
+                                        Editeur nouvelEditeur = new Editeur((livreConnexion.getDernierIDEditeur()+1), nomEditeur2);
+                                        livreConnexion.insererNouvelEditeur(nouvelEditeur);
+                                    }
+                                    } 
+                                    else {
+                                    System.out.println("Voici les editeurs trouvés :");
+                                    for (int i = 0; i < listEditeurs.size(); i++) {
+                                        Editeur editeur = listEditeurs.get(i);
+                                        System.out.println((i+1) + ". " + editeur.getNomEdit());
+                                        }
+                                        System.out.print("Choisissez un editeur (numéro) : ");
+                                        int choixEdit = Integer.parseInt(scanner.nextLine()) - 1;
+                                    if (choixEdit >= 0 && choixEdit < listEditeurs.size()) {
+                                        editeursLivre.add(listEditeurs.get(choixEdit));
+                                        System.out.println("Editeur ajouté au livre.");
+                                    } else {
+                                        System.out.println("Choix invalide.");
+                                    }
+                                }
+                            } catch (SQLException e1) {
+                                System.out.println("Erreur lors de la recherche de l'editeur : " + e1.getMessage());
+                            } catch (NumberFormatException e2) {
+                            System.out.println("Veuillez entrer un nombre valide.");
+                            }
+                        }// fin while editeurs
+                        }// fin if reponse editeur
+
+                    livre.setAuteurs(auteursLivre);
+                    livre.setClassifications(classificationLivre);
+                    livre.setEditeurs(editeursLivre);
+                    break;    
+                
                 case "2":
-                    System.out.println("Veuillez entrer le titre du livre à modifier : ");
-                    String titreModif = scanner.nextLine();
-                    //LivreBD.modifierLivre(titreModif);
-                    System.out.println("Le livre a été modifié avec succès");
+                  System.out.println("----- MODIFIER UN LIVRE -----");
+                    System.out.println("|                       |");
+                    System.out.println("| > Modifier un livre   |");
+                    System.out.println("|                       |");
+                    System.out.println("-------------------------");
+                    try{
+                    menuRechercherLivre();
+                    System.out.println("Veuillez entrer les nouvelles informations du livre...");
+                    System.out.print("ISBN : ");
+                    String isbn3 = scanner.nextLine();
+                    System.out.print("Titre : ");
+                    String titre3 = scanner.nextLine();
+                    System.out.print("Nombre de pages : ");
+                    int nbPages3 = scanner.nextInt();
+                    System.out.print("Auteurs : ");
+                    String auteurs3 = scanner.nextLine();
+                    System.out.print("Editeurs : ");
+                    String editeurs3 = scanner.nextLine();
+                    System.out.print("Annee de publication : ");
+                    String annee3 = scanner.nextLine();
+                    System.out.print("Classifications : ");
+                    String classifications3 = scanner.nextLine();
+                    System.out.print("Prix : ");
+                    double prix3 = scanner.nextDouble();
+                    livreSelectionner.setIsbn(isbn3);
+                    livreSelectionner.setTitre(titre3);
+                    livreSelectionner.setNbPages(nbPages3);
+                    livreSelectionner.setDatePubli(annee3);
+                    livreSelectionner.setPrix(prix3);   
+                    livreSelectionner.setClassifications(livreSelectionner.getClassifications());
+                    livreSelectionner.setAuteurs(livreSelectionner.getAuteurs());
+                    livreSelectionner.setEditeurs(livreSelectionner.getEditeurs()); 
+                    adminConnexion.modifierLivre(livreSelectionner);
+                    livreSelectionner = null;
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de la modification du livre : " + e.getMessage());
+                    }
                     break;
+
+
                 case "3":
-                    System.out.println("Veuillez entrer le titre du livre à supprimer : ");
-                    String titreSupp = scanner.nextLine();
-                    //LivreBD.supprimerLivre(titreSupp);
-                    System.out.println("Le livre a été supprimé avec succès");
-                    break;
-                case "4":
-                    continuer = false;
-                    break;
-                default:
-                    System.out.println("Choix invalide, veuillez réessayer.");
-                    break;
+                    menuRechercherLivre();
+                    System.out.println("Etes vous sûr de vouloir supprimer le livre"+"\n"+livreSelectionner+" ? (oui/non)");
+                    String reponseSupp = scanner.nextLine().toLowerCase();
+                    if (!reponseSupp.equals("o") && !reponseSupp.equals("oui")) {
+                        System.out.println("Suppression annulée.");
+                        break;
+                    }
+                    else{
+                        try{
+                        adminConnexion.supprimerLivre(livreSelectionner);
+                        }
+                        catch(SQLException e){
+                            System.out.println("Erreur lors de la suppression du livre : " + e.getMessage());
+                            break;
+                        }
+                        System.out.println("Livre supprimé avec succès !");
+                    }
             }
         }
     }
-
     public void menuStatsDeVentes() {
         boolean continuer = true;
         while(continuer) {
-            System.out.println("---- STATISTIQUES DE VENTES ----");
-            System.out.println("|                             |");
-            System.out.println("| > Voir les ventes du mois   |");
-            System.out.println("| > Voir les ventes de l'année |");
-            System.out.println("| > Retour au menu principal   |");
-            System.out.println("|                             |");
-            System.out.println("-------------------------------");
-            System.out.print("Veuillez choisir une option (1-3) : ");
+            System.out.println("---------- STATISTIQUES DE VENTES -------------");
+            System.out.println("|                                            |");
+            System.out.println("|  > Nb livres vendus par magasin/an         |");
+            System.out.println("|  > Chiffre d'affaire par thème en 2024     |");
+            System.out.println("|  > Comparaison ventes en ligne/ magasin    |");
+            System.out.println("|  > Evolution CA par magasin/mois en 2024   |");
+            System.out.println("|  > Valeur du stock par magasin             |");
+            System.out.println("|  > Palmarès des ventes                     |");
+            System.out.println("|  > Retour au menu principal                |");
+            System.out.println("|                                            |");
+            System.out.println("---------------------------------------------");
+            System.out.print("Veuillez choisir une option (1-6) : ");
             String choix = scanner.nextLine();
             switch (choix) {
                 case "1":
-                    // jsp
+                    try{
+                        adminConnexion.Requete1();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
                     break;
                 case "2":
-                    // jsp
+                    try{
+                        adminConnexion.Requete2();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
                     break;
                 case "3":
-                    continuer = false;
+                    try{
+                        adminConnexion.Requete3();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
+                    break;
+                case "4":
+                    try{
+                        adminConnexion.Requete4();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
+                    break;
+                    case "5":
+                    try{
+                        adminConnexion.Requete5();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
+                    break;
+                     case "6":
+                    try{
+                        adminConnexion.Requete6();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
                     break;
                 default:
                     System.out.println("Choix invalide, veuillez réessayer.");
@@ -397,7 +673,7 @@ public class ApplicationTerminal {
                 menuRechercherLivre();
                 break;
             case "2":
-                // rien
+                //menuCatalogue();
                 break;
             case "3":
                 menuMesRecommandations();
@@ -504,7 +780,15 @@ public class ApplicationTerminal {
                     String titre = scanner.nextLine();
                     try{
                         livres = livreConnexion.rechercherLivre(Filtre.titre,"" , titre ,"" , vendeurConnexion);
-                        afficherLivre(livres);
+                        System.out.println("Est ce que c'est pour commander ? (oui/non)");
+                        String reponse = scanner.nextLine().toLowerCase();
+                        if(reponse.equals("o") || reponse.equals("oui")){
+                            afficherLivre(livres, true);
+                        }
+                        else{
+                            afficherLivre(livres, false);
+                        }
+                        
                         System.out.print("Appuyez sur Entrée pour continuer...");
                         scanner.nextLine();
                     }
@@ -517,7 +801,14 @@ public class ApplicationTerminal {
                     String auteur = scanner.nextLine();
                     try{
                         livres = livreConnexion.rechercherLivre(Filtre.auteur,"" , "" , auteur , vendeurConnexion);
-                        afficherLivre(livres);
+                        System.out.println("Est ce que c'est pour commander ? (O/n)");
+                        String reponse = scanner.nextLine().toLowerCase();
+                        if(reponse.equals("o") || reponse.equals("oui")){
+                            afficherLivre(livres, true);
+                        }
+                        else{
+                            afficherLivre(livres, false);
+                        }
                         System.out.print("Appuyez sur Entrée pour continuer...");
                         scanner.nextLine();
                     }
@@ -530,7 +821,14 @@ public class ApplicationTerminal {
                     String isbn = scanner.nextLine();
                     try{
                         livres = livreConnexion.rechercherLivre(Filtre.isbn, isbn , "" , "" , vendeurConnexion);
-                        afficherLivre(livres);
+                        System.out.println("Est ce que c'est pour commander ? (O/n)");
+                        String reponse = scanner.nextLine().toLowerCase();
+                        if(reponse.equals("o") || reponse.equals("oui")){
+                            afficherLivre(livres, true);
+                        }
+                        else{
+                            afficherLivre(livres, false);
+                        }
                         System.out.print("Appuyez sur Entrée pour continuer...");
                         scanner.nextLine();
                     }
@@ -688,7 +986,7 @@ public class ApplicationTerminal {
 
     public void menuMesRecommandations(){
         try{
-        afficherLivre(clientConnexion.onVousRecommande((Client) utilisateurConnecter));
+        afficherLivre(clientConnexion.onVousRecommande((Client) utilisateurConnecter), true);
         }
         catch(SQLException e ){
             System.out.println("Erreur lors de la récupération des livres a recommandé : "+e.getMessage());
@@ -846,7 +1144,7 @@ public class ApplicationTerminal {
         }
     }
 
-    private Magasin menuChoisirMagasin() {
+    public Magasin menuChoisirMagasin() {
         List<Magasin> magasins;
         try{
             magasins = magasinConnexion.chargerMagasin();
@@ -901,7 +1199,7 @@ public class ApplicationTerminal {
         // a coder
     }
 
-    public void afficherLivre(Map<Livre, Boolean> livres) {
+    public void afficherLivre(Map<Livre, Boolean> livres, boolean pourCommander) {
         int totalPages = (int) livres.size()/nbObjetParPage;
         if(totalPages==0){
             totalPages=1;
@@ -928,40 +1226,53 @@ public class ApplicationTerminal {
                 System.out.println("| Page : "+pageCourante+"/"+totalPages+"                                           |");
                 System.out.println("|                                                    |");
                 System.out.println("------------------------------------------------------");
-                System.out.println("Voulez vous commander un de ces livres ? (O/n)");
-                System.out.println("Pour changer de page : < | >");
-                String reponse = scanner.nextLine().toLowerCase();
-                if (reponse.equals("o") || reponse.equals("oui")) {
-                    System.out.print("Entrez le numéro du livre à commander (1-" + nbObjetParPage + ") : ");
-                    int choixLivre = Integer.parseInt(scanner.nextLine());
-                    Livre livreChoisi = listeLivres.get(choixLivre-1+(pageCourante - 1) * nbObjetParPage);
-                    System.out.println("Quelle quantité souhaitez-vous commander ? ");
-                    int quantite = Integer.parseInt(scanner.nextLine());
-                    boolean quantiteDisponible = false;
-                    try{
-                        quantiteDisponible = vendeurConnexion.verifierQteDispo(livreChoisi, quantite);
-                    }
-                    catch (SQLException e) {
-                        System.out.println("Problème lors de la vérification de la quantité disponible : " + e.getMessage());
-                    }
-                    catch(PasStockPourLivreException e){
-                        System.out.println("Pas assez de stock pour le livre " + livreChoisi.getTitre() + ". Veuillez choisir une quantité inférieure.");
-                    }
-                    
-                    if(livres.get(livreChoisi)==true && quantiteDisponible==true){
+                String reponse;
+                if (pourCommander) {
+                    System.out.println("Voulez vous commander un de ces livres ? (O/n)");
+                    System.out.println("Pour changer de page : < | >");
+                    reponse = scanner.nextLine().toLowerCase();
+                    if (reponse.equals("o") || reponse.equals("oui")) {
+                        System.out.print("Entrez le numéro du livre à commander (1-" + nbObjetParPage + ") : ");
+                        int choixLivre = Integer.parseInt(scanner.nextLine());
+                        Livre livreChoisi = listeLivres.get(choixLivre-1+(pageCourante - 1) * nbObjetParPage);
+                        System.out.println("Quelle quantité souhaitez-vous commander ? ");
+                        int quantite = Integer.parseInt(scanner.nextLine());
+                        boolean quantiteDisponible = false;
                         try{
-                        panier.commander(livreChoisi, quantite);
+                            quantiteDisponible = vendeurConnexion.verifierQteDispo(livreChoisi, quantite);
                         }
-                        catch (IndexOutOfBoundsException e) {
-                            System.out.println("Numéro de livre invalide. Veuillez réessayer.");
+                        catch (SQLException e) {
+                            System.out.println("Problème lors de la vérification de la quantité disponible : " + e.getMessage());
+                        }
+                        catch(PasStockPourLivreException e){
+                            System.out.println("Pas assez de stock pour le livre " + livreChoisi.getTitre() + ". Veuillez choisir une quantité inférieure.");
+                        }
+                        
+                        if(livres.get(livreChoisi)==true && quantiteDisponible==true){
+                            try{
+                            commander(livreChoisi, quantite);
+                            }
+                            catch (IndexOutOfBoundsException e) {
+                                System.out.println("Numéro de livre invalide. Veuillez réessayer.");
+                            }
+                        }
+                        else{
+                            System.out.println("Livre non disponible, veuillez en choisir un autre.");
                         }
                     }
-                    else{
-                        System.out.println("Livre non disponible, veuillez en choisir un autre.");
+                } else {
+                    System.out.println("Voulez vous selectionner un de ces livres ? (O/n)");
+                    System.out.println("Voulez vous commander un de ces livres ? (O/n)");
+                    System.out.println("Pour changer de page : < | >");
+                    reponse = scanner.nextLine().toLowerCase();
+                    if (reponse.equals("o") || reponse.equals("oui")) {
+                        System.out.print("Entrez le numéro du livre à sélectionner (1-" + nbObjetParPage + ") : ");
+                        int choixLivre = Integer.parseInt(scanner.nextLine());
+                        Livre livreChoisi = listeLivres.get(choixLivre-1+(pageCourante - 1) * nbObjetParPage);
+                        livreSelectionner = livreChoisi;
                     }
-                    
                 }
-                else if (reponse.equals("<")) {
+                if (reponse.equals("<")) {
                     if (pageCourante > 1) {
                         pageCourante--;
                     } else {
