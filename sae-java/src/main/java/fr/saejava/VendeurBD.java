@@ -20,10 +20,6 @@ public class VendeurBD {
     public void ajouteLivre(int idVendeur,Livre l, int qte) throws VendeurSansMagasinException, SQLException{ //execption a corriger
         magasinBD.ajoutStock(getMagasin(idVendeur), l, qte);
     }
-    
-    public void ajouteLivre(int idVendeur,Livre l) throws VendeurSansMagasinException, SQLException{
-        ajouteLivre(idVendeur, l, 1);
-    }
 
     /**
      * pour passer une commande de livres
@@ -158,6 +154,23 @@ public class VendeurBD {
     public boolean verifierQteDispo(Livre l, int qte) throws SQLException, PasStockPourLivreException{
         st = connexion.createStatement();
         r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn");
+        if (r.next()){
+            int qteDispo = r.getInt("qtett");
+            r.close();
+            st.close();
+            if (qteDispo >= qte){return true;}
+            else {throw new PasStockPourLivreException();}
+        }
+        else {
+            r.close();
+            st.close();
+            throw new PasStockPourLivreException();
+        }
+    }
+
+    public boolean verifierQteDispo(Livre l, int qte, Magasin magasin) throws SQLException, PasStockPourLivreException{
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn and idmag = "+magasin.getId());
         if (r.next()){
             int qteDispo = r.getInt("qtett");
             r.close();

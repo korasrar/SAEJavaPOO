@@ -238,9 +238,10 @@ public class ApplicationTerminal {
                     System.out.println("Veuillez indiquer votre ville :");
                     String ville = scanner.nextLine();
                     System.out.println("Veuillez indiquer votre codePostal :");
-                    String codePostal = scanner.nextLine();
-                
-                    //this.clientConnexion.creeCompteClient(nb++, adresse, ville, codePostal, nom, prenom, nomDUtilisateur, mdp); // get le dernier id d'utilisateur et faire ++
+                    int codePostal = Integer.parseInt(scanner.nextLine());
+                    
+                    int nb = this.utilisateurConnexion.getLastUtilisateurID();
+                    this.clientConnexion.creeCompteClient(nb++, adresse, ville, codePostal, nom, prenom, nomDUtilisateur, mdp); // get le dernier id d'utilisateur et faire ++
                     System.out.println("Votre compte a bien été enregistré");
                     break;
                 case "3":
@@ -406,52 +407,28 @@ public class ApplicationTerminal {
 
 
 
-    public void menuVendeurMain() {
+    public void menuVendeurMain() throws SQLException{
         System.out.println("--------- MENU VENDEUR ----------");
         System.out.println("|                               |");
-        System.out.println("| > Rechercher un livre         |");
-        System.out.println("| > Catalogue                   |");
-        System.out.println("| > Mes recommandations         |");
-        System.out.println("| > Voir panier                 |");
-        System.out.println("| > Mes commandes               |");
-        System.out.println("| > Mon profil                  |");
         System.out.println("| > Transferer un livre         |");
         System.out.println("| > Maj des stocks              |");
         System.out.println("| > Verifier les disponibilités |");
         System.out.println("| > Se déconnecter              |");
         System.out.println("|                               |");
         System.out.println("---------------------------------"); 
-        System.out.print("Veuillez choisir une option (1-10) : ");
+        System.out.print("Veuillez choisir une option (1-4) : ");
         String choix = scanner.nextLine();
         switch (choix) {
             case "1":
-                menuRechercherLivre();
-                break;
-            case "2":
-                // rien
-                break;
-            case "3":
-                menuMesRecommandations();
-                break;
-            case "4":
-                menuPanier();
-                break;
-            case "5":
-                menuMesCommandes();
-                break;
-            case "6":
-                menuProfil();
-                break;
-            case "7":
                 menuTransfertLivre();
                 break;
-            case "8":
+            case "2":
                 menuMajStock();
                 break;
-            case "9":
+            case "3":
                 menuDispo();
                 break;
-            case "10":
+            case "4":
                 System.out.println("Déconnexion...");
                 estConnecteUtil = false;
                 utilisateurConnecter = null;
@@ -920,17 +897,73 @@ public class ApplicationTerminal {
         return null;
     }
 
-    public void menuTransfertLivre(){
-        // a coder
+    public void menuTransfertLivre() throws SQLException{
+        boolean continuer = true;
+        Map<Livre, Boolean> livres;
+        while(continuer) {
+            try {
+            System.out.print("Entrez le titre à rechercher : ");
+            String titre = scanner.nextLine();
+            System.out.print("Entrez le nom de l'auteur à rechercher : ");
+            String auteur = scanner.nextLine();
+            System.out.print("Entrez l'ISBN du livre à rechercher : ");
+            String isbn = scanner.nextLine();
+            Map<Livre, Boolean> lesLivres = livreConnexion.rechercherLivre(isbn, titre, auteur, vendeurConnexion, (Vendeur) utilisateurConnecter);
+            afficherLivre(lesLivres);
+            List<Magasin> lesMagasins = magasinConnexion.livreDansMagasin(livreSelectionner); // merge
+            afficherLivreMag(livreSelectionner, lesMagasins);
+            System.out.print("Appuyez sur Entrée pour continuer...");
+            scanner.nextLine();
+            }
+            catch(SQLException e){
+                System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+            }
+        }
     }
 
-    public void menuMajStock(){
-        // a coder
+    public void menuMajStock() throws SQLException{
+        boolean continuer = true;
+        while(continuer) {
+            try {
+            System.out.print("Entrez le titre à rechercher : ");
+            String titre = scanner.nextLine();
+            System.out.print("Entrez le nom de l'auteur à rechercher : ");
+            String auteur = scanner.nextLine();
+            System.out.print("Entrez l'ISBN du livre à rechercher : ");
+            String isbn = scanner.nextLine();
+            Map<Livre, Boolean> lesLivres = livreConnexion.rechercherLivre(isbn, titre, auteur, vendeurConnexion, (Vendeur) utilisateurConnecter);
+            majStock(lesLivres);
+            System.out.print("Appuyez sur Entrée pour continuer...");
+            scanner.nextLine();
+            }
+            catch(SQLException e){
+                System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+            }
+        }
     }
 
-    public void menuDispo(){
-        // a coder
+    public void menuDispo() throws SQLException{
+        boolean continuer = true;
+        Map<Livre, Boolean> livres;
+        while(continuer) {
+            try {
+            System.out.print("Entrez le titre à rechercher : ");
+            String titre = scanner.nextLine();
+            System.out.print("Entrez le nom de l'auteur à rechercher : ");
+            String auteur = scanner.nextLine();
+            System.out.print("Entrez l'ISBN du livre à rechercher : ");
+            String isbn = scanner.nextLine();
+            Map<Livre, Boolean> lesLivres = livreConnexion.rechercherLivre(isbn, titre, auteur, vendeurConnexion, (Vendeur) utilisateurConnecter);
+            //afficherLivre(livres);
+            System.out.print("Appuyez sur Entrée pour continuer...");
+            scanner.nextLine();
+            }
+            catch(SQLException e){
+                System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+            }
+        }
     }
+
 
     public void afficherLivre(Map<Livre, Boolean> livres) {
         int totalPages = (int) livres.size()/nbObjetParPage;
@@ -1013,7 +1046,85 @@ public class ApplicationTerminal {
         }
     }
 
+    public void afficherLivreMag(Livre livre, List<Magasin> lesMagasins) throws SQLException, NumberFormatException, LivrePasDansStockMagasinException, VendeurSansMagasinException{
+        boolean continuer = true;
+        while(continuer){
+            if (lesMagasins.isEmpty()) {
+                System.out.println("------------- MAGASINS TROUVÉS ------------");
+                System.out.println("|                                         |");
+                System.out.println("| Aucun magasins disponible pour ce livre |");
+                System.out.println("|                                         |");
+                System.out.println("-------------------------------------------");
+                System.out.println("Appuyez sur Entrée pour retourner au menu principal...");
+                scanner.nextLine();
+                continuer = false;
+            } else {
+                System.out.println("------------------- MAGASINS TROUVÉS -------------------");
+                System.out.println("|                                                      |");
+                System.out.println("|  "+livre.getIsbn()+", "+livre.getTitre()+", "+livre.getAuteurs()+ "  |");
+                System.out.println("|  Ce livre est disponible dans les magasins suivants :|");
 
+                for(int i=0; i<lesMagasins.size();i++){
+                    Magasin unMagasin = lesMagasins.get(i);
+                    System.out.println("| "+unMagasin.getNom() +" |");
+                }
+                System.out.println("|                                                    |");
+                System.out.println("------------------------------------------------------");
+                System.out.print("De quel magasin souhaitez vous récupérer le livre ? (1-"+lesMagasins.size()+")");
+                String choix = scanner.nextLine();
+                try{
+                    int choixInt = Integer.parseInt(choix);
+                    if (choixInt > lesMagasins.size())
+                            System.out.println("Choix invalide, veuillez réessayer.");
+                        else {
+                            System.out.println("Quelle quantité souhaitez-vous transférer ? ");
+                            int quantite = Integer.parseInt(scanner.nextLine());
+                            if (quantite <= 0) {
+                                System.out.println("La quantité doit être supérieure à 0.");
+                                continue;
+                            }
+                            if (!vendeurConnexion.verifierQteDispo(livre, quantite, this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId()))) {
+                                System.out.println("Pas assez de stock pour le livre " + livre.getTitre() + ". Veuillez choisir une quantité inférieure.");
+                                continue;
+                            }
+                            else{
+                                this.vendeurConnexion.transferer(livre, this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId()), lesMagasins.get(Integer.parseInt(choix)-1), quantite);
+                                System.out.println("Transfert en cours...");
+                                continuer = false;
+                                System.out.println("Transfert effectué avec succès !");
+                            }
+                        }
+                }
+                catch (NumberFormatException e) {
+                    System.out.println("Veuillez entrer un nombre valide.");
+                    continue;
+                }
+                        
+                }
+            }
+        }    
+    }
+
+    public void majStock(Livre livre){
+        boolean continuer = true;
+        while(continuer){
+            System.out.println("-------------- STOCKS DU LIVRE -------------");
+            System.out.println("|                                         |");
+            System.out.println("| "+livre.getIsbn()+" |");
+            System.out.println("| "+livre.getTitre()+" |");
+            System.out.println("| "+livre.getAuteurs()+" |");
+                Magasin magasinVendeur = this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId());
+                Map<Livre, Integer> lesStocks = magasinVendeur.getStock();
+                Integer qte = lesStocks.get(livre); 
+            System.out.println("| "+qte+" |");
+            System.out.println("|                                         |");
+            System.out.println("-------------------------------------------");
+            System.out.print("Combiens de livres souhaitez vous ajouter? : ");
+            int ajout = Integer.parseInt(scanner.nextLine());
+            this.vendeurConnexion.mettreAJour(livre, qte + ajout, magasinVendeur);
+            return;
+        }
+    }
 
     public void main(){
         System.out.println("Bienvenue dans l'application de gestion de librairie !");
@@ -1080,8 +1191,13 @@ public class ApplicationTerminal {
             menuAdminMain();
         } 
         else if (utilisateurConnecter instanceof Vendeur) {
+            try {
             System.out.println("Bienvenue, Vendeur " + utilisateurConnecter.getNom() + " !");
             menuVendeurMain();
+            }
+            catch(SQLException e){
+                // un message d'erreur a implementer
+            }
         } 
         else if (utilisateurConnecter instanceof Client) {
             System.out.println("Bienvenue, Client " + utilisateurConnecter.getNom() + " !");

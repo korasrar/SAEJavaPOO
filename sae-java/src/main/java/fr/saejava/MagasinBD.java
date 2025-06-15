@@ -164,4 +164,23 @@ public class MagasinBD {
         System.out.println("Le meilleur magasin pour la commande est : " + meilleurMagasin);
         return meilleurMagasin;
     }
+
+    public List<Magasin> livreDansMagasin(Livre livre) throws SQLException{
+        st = connexion.createStatement();
+        List<Magasin> allMagasins = chargerMagasin();
+        List<Magasin> magasinDispo = new ArrayList<>();
+        for (Magasin unMagasin : allMagasins){
+            rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' AND idmag ='"+unMagasin.getId());
+            if (rs.getInt("qte") > 0){
+                magasinDispo.add(unMagasin);
+            }
+        }
+        return magasinDispo;
+    }
+
+    //public int getQuantiteLivre(Livre livre){
+    //    st = connexion.createStatement();
+    //    rs = st.executeQuery("SELECT qte FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' AND idmag ='"+unMagasin.getId());
+    //    return rs.getInt("qte");
+    //}
 }

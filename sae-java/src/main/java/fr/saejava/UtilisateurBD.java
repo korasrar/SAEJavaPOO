@@ -68,4 +68,17 @@ public class UtilisateurBD {
             throw new UtilisateurIntrouvableException();
         }
     }
+
+    public int getLastUtilisateurID() throws SQLException{
+        int nb=0;
+		st=connexion.createStatement();
+		ResultSet rs=st.executeQuery("select max(idutilisateur) as nb from UTILISATEUR");
+
+        while(rs.next()){
+			nb=rs.getInt("nb");
+			System.out.println(nb);
+		}
+			rs.close();
+		return nb;
+    }
 }
