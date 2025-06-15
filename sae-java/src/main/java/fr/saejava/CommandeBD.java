@@ -9,8 +9,6 @@ import java.util.List;
 
 public class CommandeBD {
     ConnexionMySQL connexion;
-    Statement st;
-    ResultSet r;
 
     public CommandeBD(ConnexionMySQL connexion){
         this.connexion = connexion;
@@ -25,9 +23,10 @@ public class CommandeBD {
     
     public Commande getDerniereCommande(Client client) throws SQLException{
         Commande derniereCommande = null;
+        Statement st = null;
+        ResultSet r = null;
         try {
             st = connexion.createStatement();
-            // Tester la requête sur machine IUT
             r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag, livraison FROM MAGASIN NATURAL JOIN COMMANDE NATURAL JOIN CLIENT WHERE idcli ="+client.getNum()+" ORDER BY datecom DESC LIMIT 1");
             if (r.next()) {
                 Magasin magasin = new Magasin(r.getInt("idmag"),r.getString("nommag"),r.getString("villemag"));
@@ -49,16 +48,19 @@ public class CommandeBD {
                 rDetailCommande.close();
                 stDetailCommande.close();
             }
-            r.close();
-            st.close();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la dernière commande pour le client ");
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
         }
         return derniereCommande;
     }
 
     public Commande getCommande(Client client, int numCommande) throws NumberFormatException, SQLException{
         Commande commande = null;
+        Statement st = null;
+        ResultSet r = null;
         try {
             st = connexion.createStatement();
             r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag, livraison FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + " and numcom = " + numCommande + ";");
@@ -82,10 +84,11 @@ public class CommandeBD {
                 rDetailCommande.close();
                 stDetailCommande.close();
             }
-            r.close();
-            st.close();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la commande pour le client");
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
         }
         return commande;
     }
@@ -96,8 +99,10 @@ public class CommandeBD {
      * @return la liste des commandes du client
      */
 
-    public List<Commande> getCommandes(Client client){
+    public List<Commande> getCommandes(Client client) throws SQLException{
         List<Commande> listCommandes = new ArrayList<>();
+        Statement st = null;
+        ResultSet r = null;
         try {
             st = connexion.createStatement();
             r = st.executeQuery("SELECT numcom, datecom, idmag, nommag, villemag, livraison FROM MAGASIN natural join COMMANDE natural join CLIENT WHERE idcli =" + client.getNum() + ";");
@@ -111,8 +116,6 @@ public class CommandeBD {
                 else{
                     commande = new Commande(r.getInt("numcom"),r.getDate("datecom"), client, magasin, ModeLivraison.MAGASIN);
                 }
-                
-                // detail de la dernière commande
                 int numcom = r.getInt("numcom");
                 Statement stDetailCommande = connexion.createStatement();                
                 ResultSet rDetailCommande = stDetailCommande.executeQuery("SELECT numlig, qte, isbn, titre, nbpages, datepubli, prix from DETAILCOMMANDE natural join LIVRE where numcom = "+numcom+" order by numlig");
@@ -125,23 +128,29 @@ public class CommandeBD {
                 stDetailCommande.close();
                 listCommandes.add(commande);
             }
-            r.close();
-            st.close();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des commandes pour le client");
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
         }
         return listCommandes;
     }
 
     public Integer getDerniereIdCommande() throws SQLException{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM COMMANDE ORDER BY numcom DESC LIMIT 0, 1");
+        Statement st = null;
+        ResultSet r = null;
         Integer lastNomCom = 0;
-        if(r.next()){
-            lastNomCom = r.getInt("numcom");
+        try {
+            st = connexion.createStatement();
+            r = st.executeQuery("SELECT * FROM COMMANDE ORDER BY numcom DESC LIMIT 0, 1");
+            if(r.next()){
+                lastNomCom = r.getInt("numcom");
+            }
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
         }
-        r.close();
-        st.close();
         return lastNomCom;
     }
 

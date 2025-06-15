@@ -768,14 +768,16 @@ insert into UTILISATEUR(idutilisateur, nom, prenom, username, motdepasse, role) 
 	(498,'Lefebvre','Nathan','Nathan498','1439562191Lefebvre','client'),
 	(499,'Vincent','Sophie','Sophie499','947947772Vincent','client'),
 	(500,'Garcia','Elodie','Elodie500','625556097Garcia','client'),
-	(501,'Dupond','Jacques','Jacques501','567327814Dupond','vendeur');
+	(501,'Dupond','Jacques','Jacques501','567327814Dupond','vendeur'),
+	(502,'Dupont','Francis','Francis502','139455697Dupont','admin');
 
 -- les vendeurs
 insert into VENDEUR(idvendeur, idmagasin) values
     (501, 3);
 
-
-
+-- les vendeurs
+insert into ADMIN(idadmin) values
+    (502);
 
 -- les clients
 insert into CLIENT (idcli, adressecli, codepostal, villecli) values
@@ -25279,20 +25281,6 @@ insert into DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) values
 	(5025,4,9782012372498,1, 26.6),
 	(5025,5,9782082005746,1,8.29);
 
--- les vendeurs
-insert into VENDEUR(idvendeur, idmagasin) values
-	(501, 3);
-
-
-
-
-
-
-
-	
--- création de la fonction levenshtein
-
-
 -- source :
 -- https://lucidar.me/fr/web-dev/levenshtein-distance-in-mysql/
 DELIMITER $$
@@ -25338,3 +25326,9 @@ CREATE FUNCTION levenshtein( s1 VARCHAR(255), s2 VARCHAR(255) )
         RETURN c;
     END$$
 DELIMITER ;
+
+create or replace view VentesParAuteur as
+select YEAR(datecom) as annee, nomauteur, SUM(qte) as total
+from COMMANDE natural join DETAILCOMMANDE natural join LIVRE natural join ECRIRE natural join AUTEUR
+where YEAR(datecom) < 2025
+group by annee, nomauteur;

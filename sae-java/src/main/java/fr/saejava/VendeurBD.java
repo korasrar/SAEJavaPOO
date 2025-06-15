@@ -8,8 +8,6 @@ import java.util.Map;
 
 public class VendeurBD {
     ConnexionMySQL connexion;
-    Statement st;
-    ResultSet r;
     MagasinBD magasinBD;
 
     public VendeurBD(ConnexionMySQL connexion){
@@ -19,10 +17,6 @@ public class VendeurBD {
     
     public void ajouteLivre(int idVendeur,Livre l, int qte) throws VendeurSansMagasinException, SQLException{ //execption a corriger
         magasinBD.ajoutStock(getMagasin(idVendeur), l, qte);
-    }
-    
-    public void ajouteLivre(int idVendeur,Livre l) throws VendeurSansMagasinException, SQLException{
-        ajouteLivre(idVendeur, l, 1);
     }
 
     /**
@@ -59,48 +53,52 @@ public class VendeurBD {
      */
 
     public void mettreAJour(Livre l, int qte, Magasin mag) throws SQLException, LivrePasDansStockMagasinException{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
-        if (r.getInt("qte")<= qte){
-            r.close();
-            st.close();
-            throw new LivrePasDansStockMagasinException();
-        }
-        if (verifierDispo(mag, l)){
-            r.close();
-            r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
-            Integer quantiteInit = r.getInt("qte");
-            Integer nouvelleQte = quantiteInit + qte;
-            r.close();
-            st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
-        }
-        else {
-            //ok
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
+        if(r.next()){
+            if (r.getInt("qte")<= qte){
+                if (r != null) r.close();
+                st.close();
+                throw new LivrePasDansStockMagasinException();
+            }
+            if (verifierDispo(mag, l)){
+                r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
+                Integer quantiteInit = null;
+                if(r.next()){
+                    quantiteInit = r.getInt("qte");
+                }
+                Integer nouvelleQte = quantiteInit + qte;
+                if (r != null) r.close();
+                r.close();
+                st.executeUpdate("UPDATE POSSEDER SET qte = " + nouvelleQte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + mag.getId());
+            }
+            else {
+                //ok
+            }
         }
         st.close();
     }
 
     public void transferer(Livre l, Magasin magasinRecoit, Magasin magasinEnvoit, Integer qte) throws SQLException, LivrePasDansStockMagasinException{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasinEnvoit.getId());
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasinEnvoit.getId());
         if (r.getInt("qte")<= qte){
-            r.close();
+            if (r != null) r.close();
             st.close();
             throw new LivrePasDansStockMagasinException();
         }
         // DONE verifier la dispo du livre, si true faire update pour recup la valeur et incremente avec qte et renvoie dans bd
         // sinon , on fait un insert avec le livre et la qte
         if (verifierDispo(magasinRecoit, l)){
-            r.close();
             r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinRecoit.getId());
             Integer quantiteInit = r.getInt("qte");
             Integer nouvelleQte = quantiteInit + qte;
-            r.close();
-            st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
+            if (r != null) r.close();
+            st.executeUpdate("UPDATE POSSEDER SET qte = " + nouvelleQte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinRecoit.getId());
         }
         else {
-            r.close();
-            st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + 1 +"AND idmag = " + magasinRecoit.getId() +"AND isbn ='" + l.getIsbn() + "'");
+            if (r != null) r.close();
+            st.executeUpdate("UPDATE POSSEDER SET qte = qte - " + qte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinEnvoit.getId());
         }
         st.close();
     }
@@ -114,17 +112,17 @@ public class VendeurBD {
      * @throws SQLException si une erreur SQL se produit
      */
     public boolean verifierDispo(Magasin magasin, Livre l) throws SQLException{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasin.getId());
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasin.getId());
         if (r.next()){
             int qte = r.getInt("qte");
-            r.close();
+            if (r != null) r.close();
             st.close();
             if (qte > 0){return true;}
             else {return false;}
         }
         else {
-            r.close();
+            if (r != null) r.close();
             st.close();
             return false;
         }
@@ -139,11 +137,11 @@ public class VendeurBD {
      * @throws SQLException si une erreur SQL se produit
      */
     public boolean verifierDispo(Livre l) throws SQLException{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"'");
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"'");
         if (r.next()){
             int qte = r.getInt("qte");
-            r.close();
+            if (r != null) r.close();
             st.close();
             if (qte > 0){return true;}
             else {return false;}
@@ -156,17 +154,34 @@ public class VendeurBD {
     }
 
     public boolean verifierQteDispo(Livre l, int qte) throws SQLException, PasStockPourLivreException{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn");
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn");
         if (r.next()){
             int qteDispo = r.getInt("qtett");
-            r.close();
+            if (r != null) r.close();
             st.close();
             if (qteDispo >= qte){return true;}
             else {throw new PasStockPourLivreException();}
         }
         else {
             r.close();
+            st.close();
+            throw new PasStockPourLivreException();
+        }
+    }
+
+    public boolean verifierQteDispo(Livre l, int qte, Magasin magasin) throws SQLException, PasStockPourLivreException{
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn and idmag = "+magasin.getId());
+        if (r.next()){
+            int qteDispo = r.getInt("qtett");
+            if (r != null) r.close();
+            st.close();
+            if (qteDispo >= qte){return true;}
+            else {throw new PasStockPourLivreException();}
+        }
+        else {
+            if (r != null) r.close();
             st.close();
             throw new PasStockPourLivreException();
         }
@@ -182,16 +197,16 @@ public class VendeurBD {
      * @throws VendeurSansMagasinException si le vendeur n'a pas de magasin associé
      */
     public Magasin getMagasin(int idVendeur) throws SQLException, VendeurSansMagasinException{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT * FROM VENDEUR NATURAL JOIN MAGASIN WHERE idVendeur =" +idVendeur);
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT * FROM VENDEUR NATURAL JOIN MAGASIN WHERE idVendeur =" +idVendeur);
         if(r.next()){
             Magasin magasin = new Magasin(r.getInt("idmag"), r.getString("nommag"), r.getString("villemag"));
-            r.close();
+            if (r != null) r.close();
             st.close();
             return magasin;
         }
         else{
-            r.close();
+            if (r != null) r.close();
             st.close();
             throw new VendeurSansMagasinException();
         }
