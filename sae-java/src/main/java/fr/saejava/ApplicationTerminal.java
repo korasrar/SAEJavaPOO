@@ -1167,33 +1167,42 @@ public class ApplicationTerminal {
         boolean continuer = true;
         Map<Livre, Boolean> livres;
         while(continuer) {
-            try {
-            System.out.print("Entrez le titre à rechercher : ");
-            String titre = scanner.nextLine();
-            System.out.print("Entrez le nom de l'auteur à rechercher : ");
-            String auteur = scanner.nextLine();
-            System.out.print("Entrez l'ISBN du livre à rechercher : ");
-            String isbn = scanner.nextLine();
-            Map<Livre, Boolean> lesLivres = livreConnexion.rechercherLivre(isbn, titre, auteur, vendeurConnexion, (Vendeur) utilisateurConnecter);
-            afficherLivre(lesLivres, false);
-            List<Magasin> lesMagasins = magasinConnexion.livreDansMagasin(livreSelectionner); // merge
-            try{
-                afficherLivreMag(livreSelectionner, lesMagasins);
-            }
-            catch(SQLException e){
-                System.out.println("Erreur lors de l'affichage des magasins : "+ e.getMessage());
-            }
-            catch(VendeurSansMagasinException e){
-                System.out.println("Vendeur sans magasin !");
-            }
-            catch(LivrePasDansStockMagasinException e){
-                System.out.println(livreSelectionner+"\n"+"N'est pas dans le stock du magasin");
-            }
-            System.out.print("Appuyez sur Entrée pour continuer...");
-            scanner.nextLine();
-            }
-            catch(SQLException e){
-                System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
+           menuRechercherLivre();
+            if(!(livreSelectionner==null)){
+                Magasin magasinSource = null;
+                try{
+                    magasinSource = vendeurConnexion.getMagasin(utilisateurConnecter.getId());
+                }
+                catch(VendeurSansMagasinException e){
+                    System.out.println("Vous n'êtes pas associé à un magasin. Veuillez contacter un administrateur.");
+                    continuer = false;
+                }
+                
+                Magasin magasinDestination = menuChoisirMagasin();
+                if(magasinDestination==null){
+                    System.out.println("Aucun magasin sélectionné.");
+                    continuer = false;
+                }
+                else{
+                    System.out.print("Entrez la quantité à transférer : ");
+                    int quantite = scanner.nextInt();
+                    try{
+                        vendeurConnexion.verifierQteDispo(livreSelectionner, quantite);
+                        vendeurConnexion.transferer(livreSelectionner, magasinSource, magasinDestination, quantite);
+                        System.out.println("Transfert effectué avec succès !");
+                    }
+                    catch(PasStockPourLivreException e){
+                        System.out.println("Pas assez de stock pour le livre " + livreSelectionner.getTitre() + ". Veuillez choisir une quantité inférieure.");                    
+                    }
+                    catch(SQLException e){
+                        System.out.println("Erreur lors de la vérification de la quantité disponible : " + e.getMessage());
+                    }
+                    catch(LivrePasDansStockMagasinException e){
+                        System.out.println("Le livre " + livreSelectionner.getTitre() + " n'est pas dans le stock du magasin ");
+                    }
+                    
+                    
+                }
             }
         }
     }
@@ -1201,24 +1210,13 @@ public class ApplicationTerminal {
     public void menuMajStock() throws SQLException{
         boolean continuer = true;
         while(continuer) {
-            try {
-            System.out.print("Entrez le titre à rechercher : ");
-            String titre = scanner.nextLine();
-            System.out.print("Entrez le nom de l'auteur à rechercher : ");
-            String auteur = scanner.nextLine();
-            System.out.print("Entrez l'ISBN du livre à rechercher : ");
-            String isbn = scanner.nextLine();
-            Map<Livre, Boolean> lesLivres = livreConnexion.rechercherLivre(isbn, titre, auteur, vendeurConnexion, (Vendeur) utilisateurConnecter);
-            List<Livre> listLivre = new ArrayList<>(lesLivres.keySet());
-            for (int i=0; i<listLivre.size(); i++){
-                majStock(listLivre.get(i));
+            menuRechercherLivre();
+            if(!(livreSelectionner==null)){
+                majStock(livreSelectionner);
             }
+            continuer = false;
             System.out.print("Appuyez sur Entrée pour continuer...");
             scanner.nextLine();
-            }
-            catch(SQLException e){
-                System.out.println("Erreur lors de la recherche du livre : " + e.getMessage());
-            }
         }
     }
 
@@ -1231,8 +1229,9 @@ public class ApplicationTerminal {
             if(!(livreSelectionner==null)){
                 List<Magasin> lesMagasins = magasinConnexion.livreDansMagasin(livreSelectionner);
                 for(Magasin magasin : lesMagasins) {
-                    System.out.println("Livre " + livreSelectionner.getTitre() + " disponible dans le magasin : " + magasin.getNom() + " - " + magasin.getVille());
+                    System.out.println("Livre " + livreSelectionner.getTitre() + " disponible dans le magasin : " + magasin.getNom() + " - " + magasin.getVille() + " | Quantité : " + magasinConnexion.getQuantiteLivre(livreSelectionner, magasin));
                 }
+            continuer = false;
             }
             else{
                 System.out.println("Aucun livre sélectionné.");
@@ -1406,31 +1405,30 @@ public class ApplicationTerminal {
         while(continuer){
             System.out.println("-------------- STOCKS DU LIVRE -------------");
             System.out.println("|                                         |");
-            System.out.println("| "+livre.getIsbn()+" |");
-            System.out.println("| "+livre.getTitre()+" |");
-            System.out.println("| "+livre.getAuteurs()+" |");
+            System.out.println("| "+livre.getIsbn()+"                       |");
+            System.out.println("| "+livre.getTitre()+"                     |");
             Magasin magasinVendeur = null;
+            Integer qte = 0;
             try{
                 magasinVendeur = this.vendeurConnexion.getMagasin(this.utilisateurConnecter.getId());
+                qte = magasinConnexion.getQuantiteLivre(livre, magasinVendeur); 
             }
             catch(VendeurSansMagasinException e ){
-                System.out.println("Vendeur dans magasin !");
+                System.out.println("Vendeur sans magasin !");
             }
             catch(SQLException e){
                 System.out.println("Erreur lors de la recherche de magasin du vendeur :"+ e.getMessage());
             }
-                Map<Livre, Integer> lesStocks = magasinVendeur.getStock();
-                Integer qte = lesStocks.get(livre); 
             System.out.println("| "+qte+"                                |");
             System.out.println("|                                         |");
             System.out.println("-------------------------------------------");
             System.out.print("Combiens de livres souhaitez vous ajouter? : ");
             int ajout = Integer.parseInt(scanner.nextLine());
             try{
-                this.vendeurConnexion.mettreAJour(livre, qte + ajout, magasinVendeur);
+                this.vendeurConnexion.mettreAJour(livre, ajout, magasinVendeur);
             }
             catch(SQLException e){
-                System.out.println("Erreur lors de la mise a jour ");
+                System.out.println("Erreur lors de la mise a jour :" + e.getMessage());
             }
             catch(LivrePasDansStockMagasinException e){
                 System.out.println("Livre pas disponible dans le stock du magasin");

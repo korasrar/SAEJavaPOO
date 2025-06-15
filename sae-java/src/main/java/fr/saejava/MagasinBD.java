@@ -166,11 +166,16 @@ public class MagasinBD {
         }
         return magasinDispo;
     }
-}
 
-    //public int getQuantiteLivre(Livre livre){
-    //    st = connexion.createStatement();
-    //    rs = st.executeQuery("SELECT qte FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' AND idmag ='"+unMagasin.getId());
-    //    return rs.getInt("qte");
-    //}
+    public int getQuantiteLivre(Livre livre, Magasin unMagasin) throws SQLException {
+        Statement st = connexion.createStatement();
+        ResultSet rs = st.executeQuery("SELECT qte FROM POSSEDER WHERE isbn ='"+livre.getIsbn()+"' AND idmag ="+unMagasin.getId());
+        if(rs.next()){
+            return rs.getInt("qte");
+        }
+        else {
+            return 0; // Livre non trouvé dans le magasin
+        }
+    }
+}
 
