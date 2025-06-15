@@ -119,6 +119,13 @@ CREATE TABLE THEMES (
   iddewey varchar(3) NOT NULL
 );
 
+create or replace view VentesParAuteur as
+select YEAR(datecom) as annee, nomauteur, SUM(qte) as total
+from COMMANDE natural join DETAILCOMMANDE natural join LIVRE natural join ECRIRE natural join AUTEUR
+where YEAR(datecom) < 2025
+group by annee, nomauteur;
+
+
 ALTER TABLE COMMANDE ADD FOREIGN KEY (idmag) REFERENCES MAGASIN (idmag);
 ALTER TABLE COMMANDE ADD FOREIGN KEY (idcli) REFERENCES CLIENT (idcli);
 
@@ -766,6 +773,8 @@ insert into UTILISATEUR(idutilisateur, nom, prenom, username, motdepasse, role) 
 -- les vendeurs
 insert into VENDEUR(idvendeur, idmagasin) values
     (501, 3);
+
+
 
 
 -- les clients

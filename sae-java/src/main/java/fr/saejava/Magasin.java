@@ -9,12 +9,15 @@ public class Magasin{
     private String nom;
     private String ville;
     private Map<Livre, Integer> stockMagasin;
+    private List<Vendeur> vendeurs;
+    
 
     public Magasin(int id,String nom,String ville){
         this.id = id;
         this.nom = nom;
         this.ville = ville;
         this.stockMagasin = new HashMap<>();
+        this.vendeurs = new ArrayList<>();
     }
 
     public int getId(){
@@ -29,6 +32,9 @@ public class Magasin{
     public Map<Livre, Integer> getStock(){
         return this.stockMagasin;
     }
+    public List<Vendeur> getVendeurs(){
+        return this.vendeurs;
+    }
 
     public void setId(int id){
         this.id = id;
@@ -38,6 +44,12 @@ public class Magasin{
     }
     public void setVille(String ville){
         this.ville = ville;
+    }
+    
+    public void addVendeur(Vendeur vendeur){
+        if(!vendeurs.contains(vendeur)){
+            this.vendeurs.add(vendeur);
+        }
     }
 
     @Override

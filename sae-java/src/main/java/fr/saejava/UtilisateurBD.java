@@ -69,16 +69,13 @@ public class UtilisateurBD {
         }
     }
 
-    public int getLastUtilisateurID() throws SQLException{
-        int nb=0;
-		st=connexion.createStatement();
-		ResultSet rs=st.executeQuery("select max(idutilisateur) as nb from UTILISATEUR");
-
-        while(rs.next()){
-			nb=rs.getInt("nb");
-			System.out.println(nb);
-		}
-			rs.close();
-		return nb;
+    public int getDernierID() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT MAX(idutilisateur) AS dernierID FROM UTILISATEUR");
+        if (r.next()) {
+            return r.getInt("dernierID");
+        } else {
+            return 0;
+        }
     }
 }
