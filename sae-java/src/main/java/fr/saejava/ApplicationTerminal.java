@@ -251,12 +251,12 @@ public class ApplicationTerminal {
         while(continuer) {
         System.out.println( "-------- MENU ADMIN --------");
         System.out.println("|                           |");
-        System.out.println("| > Créer un compte vendeur |"); //fait
-        System.out.println("| > Ajouter un magasin      |"); //fait
-        System.out.println("| > Gérer les stocks        |"); //ajouter livre fait
+        System.out.println("| > Créer un compte vendeur |"); 
+        System.out.println("| > Ajouter un magasin      |"); 
+        System.out.println("| > Gérer les stocks        |"); 
         System.out.println("| > Voir les stats de vente |");
-        System.out.println("| > Mon profil              |"); //fait
-        System.out.println("| > Se déconnecter          |"); //fait
+        System.out.println("| > Mon profil              |"); 
+        System.out.println("| > Se déconnecter          |"); 
         System.out.println("|                           |");
         System.out.println("-----------------------------");
         System.out.print("Veuillez choisir une option (1-6) : ");
@@ -354,9 +354,9 @@ public class ApplicationTerminal {
         while(continuer) {
             System.out.println("---- GÉRER LES STOCKS ----");
             System.out.println("|                       |");
-            System.out.println("| > Ajouter un livre    |"); //fait
-            System.out.println("| > Modifier un livre   |");
-            System.out.println("| > Supprimer un livre  |"); //fait
+            System.out.println("| > Ajouter un livre    |"); 
+            System.out.println("| > Modifier un livre   |"); 
+            System.out.println("| > Supprimer un livre  |"); 
             System.out.println("|                       |");
             System.out.println("-------------------------");
             System.out.print("Veuillez choisir une option (1-4) : ");
@@ -526,18 +526,57 @@ public class ApplicationTerminal {
                             }
                         }// fin while editeurs
                         }// fin if reponse editeur
+
                     livre.setAuteurs(auteursLivre);
                     livre.setClassifications(classificationLivre);
                     livre.setEditeurs(editeursLivre);
                     break;    
                 
                 case "2":
+                  System.out.println("----- MODIFIER UN LIVRE -----");
+                    System.out.println("|                       |");
+                    System.out.println("| > Modifier un livre   |");
+                    System.out.println("|                       |");
+                    System.out.println("-------------------------");
+                    try{
                     menuRechercherLivre();
+                    System.out.println("Veuillez entrer les nouvelles informations du livre...");
                     
+                    System.out.print("ISBN : ");
+                    String isbn3 = scanner.nextLine();
+                    System.out.print("Titre : ");
+                    String titre3 = scanner.nextLine();
+                    System.out.print("Nombre de pages : ");
+                    int nbPages3 = scanner.nextInt();
+                    System.out.print("Auteurs : ");
+                    String auteurs3 = scanner.nextLine();
+                    System.out.print("Editeurs : ");
+                    String editeurs3 = scanner.nextLine();
+                    System.out.print("Annee de publication : ");
+                    String annee3 = scanner.nextLine();
+                    System.out.print("Classifications : ");
+                    String classifications3 = scanner.nextLine();
+                    System.out.print("Prix : ");
+                    double prix3 = scanner.nextDouble();
+                    livreSelectionner.setIsbn(isbn3);
+                    livreSelectionner.setTitre(titre3);
+                    livreSelectionner.setNbPages(nbPages3);
+                    livreSelectionner.setDatePubli(annee3);
+                    livreSelectionner.setPrix(prix3);   
+                    livreSelectionner.setClassifications(livreSelectionner.getClassifications());
+                    livreSelectionner.setAuteurs(livreSelectionner.getAuteurs());
+                    livreSelectionner.setEditeurs(livreSelectionner.getEditeurs()); 
+                    adminConnexion.modifierLivre(livreSelectionner);
+                    livreSelectionner = null;
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de la modification du livre : " + e.getMessage());
+                    }
                     break;
+
+
                 case "3":
                     menuRechercherLivre();
-                    System.out.println("Etes vous sûr de vouloir supprimer le livre"+"\n"+livreSelectionner+" ? (O/n)");
+                    System.out.println("Etes vous sûr de vouloir supprimer le livre"+"\n"+livreSelectionner+" ? (oui/non)");
                     String reponseSupp = scanner.nextLine().toLowerCase();
                     if (!reponseSupp.equals("o") && !reponseSupp.equals("oui")) {
                         System.out.println("Suppression annulée.");
@@ -717,7 +756,7 @@ public class ApplicationTerminal {
                     String titre = scanner.nextLine();
                     try{
                         livres = livreConnexion.rechercherLivre(Filtre.titre,"" , titre ,"" , vendeurConnexion);
-                        System.out.println("Est ce que c'est pour commander ? (O/n)");
+                        System.out.println("Est ce que c'est pour commander ? (oui/non)");
                         String reponse = scanner.nextLine().toLowerCase();
                         if(reponse.equals("o") || reponse.equals("oui")){
                             afficherLivre(livres, true);

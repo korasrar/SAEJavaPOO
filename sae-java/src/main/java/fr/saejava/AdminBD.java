@@ -82,6 +82,17 @@ public class AdminBD {
         st.executeUpdate("DELETE FROM LIVRE WHERE isbn = '" + livre.getIsbn() + "'");
         st.executeUpdate("DELETE FROM POSSEDER WHERE isbn = '" + livre.getIsbn() + "'");
     }
+
+    public void modifierLivre(Livre l) throws SQLException {
+        PreparedStatement pstmt = this.connexion.prepareStatement("UPDATE LIVRE SET titre = ?, auteur = ?, editeur = ?, annee = ?, prix = ? WHERE isbn = ?");
+        pstmt.setString(1, l.getTitre());
+        pstmt.setString(2, l.getAuteurs());
+        pstmt.setString(3, l.getEditeurs());
+        pstmt.setString(4, l.getDatePubli());
+        pstmt.setDouble(5, l.getPrix());
+        pstmt.setString(6, l.getIsbn());
+        pstmt.executeUpdate();
+    }
     
     public void statVente(){
         // diagramme
