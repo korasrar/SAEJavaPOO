@@ -66,6 +66,15 @@ public class Livre {
     public void setPrix(double prix){
         this.prix = prix;
     }
+    public void setAuteurs(List<Auteur> auteurs){
+        this.lesAuteurs = auteurs;
+    }
+    public void setClassifications(List<Classification> classifications){
+        this.lesClassifications = classifications;
+    }
+    public void setEditeurs(List<Editeur> editeurs){
+        this.lesEditeurs = editeurs;
+    }
 
     // *---------------------------------------* //
     

@@ -46,16 +46,14 @@ public class AdminBD {
 
     public void ajouterMagasin(Magasin magasin) throws SQLException {
         st = connexion.createStatement();
-        String query = "INSERT INTO MAGASIN(nommag, villemag) VALUES ('"
-                    + magasin.getNom() + "', '"
-                    + magasin.getVille() + "')";
+        String query = "INSERT INTO MAGASIN(idmag, nommag, villemag) VALUES (" + magasin.getId() + ", '" + magasin.getNom() + "', '" + magasin.getVille() + "')";
         st.executeUpdate(query);
         st.close();
     }
 
     public void modifierLivre(Livre l, int qte) throws SQLException{
         Statement st = connexion.createStatement();
-        st.executeUpdate("INSERT INTO LIVRE (isbn, titre, auteur, editeur, annee, prix) VALUES ");
+        st.executeUpdate("INSERT INTO LIVRE (isbn, titre, auteur, editeur, annee, prix) VALUES ('" + l.getIsbn() + "', '" + l.getTitre() + "', '" + l.getAuteurs() + "', '" + l.getEditeurs() + "', " + l.getDatePubli() + ", " + l.getPrix() + ")");
     }
 
     /**
@@ -77,8 +75,14 @@ public class AdminBD {
         else {
             st.executeUpdate("INSERT INTO livre (isbn, titre, auteur, editeur, annee, prix) VALUES ('" + l.getIsbn() + "', '" + l.getTitre() + "', '" + l.getAuteurs() + "', '" + l.getEditeurs() + "', " + l.getDatePubli() + ", " + l.getPrix() + ")");
         }
-    } // code redondant, à revoir
+    }
 
+    public void supprimerLivre(Livre livre) throws SQLException {
+        st = connexion.createStatement();
+        st.executeUpdate("DELETE FROM LIVRE WHERE isbn = '" + livre.getIsbn() + "'");
+        st.executeUpdate("DELETE FROM POSSEDER WHERE isbn = '" + livre.getIsbn() + "'");
+    }
+    
     public void statVente(){
         // diagramme
     }

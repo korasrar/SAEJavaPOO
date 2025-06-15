@@ -1,5 +1,6 @@
 package fr.saejava;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -80,6 +81,90 @@ public class LivreBD {
             return null;
         } else {
             return classifications;
+        }
+    }
+
+    public void insererNouvelAuteur(Auteur auteur) throws SQLException {
+        PreparedStatement pstmt = connexion.prepareStatement("SELECT * FROM AUTEUR WHERE nomauteur = ? and idauteur IS NOT NULL");
+        pstmt.setString(1, auteur.getNomAuteur());
+        r = pstmt.executeQuery();
+        if (r.next()) {
+            throw new SQLException("L'auteur existe déjà");
+        } else {
+            PreparedStatement pstmt2 = connexion.prepareStatement("INSERT INTO AUTEUR (nomauteur) VALUES (?)");
+            pstmt2.setString(1, auteur.getNomAuteur());
+            pstmt2.executeUpdate();
+        }
+    }
+
+    public void insererNouvelEditeur(Editeur editeur) throws SQLException {
+        PreparedStatement pstmt = connexion.prepareStatement("SELECT * FROM EDITEUR WHERE nomedit = ?");
+        pstmt.setString(1, editeur.getNomEdit());
+        r = pstmt.executeQuery();
+        if (r.next()) {
+            throw new SQLException("L'éditeur existe déjà");
+        } else {
+            PreparedStatement pstmt2 = connexion.prepareStatement("INSERT INTO EDITEUR (nomedit) VALUES (?)");
+            pstmt2.setString(1, editeur.getNomEdit());
+            pstmt2.executeUpdate();
+        }
+    }
+
+    public void insererNouvelleClassification(Classification classification) throws SQLException {
+        PreparedStatement pstmt = connexion.prepareStatement("SELECT * FROM CLASSIFICATION WHERE nomclass = ?");
+        pstmt.setString(1, classification.getNomClass());
+        r = pstmt.executeQuery();
+        if (r.next()) {
+            throw new SQLException("La classification existe déjà");
+        } else {
+            pstmt = connexion.prepareStatement("INSERT INTO CLASSIFICATION (nomclass) VALUES (?)");
+            pstmt.setString(1, classification.getNomClass());
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Récupère le dernier ID d'auteur dans la base de données
+     * @return Le dernier ID d'auteur ou 0 si aucun auteur n'existe
+     * @throws SQLException Si erreur SQL
+     */
+    public int getDernierIDAuteur() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT MAX(idauteur) AS dernierID FROM AUTEUR");
+        if (r.next()) {
+            return r.getInt("dernierID");
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Récupère le dernier ID d'editeur dans la base de données
+     * @return Le dernier ID d'editeur ou 0 si aucun auteur n'existe
+     * @throws SQLException Si erreur SQL
+     */
+    public int getDernierIDEditeur() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT MAX(idedit) AS dernierID FROM EDITEUR");
+        if (r.next()) {
+            return r.getInt("dernierID");
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Récupère le dernier ID classification dans la base de données
+     * @return Le dernier ID classification ou 0 si aucun auteur n'existe
+     * @throws SQLException Si erreur SQL
+     */
+    public int getDernierIDClassification() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("SELECT MAX(iddewey) AS dernierID FROM CLASSIFICATION");
+        if (r.next()) {
+            return r.getInt("dernierID");
+        } else {
+            return 0;
         }
     }
 }
