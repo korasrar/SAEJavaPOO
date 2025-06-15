@@ -31,6 +31,8 @@ public class ChangementBD {
             String password = Math.abs(r.getString("adressecli").hashCode())+r.getString("nomcli");
             myWriter.write("("+r.getInt("idcli")+",'"+r.getString("nomcli")+"','"+r.getString("prenomcli")+"','"+username+"','"+password+"'"+"),"+"\n");
         }
+        r.close();
+        st.close();
         myWriter.close();
         System.out.println("Successfully wrote to the file.");
         }

@@ -775,6 +775,8 @@ insert into VENDEUR(idvendeur, idmagasin) values
     (501, 3);
 
 
+
+
 -- les clients
 insert into CLIENT (idcli, adressecli, codepostal, villecli) values
 	(1, '188 chemin de la Forêt', '45000', 'Orléans'),

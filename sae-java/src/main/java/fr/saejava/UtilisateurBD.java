@@ -36,21 +36,35 @@ public class UtilisateurBD {
             switch (role) {
                 case admin:
                     int idAdmin = r.getInt("idadmin");
+                    r.close();
+                    st.close();
                     return new Admin(idAdmin, nom, prenom, username, motDePasse);
                 case vendeur:
                     int idVendeur = r.getInt("idvendeur");
+                    r.close();
+                    st.close();
                     VendeurBD vendeurBD = new VendeurBD(connexion);
                     return new Vendeur(idVendeur, nom, prenom, username, motDePasse, vendeurBD.getMagasin(idVendeur));
                 case client:
                     int idCli = r.getInt("idcli");
                     String adresse = r.getString("adressecli");
-                    return new Client(idCli, adresse, motDePasse, r.getInt("codepostal"), nom, prenom, username, motDePasse);
-                default:return null;
+                    int codePostal = r.getInt("codepostal");
+                    r.close();
+                    st.close();
+                    return new Client(idCli, adresse, motDePasse, codePostal, nom, prenom, username, motDePasse);
+                default:
+                    r.close();
+                    st.close();
+                    return null;
             }
             } else{
+                r.close();
+                st.close();
                 throw new MotDePasseIncorrectException();
             }
         } else {
+            r.close();
+            st.close();
             throw new UtilisateurIntrouvableException();
         }
     }

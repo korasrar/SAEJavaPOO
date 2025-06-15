@@ -1,6 +1,7 @@
 package fr.saejava;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -36,9 +37,8 @@ public class ApplicationTerminal {
      */
     int nbObjetParPage;
     int pageCourante;
-    
 
-    /**
+        /**
      * crée le panier du client
      * @param client
      * @param date
@@ -46,70 +46,58 @@ public class ApplicationTerminal {
      * @throws SQLException
      */
     void créeCommande(Client client,Date date,Magasin magasin) throws SQLException{
-        this.panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin, null);
-    }
-
-    /**
-     * ajoute un livre au panier
-     * @param livre
-     */
-    void commander(Livre livre){
-        if(this.panier.contientLivre(livre)){
-            DetailCommande detail=this.panier.livreDansCommande(livre);
-            detail.setQte(detail.getQte()+1);
-        }
-        else{
-            this.panier.ajouterDetailCommande(new DetailCommande(livre,this.panier));
-        }
+        panier=new Commande(this.commandeConnexion.getDerniereIdCommande()+1,date,client,magasin, null);
     }
     
-    /**
-     * ajoute un livre au panier avec une quantité spécifique
-     * @param livre
-     * @param qte
-     */
-    void commander(Livre livre,int qte){
-        if(this.panier.contientLivre(livre)){
-            DetailCommande detail=this.panier.livreDansCommande(livre);
-            detail.setQte(detail.getQte()+qte);
-        }
-        else{
-            this.panier.ajouterDetailCommande(new DetailCommande(qte,livre,this.panier));
-        }
-    }
-    
-    void finaliseCommande(ModeLivraison modeLivraison) throws SQLException{
+    public void finaliseCommande(ModeLivraison modeLivraison) throws SQLException{
         this.panier.setModeLivraison(modeLivraison);
         if(modeLivraison.equals(ModeLivraison.MAGASIN)){
-            System.out.println("test magasin");
             panier.setMagasin(menuChoisirMagasin());
         }
         else if(modeLivraison.equals(ModeLivraison.MAISON)){
-            System.out.println("test maison");
             panier.setMagasin(magasinConnexion.trouverMeilleurMagasin(panier));
         }
         else{
             throw new SQLException("Mode de livraison inconnu");
         }
-        String ajout1="insert into COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) values\n";
-        ajout1+=ajout1+"("+this.panier.getNumcom()+","+panier.getDateCommande()+","+"O"+","+"C"+","+panier.getClient().getNum()+","+panier.getMagasin().getId()+")\n";
-        ajout1=ajout1+"insert into DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) values;\n";
-        int numlig=1;
-        String ajout2="";
-        for(DetailCommande detail:this.panier.contenue){
-            // Vérifier si le livre est disponible dans le magasin
-            ajout2=ajout2+"("+this.panier.getNumcom()+","+numlig+","+detail.getLivre().getIsbn().toString()+","+detail.getLivre().getPrix()+")";
-            if(numlig+1!=this.panier.getContenue().size()){
-                ajout2+=ajout2+",\n";
-            }
-            else{
-                ajout2=ajout2+";";
-            }
-            numlig+=1;  
+        
+        String sqlCommande = "INSERT INTO COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement pstCommande = connexion.prepareStatement(sqlCommande);
+        
+        pstCommande.setInt(1, this.panier.getNumcom());
+        pstCommande.setDate(2, panier.getDateCommande());
+        pstCommande.setString(3, "O");
+        pstCommande.setString(4, modeLivraison.equals(ModeLivraison.MAGASIN) ? "M" : "C");
+        pstCommande.setInt(5, panier.getClient().getNum());
+        pstCommande.setInt(6, panier.getMagasin().getId());
+        
+        pstCommande.executeUpdate();
+        System.out.println("Commande insérée avec succès !");
+        
+        String sqlDetail = "INSERT INTO DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pstDetail = connexion.prepareStatement(sqlDetail);
+        
+        int numlig = 1;
+        for(DetailCommande detail : this.panier.contenue){
+            pstDetail.setInt(1, this.panier.getNumcom());
+            pstDetail.setInt(2, numlig);
+            pstDetail.setString(3, detail.getLivre().getIsbn());
+            pstDetail.setInt(4, detail.getQte());
+            pstDetail.setDouble(5, detail.getLivre().getPrix());
+            pstDetail.executeUpdate();
+            numlig++;
         }
-        this.st = connexion.createStatement();
-        this.st.executeUpdate(ajout1);
-        this.st.executeUpdate(ajout2);
+        System.out.println("Détails de la commande insérés avec succès !");
+        pstCommande.close();
+        pstDetail.close();
+        // reset du panier
+        Date date = new Date(System.currentTimeMillis());
+        try{
+                créeCommande((Client) utilisateurConnecter,date , null);
+                }
+                catch(SQLException e){
+                    System.out.println("Erreur lors du reset du panier " + e.getMessage());
+                }
         this.payer();
     }
 
@@ -1007,11 +995,89 @@ public class ApplicationTerminal {
     }
 
     public void menuMesCommandes(){
-        // TO DO
-    }
+        List<Commande> commandes = commandeConnexion.getCommandes((Client) utilisateurConnecter);
+        
+        if (commandes.isEmpty()) {
+            System.out.println("------------- MES COMMANDES ------------");
+            System.out.println("|                                      |");
+            System.out.println("| Vous n'avez aucune commande         |");
+            System.out.println("|                                      |");
+            System.out.println("----------------------------------------");
+            System.out.println("Appuyez sur Entrée pour retourner au menu principal...");
+            scanner.nextLine();
+            return;
+        }
+
+        int totalPages = (int) Math.ceil((double) commandes.size() / nbObjetParPage);
+        pageCourante = 1;
+        boolean continuer = true;
+        
+        while (continuer) {
+            System.out.println("------------- MES COMMANDES ------------");
+            System.out.println("|                                      |");
+            
+            for (int i = (pageCourante - 1) * nbObjetParPage; i < nbObjetParPage + (pageCourante - 1) * nbObjetParPage && i < commandes.size(); i++) {
+                Commande commande = commandes.get(i);
+                String modeLivraison = commande.getModeLivraison() == ModeLivraison.MAGASIN ? "Magasin" : "Domicile";
+                
+                System.out.println("| " + (i + 1) + "> Commande #" + commande.getNumcom());
+                System.out.println("|    Date: " + commande.getDateCommande());
+                System.out.println("|    Livraison: " + modeLivraison);
+                System.out.println("|    Total: " + commande.prixTotal() + "€");
+                System.out.println("|                                      |");
+            }
+            System.out.println("| Page : " + pageCourante + "/" + totalPages + "                             |");
+            System.out.println("|                                      |");
+            System.out.println("----------------------------------------");
+            System.out.println("Pour éditer une facture : f");
+            System.out.println("Pour changer de page : < | >");
+            System.out.println("Pour retourner au menu : q");
+            
+            String reponse = scanner.nextLine().toLowerCase();
+            
+            if (reponse.equals("f") || reponse.equals("facture")) {
+                System.out.print("Entrez le numéro de la commande pour éditer la facture (1-" + 
+                    Math.min(nbObjetParPage, commandes.size() - (pageCourante - 1) * nbObjetParPage) + ") : ");
+                try {
+                    int choixCommande = Integer.parseInt(scanner.nextLine());
+                    int indexCommande = choixCommande - 1 + (pageCourante - 1) * nbObjetParPage;
+                    
+                    if (indexCommande >= 0 && indexCommande < commandes.size()) {
+                        ((Client) utilisateurConnecter).editerFacture(commandes.get(indexCommande));
+                    } else {
+                        System.out.println("Numéro de commande invalide.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Veuillez entrer un nombre valide.");
+                }
+            }
+            else if (reponse.equals("<")) {
+                if (pageCourante > 1) {
+                    pageCourante--;
+                } else {
+                    System.out.println("Vous êtes déjà à la première page.");
+                }
+            }
+            else if (reponse.equals(">")) {
+                if (pageCourante < totalPages) {
+                    pageCourante++;
+                } else {
+                    System.out.println("Vous êtes déjà à la dernière page.");
+                }
+            }
+            else if (reponse.equals("q") || reponse.equals("n") || reponse.equals("non")) {
+                continuer = false;
+            }
+            else {
+                System.out.println("Réponse invalide, veuillez réessayer.");
+            }
+        }
+}
 
     public void menuProfil(){
         Client clientTempo = new Client(utilisateurConnecter.getId(), null, null, 0, utilisateurConnecter.getNom(), utilisateurConnecter.getPrenom(), utilisateurConnecter.getPseudo(), utilisateurConnecter.getMotDePasse());
+        boolean continuer = true;
+        while(continuer) {
         System.out.println("------------ PROFIL -------------");
         System.out.println("|                                       |");
         System.out.println("| Nom      > "+utilisateurConnecter.getNom()+"         |");
@@ -1028,31 +1094,54 @@ public class ApplicationTerminal {
             case "1":
                 System.out.print("Entrez le nouveau nom : ");
                 String nom = scanner.nextLine();
-                ClientBD.modifierClient(clientTempo);
+                clientTempo.setNom(nom);
+                utilisateurConnecter.setNom(nom);
                 break;
             case "2":
                 System.out.print("Entrez le nouveau prénom : ");
                 String prénom = scanner.nextLine();
-                ClientBD.modifierClient(clientTempo);
+                clientTempo.setPrenom(prénom);
+                utilisateurConnecter.setPrenom(prénom);
                 break;
             case "3":
                 System.out.print("Entrez le nouveau username : ");
                 String username = scanner.nextLine();
-                ClientBD.modifierClient(clientTempo);
+                if (username.isEmpty()) {
+                    System.out.println("Le nom d'utilisateur ne peut pas être vide.");
+                    continue;
+                }
+                else{
+                    clientTempo.setPseudo(username);
+                    utilisateurConnecter.setPseudo(username);
+                }
                 break;
             case "4":
                 System.out.print("Entrez le nouveau password : ");
                 String password = scanner.nextLine();
-                ClientBD.modifierClient(clientTempo);
+                if (password.isEmpty()) {
+                    System.out.println("Le mot de passe ne peut pas être vide.");
+                    return;
+                }
+                else{
+                    clientTempo.setMotDePasse(password);
+                    utilisateurConnecter.setMotDePasse(password);
+                }
                 break;
             case "q":
                 System.out.println("Informations sauvegardées !");
-                return;
+                continuer = false;
+                break;
             default:
                 System.out.println("Choix invalide, veuillez réessayer.");
                 break;
+            }
         }
-        menuProfil();
+        try{
+            clientConnexion.modifierClient(clientTempo);
+        }
+        catch(SQLException e){
+            System.out.println("Erreur lors de la modification du profil : " + e.getMessage());
+        }
     }
 
     public Magasin menuChoisirMagasin() {
@@ -1253,21 +1342,7 @@ public class ApplicationTerminal {
                 System.out.println("Veuillez réessayer.\n");
             }
         }
-        try{
-        st = connexion.createStatement();
-        r = st.executeQuery("SELECT isbn, titre, nomauteur FROM LIVRE NATURAL JOIN ECRIRE NATURAL JOIN AUTEUR WHERE titre LIKE '%Ron Mueck%' OR nomauteur LIKE '%Ron Mueck%';");
-        // Si connexion BD réussie
-        System.out.println("Livres disponibles :");
-            while(r.next()){
-                String isbn = r.getString("isbn");
-                String titre = r.getString("titre");
-                String auteur = r.getString("nomauteur");
-                System.out.println("ISBN: " + isbn + ", Titre: " + titre + ", Auteur: " + auteur);
-            }
-        }
-        catch(SQLException e){
-            System.out.println("Erreur lors de la récupération des livres : " + e.getMessage());
-        }
+       
         while(estConnecteBD){
             if(!estConnecteUtil){
                 try{

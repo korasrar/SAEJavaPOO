@@ -62,36 +62,48 @@ public class VendeurBD {
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
         if (r.getInt("qte")<= qte){
-        throw new LivrePasDansStockMagasinException();}
+            r.close();
+            st.close();
+            throw new LivrePasDansStockMagasinException();
+        }
         if (verifierDispo(mag, l)){
+            r.close();
             r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
             Integer quantiteInit = r.getInt("qte");
             Integer nouvelleQte = quantiteInit + qte;
+            r.close();
             st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
         }
         else {
             //ok
-
-        }    }
+        }
+        st.close();
+    }
 
     public void transferer(Livre l, Magasin magasinRecoit, Magasin magasinEnvoit, Integer qte) throws SQLException, LivrePasDansStockMagasinException{
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasinEnvoit.getId());
         if (r.getInt("qte")<= qte){
-        throw new LivrePasDansStockMagasinException();}
+            r.close();
+            st.close();
+            throw new LivrePasDansStockMagasinException();
+        }
         // DONE verifier la dispo du livre, si true faire update pour recup la valeur et incremente avec qte et renvoie dans bd
         // sinon , on fait un insert avec le livre et la qte
         if (verifierDispo(magasinRecoit, l)){
+            r.close();
             r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinRecoit.getId());
             Integer quantiteInit = r.getInt("qte");
             Integer nouvelleQte = quantiteInit + qte;
+            r.close();
             st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + nouvelleQte);
         }
         else {
+            r.close();
             st.executeUpdate("UPDATE * FROM POSSEDER SET qte =" + 1 +"AND idmag = " + magasinRecoit.getId() +"AND isbn ='" + l.getIsbn() + "'");
-
         }
-        }
+        st.close();
+    }
 
     /**
      * vérifie si un livre est disponible dans le stock du magasin
@@ -106,10 +118,16 @@ public class VendeurBD {
         r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+magasin.getId());
         if (r.next()){
             int qte = r.getInt("qte");
+            r.close();
+            st.close();
             if (qte > 0){return true;}
             else {return false;}
-            }
-        else {return false;}
+        }
+        else {
+            r.close();
+            st.close();
+            return false;
+        }
     }
 
     /**
@@ -125,10 +143,16 @@ public class VendeurBD {
         r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"'");
         if (r.next()){
             int qte = r.getInt("qte");
+            r.close();
+            st.close();
             if (qte > 0){return true;}
             else {return false;}
-            }
-        else {return false;}
+        }
+        else {
+            r.close();
+            st.close();
+            return false;
+        }
     }
 
     public boolean verifierQteDispo(Livre l, int qte) throws SQLException, PasStockPourLivreException{
@@ -136,10 +160,16 @@ public class VendeurBD {
         r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn");
         if (r.next()){
             int qteDispo = r.getInt("qtett");
+            r.close();
+            st.close();
             if (qteDispo >= qte){return true;}
             else {throw new PasStockPourLivreException();}
-            }
-        else {throw new PasStockPourLivreException();}
+        }
+        else {
+            r.close();
+            st.close();
+            throw new PasStockPourLivreException();
+        }
     }
 
 
@@ -155,9 +185,14 @@ public class VendeurBD {
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM VENDEUR NATURAL JOIN MAGASIN WHERE idVendeur =" +idVendeur);
         if(r.next()){
-            return new Magasin(r.getInt("idmag"), r.getString("nommag"), r.getString("villemag"));
+            Magasin magasin = new Magasin(r.getInt("idmag"), r.getString("nommag"), r.getString("villemag"));
+            r.close();
+            st.close();
+            return magasin;
         }
         else{
+            r.close();
+            st.close();
             throw new VendeurSansMagasinException();
         }
     }

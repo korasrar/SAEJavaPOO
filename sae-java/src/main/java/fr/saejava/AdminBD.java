@@ -28,8 +28,10 @@ public class AdminBD {
     public void creeCompteVendeur(int idVendeur, String nom, String prenom,String username, String motDePasse, Magasin magasin) throws SQLException{
         PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+idVendeur+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','vendeur'),");
         pstmt.executeUpdate();
+        pstmt.close();
         pstmt = this.connexion.prepareStatement("insert into VENDEUR values ("+idVendeur+", '"+magasin+"'),");
-        pstmt.executeUpdate();	
+        pstmt.executeUpdate();
+        pstmt.close();
     }
 
     /**
@@ -42,10 +44,14 @@ public class AdminBD {
         st = connexion.createStatement();
         r = st.executeQuery("SELECT * FROM magasin WHERE idMagasin = " + magasin.getId());
         if(r.next()){
+            r.close();
+            st.close();
             throw new SQLException("Le magasin existe déjà");
         } 
         else {
+            r.close();
             st.executeUpdate("INSERT INTO magasin (idmag, nommag, villemag) VALUES (" + magasin.getId() + ", '" + magasin.getNom() + "', '" + magasin.getVille() + "')");
+            st.close();
         }
     }
 
@@ -85,10 +91,14 @@ public class AdminBD {
         if(r.next()){
             int qteActuelle = r.getInt("qte");
             int nouvelleQte = qteActuelle + qte;
+            r.close();
             st.executeUpdate("UPDATE livre SET qte = "+ nouvelleQte +" WHERE isbn = '"+ l.getIsbn() +"'");
+            st.close();
         } 
         else {
+            r.close();
             st.executeUpdate("INSERT INTO livre (isbn, titre, auteur, editeur, annee, prix) VALUES ('" + l.getIsbn() + "', '" + l.getTitre() + "', '" + l.getAuteurs() + "', '" + l.getEditeurs() + "', " + l.getDatePubli() + ", " + l.getPrix() + ")");
+            st.close();
         }
     }
 

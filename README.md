@@ -5,7 +5,7 @@ Système de gestion de librairie développé en Java avec MySQL.
 ## Fonctionnalité à implémenter  
 ### Client 👤
 - [X] Passer une commande (en magasin ou en ligne)  
-- [ ] Choisir le mode de réception (retrait en magasin ou livraison à domicile)  
+- [X] Choisir le mode de réception (retrait en magasin ou livraison à domicile)  
 - [X] Consulter le catalogue des livres disponibles  
 ### Vendeur 🏪  
 - [X] Ajouter un livre au stock de sa librairie  
