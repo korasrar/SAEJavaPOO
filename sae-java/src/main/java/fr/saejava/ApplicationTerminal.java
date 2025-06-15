@@ -309,7 +309,7 @@ public class ApplicationTerminal {
             try {
                 Magasin magasin = menuChoisirMagasin();
                 if (magasin != null) {
-                    adminConnexion.creerCompteVendeur((utilisateurConnexion.getDernierID()+1), nomVendeur, prenomVendeur, usernameVendeur, motDePasseVendeur);
+                    adminConnexion.creerCompteVendeur((utilisateurConnexion.getDernierID()+1), nomVendeur, prenomVendeur, usernameVendeur, motDePasseVendeur, magasin);
                     System.out.println("Compte vendeur créé avec succès.");
                 } else {
                     System.out.println("Aucun magasin sélectionné. Le compte n'a pas été créé.");
@@ -541,7 +541,6 @@ public class ApplicationTerminal {
                     try{
                     menuRechercherLivre();
                     System.out.println("Veuillez entrer les nouvelles informations du livre...");
-                    
                     System.out.print("ISBN : ");
                     String isbn3 = scanner.nextLine();
                     System.out.print("Titre : ");
@@ -598,24 +597,61 @@ public class ApplicationTerminal {
     public void menuStatsDeVentes() {
         boolean continuer = true;
         while(continuer) {
-            System.out.println("---- STATISTIQUES DE VENTES ----");
-            System.out.println("|                             |");
-            System.out.println("| > Voir les ventes du mois   |");
-            System.out.println("| > Voir les ventes de l'année|");
-            System.out.println("| > Retour au menu principal  |");
-            System.out.println("|                             |");
-            System.out.println("-------------------------------");
-            System.out.print("Veuillez choisir une option (1-3) : ");
+            System.out.println("---------- STATISTIQUES DE VENTES -------------");
+            System.out.println("|                                            |");
+            System.out.println("|  > Nb livres vendus par magasin/an         |");
+            System.out.println("|  > Chiffre d'affaire par thème en 2024     |");
+            System.out.println("|  > Comparaison ventes en ligne/ magasin    |");
+            System.out.println("|  > Evolution CA par magasin/mois en 2024   |");
+            System.out.println("|  > Valeur du stock par magasin             |");
+            System.out.println("|  > Palmarès des ventes                     |");
+            System.out.println("|  > Retour au menu principal                |");
+            System.out.println("|                                            |");
+            System.out.println("---------------------------------------------");
+            System.out.print("Veuillez choisir une option (1-6) : ");
             String choix = scanner.nextLine();
             switch (choix) {
                 case "1":
-                    // jsp
+                    try{
+                        adminConnexion.Requete1();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
                     break;
                 case "2":
-                    // jsp
+                    try{
+                        adminConnexion.Requete2();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
                     break;
                 case "3":
-                    continuer = false;
+                    try{
+                        adminConnexion.Requete3();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
+                    break;
+                case "4":
+                    try{
+                        adminConnexion.Requete4();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
+                    break;
+                    case "5":
+                    try{
+                        adminConnexion.Requete5();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
+                    break;
+                     case "6":
+                    try{
+                        adminConnexion.Requete6();
+                    } catch(SQLException e){
+                        System.out.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
+                    }
                     break;
                 default:
                     System.out.println("Choix invalide, veuillez réessayer.");

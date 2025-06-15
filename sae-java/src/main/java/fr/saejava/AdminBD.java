@@ -15,6 +15,16 @@ public class AdminBD {
         this.connexion = connexion;
     }
 
+    /**
+     * Crée un compte vendeur dans la base de données
+     * @param idVendeur l'identifiant du vendeur
+     * @param nom le nom du vendeur
+     * @param prenom le prénom du vendeur
+     * @param username le nom d'utilisateur du vendeur
+     * @param motDePasse le mot de passe du vendeur
+     * @param magasin le magasin auquel le vendeur est associé
+     * @throws SQLException pour gérer si il y a une erreur SQL
+     */
     public void creeCompteVendeur(int idVendeur, String nom, String prenom,String username, String motDePasse, Magasin magasin) throws SQLException{
         PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+idVendeur+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','vendeur'),");
         pstmt.executeUpdate();
@@ -24,7 +34,6 @@ public class AdminBD {
 
     /**
      * ajoute une nouvelle librairie dans la base de données
-     * 
      * @param magasin le magasin à ajouter
      * @throws SQLException pour gérer si il y a une erreur SQL
      */
@@ -40,10 +49,11 @@ public class AdminBD {
         }
     }
 
-    public void gererLesStocks(){
-    
-    }
-
+    /**
+     * Ajoute un magasin à la base de données
+     * @param magasin le magasin à ajouter
+     * @throws SQLException pour gérer si il y a une erreur SQL
+     */
     public void ajouterMagasin(Magasin magasin) throws SQLException {
         st = connexion.createStatement();
         String query = "INSERT INTO MAGASIN(idmag, nommag, villemag) VALUES (" + magasin.getId() + ", '" + magasin.getNom() + "', '" + magasin.getVille() + "')";
@@ -51,6 +61,12 @@ public class AdminBD {
         st.close();
     }
 
+    /**
+     * Modifie un livre dans la base de données
+=     * @param l le livre à modifier
+     * @param qte la quantité de livres à modifier
+     * @throws SQLException pour gérer si il y a une erreur SQL
+     */
     public void modifierLivre(Livre l, int qte) throws SQLException{
         Statement st = connexion.createStatement();
         st.executeUpdate("INSERT INTO LIVRE (isbn, titre, auteur, editeur, annee, prix) VALUES ('" + l.getIsbn() + "', '" + l.getTitre() + "', '" + l.getAuteurs() + "', '" + l.getEditeurs() + "', " + l.getDatePubli() + ", " + l.getPrix() + ")");
@@ -58,7 +74,6 @@ public class AdminBD {
 
     /**
      * ajoute un livre dans la base de données
-     * 
      * @param l le livre à ajouter
      * @param qte la quantité de livres à ajouter
      * @throws SQLException pour gérer si il y a une erreur SQL
@@ -77,12 +92,22 @@ public class AdminBD {
         }
     }
 
+    /**
+     * Supprime un livre de la base de données
+     * @param livre le livre à supprimer
+     * @throws SQLException pour gérer si il y a une erreur SQL
+     */
     public void supprimerLivre(Livre livre) throws SQLException {
         st = connexion.createStatement();
         st.executeUpdate("DELETE FROM LIVRE WHERE isbn = '" + livre.getIsbn() + "'");
         st.executeUpdate("DELETE FROM POSSEDER WHERE isbn = '" + livre.getIsbn() + "'");
     }
 
+    /**
+     * Modifie les informations d'un livre dans la base de données
+     * @param l le livre à modifier
+     * @throws SQLException pour gérer si il y a une erreur SQL
+     */
     public void modifierLivre(Livre l) throws SQLException {
         PreparedStatement pstmt = this.connexion.prepareStatement("UPDATE LIVRE SET titre = ?, auteur = ?, editeur = ?, annee = ?, prix = ? WHERE isbn = ?");
         pstmt.setString(1, l.getTitre());
@@ -92,25 +117,67 @@ public class AdminBD {
         pstmt.setDouble(5, l.getPrix());
         pstmt.setString(6, l.getIsbn());
         pstmt.executeUpdate();
+    } 
+     public void Requete1() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("select M.nommag as Magasin,YEAR(C.datecom) Annee,sum(D.qte) qte\r\n" +
+                        "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
+                        "group by Magasin,Annee;\r\n" +
+                        "");
+       while (r.next()) {
+           System.out.println("Magasin: " + r.getString("Magasin") + ", Annee: " + r.getInt("Annee") + ", Quantite: " + r.getInt("qte"));
+        }
+}
+    public void Requete2() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("Select nomclass as Theme, sum(prixvente*qte) as Montant\r\n" +
+                        "from CLASSIFICATION NATURAL JOIN THEMES NATURAL JOIN LIVRE NATURAL JOIN DETAILCOMMANDE NATURAL JOIN COMMANDE\r\n" +
+                        "WHERE YEAR(datecom) = '2024'\r\n" +
+                        "group by LEFT(iddewey,1);");
+        while (r.next()) {
+            System.out.println("Theme: " + r.getString("Theme") + ", Montant: " + r.getDouble("Montant"));
+        }
+}
+    public void Requete3() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("select YEAR(datecom) annee ,(REPLACE(REPLACE(enligne,'N','En magasin'),'O','En ligne')) typevente, round(sum(qte*prixvente)) montant\r\n" +
+                        "from COMMANDE NATURAL JOIN DETAILCOMMANDE \r\n" +
+                        "where year(datecom) != '2025'\r\n" +
+                        "group by annee,typevente;");
+        while (r.next()) {
+            System.out.println("Année: " + r.getInt("annee") + ", Type de vente: " + r.getString("typevente") + ", Montant: " + r.getDouble("montant"));
+        }
     }
-    
-    public void statVente(){
-        // diagramme
+    public void Requete4() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("select month(C.datecom) mois,M.nommag as Magasin,sum(D.qte*prixvente) CA\r\n" +
+                        "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
+                        "where YEAR(datecom) ='2024'\r\n" +
+                        "group by Magasin,mois;");
+        while (r.next()) {
+            System.out.println("Magasin: " + r.getString("Magasin") + ", Mois: " + r.getInt("mois") + ", Chiffre d'affaires: " + r.getDouble("CA"));
+        }
+    }
+    public void Requete5() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("select nommag as Magasin, sum(qte*prix) as ValeurStock\r\n" +
+                        "from MAGASIN natural join POSSEDER natural join LIVRE\r\n" +
+                        "group by Magasin;");
+        while (r.next()) {
+            System.out.println("Magasin: " + r.getString("Magasin") + ", Valeur du stock: " + r.getDouble("ValeurStock"));
+        }
     }
 
-    public void creerCompteVendeur(int idVendeur, String nom, String prenom, String username, String motDePasse) throws SQLException {
-         Statement st = connexion.createStatement();
-         ResultSet r = st.executeQuery("SELECT * FROM utilisateur WHERE idUtilisateur =" + idVendeur);
-         if(r.next()) 
-         {throw new SQLException("L'utilisateur existe déjà");} 
-         else {
-            st.executeUpdate("INSERT INTO utilisateur (idUtilisateur, nom, prenom, username, motDePasse, role) VALUES (" + idVendeur + ", '" + nom + "', '" + prenom + "', '" + username + "', '" + motDePasse + "', 'vendeur')");
-            ApplicationTerminal app = new ApplicationTerminal();
-            Magasin magasin = app.menuChoisirMagasin();
-            if (magasin != null) {
-                Statement st1 = connexion.createStatement();
-                st1.executeUpdate("INSERT INTO VENDEUR (idVendeur, idMagasin) VALUES (" + idVendeur + ", " + magasin.getId() + ")");
-            }
-    
+    public void Requete6() throws SQLException {
+        st = connexion.createStatement();
+        r = st.executeQuery("select annee, nomauteur, total\n" +
+                        "from VentesParAuteur v1\n" +
+                        "where total = (select MAX(total) as total\n" +
+                        "from VentesParAuteur v2\n" +
+                        "where v1.annee = v2.annee)\n" +
+                        "group by annee;");
+        while (r.next()) {
+            System.out.println("Année: " + r.getInt("annee") + ", Auteur: " + r.getString("nomauteur") + ", Total: " + r.getInt("total"));
+        }
     }
-}}
+}
