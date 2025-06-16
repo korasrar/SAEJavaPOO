@@ -40,7 +40,18 @@
             <artifactId>pdfbox</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>21</version>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
@@ -51,7 +62,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.saejava.ApplicationTerminal</mainClass>
+                            <mainClass>fr.saejava.model.ApplicationTerminal</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

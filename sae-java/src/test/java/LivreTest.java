@@ -5,14 +5,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-import fr.saejava.Client;
-import fr.saejava.Commande;
-import fr.saejava.DetailCommande;
-import fr.saejava.Editeur;
-import fr.saejava.Livre;
-import fr.saejava.LivrePasDansStockMagasinException;
-import fr.saejava.Magasin;
-import fr.saejava.ModeLivraison;
+import fr.saejava.model.Client;
+import fr.saejava.model.Commande;
+import fr.saejava.model.DetailCommande;
+import fr.saejava.model.Editeur;
+import fr.saejava.model.Livre;
+import fr.saejava.model.LivrePasDansStockMagasinException;
+import fr.saejava.model.Magasin;
+import fr.saejava.model.ModeLivraison;
 
 public class LivreTest {
     @Test
