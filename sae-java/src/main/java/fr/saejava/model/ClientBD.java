@@ -1,9 +1,6 @@
 package fr.saejava.model;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -179,6 +176,83 @@ public class ClientBD {
         pstmt.setInt(4, clientTempo.getNum());
         pstmt.executeUpdate();
         pstmt.close();
+    }
+
+    /**
+     * Finalise la commande en insérant les données dans la base de données
+     * @param modeLivraison le mode de livraison choisi par le client
+     * @throws SQLException si une erreur SQL se produit
+     */
+    public void finaliseCommande(Client client, ModeLivraison modeLivraison, Commande panier) throws SQLException{
+        MagasinBD magasinConnexion = new MagasinBD(connexion);
+        CommandeBD commandeConnexion = new CommandeBD(connexion);
+        panier.setModeLivraison(modeLivraison);
+        if(modeLivraison.equals(ModeLivraison.MAGASIN)){
+            panier.setMagasin(menuChoisirMagasin());
+        }
+        else if(modeLivraison.equals(ModeLivraison.MAISON)){
+            panier.setMagasin(magasinConnexion.trouverMeilleurMagasin(panier));
+        }
+        else{
+            throw new SQLException("Mode de livraison inconnu");
+        }
+        panier.setNumcom(commandeConnexion.getDerniereIdCommande()+1);
+        String sqlCommande = "INSERT INTO COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement pstCommande = connexion.prepareStatement(sqlCommande);
+
+        pstCommande.setInt(1, panier.getNumcom());
+        pstCommande.setDate(2, panier.getDateCommande());
+        pstCommande.setString(3, "O");
+        pstCommande.setString(4, modeLivraison.equals(ModeLivraison.MAGASIN) ? "M" : "C");
+        pstCommande.setInt(5, panier.getClient().getNum());
+        pstCommande.setInt(6, panier.getMagasin().getId());
+
+        pstCommande.executeUpdate();
+        System.out.println("Commande insérée avec succès !");
+
+        String sqlDetail = "INSERT INTO DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pstDetail = connexion.prepareStatement(sqlDetail);
+
+        int numlig = 1;
+        for(DetailCommande detail : panier.contenue){
+            pstDetail.setInt(1, panier.getNumcom());
+            pstDetail.setInt(2, numlig);
+            pstDetail.setString(3, detail.getLivre().getIsbn());
+            pstDetail.setInt(4, detail.getQte());
+            pstDetail.setDouble(5, detail.getLivre().getPrix());
+            pstDetail.executeUpdate();
+            if(magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin())==0){
+                for(Magasin magasin:magasinConnexion.chargerMagasin()){
+                    if(magasinConnexion.getQuantiteLivre(detail.getLivre(),magasin)>detail.getQte()){
+                        magasinConnexion.ajoutStock(magasin,detail.getLivre(),detail.getQte());
+                    }
+                }
+            }
+            else if(magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin())<detail.getQte()){
+                int qteRestante=detail.getQte()-magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin());
+                magasinConnexion.ajoutStock(panier.getMagasin(),detail.getLivre(),detail.getQte()-qteRestante);
+                for(Magasin magasin:magasinConnexion.chargerMagasin()){
+                    if(magasinConnexion.getQuantiteLivre(detail.getLivre(),magasin)>qteRestante){
+                        magasinConnexion.ajoutStock(magasin,detail.getLivre(),qteRestante);
+                    }
+                }
+            }
+            else{
+                magasinConnexion.ajoutStock(panier.getMagasin(),detail.getLivre(),detail.getQte()*-1);
+            }
+            numlig++;
+        }
+        System.out.println("Détails de la commande insérés avec succès !");
+        pstCommande.close();
+        pstDetail.close();
+        // reset du panier
+        Date date = new Date(System.currentTimeMillis());
+        try{
+            client.creeCommande(date);
+        }
+        catch(SQLException e){
+            System.out.println("Erreur lors du reset du panier " + e.getMessage());
+        }
     }
 }
 

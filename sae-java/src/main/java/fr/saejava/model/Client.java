@@ -1,6 +1,8 @@
 package fr.saejava.model;
 
 import java.io.FileOutputStream;
+import java.sql.Date;
+import java.sql.SQLException;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
@@ -13,6 +15,7 @@ public class Client extends Utilisateur{
     private String adresse;
     private String ville;
     private int codePostal;
+    private Commande panier;
 
     public Client(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse){
         super(num, nom, prenom, username, motDePasse, Role.client);
@@ -20,6 +23,12 @@ public class Client extends Utilisateur{
         this.adresse = adresse;
         this.ville = ville;
         this.codePostal = codePostal;
+        try{
+        creeCommande(new Date(System.currentTimeMillis()));
+        }
+        catch (SQLException e){
+            System.out.println("Erreur lors de la création de la commande: " + e.getMessage());
+        }
     }
     public int getNum(){ 
         return this.num;
@@ -128,5 +137,9 @@ public class Client extends Utilisateur{
                 document.close();
             }
         }
+    }
+
+    void creeCommande(Date date) throws SQLException {
+        panier = new Commande(0,date,this,null, null);
     }
 }

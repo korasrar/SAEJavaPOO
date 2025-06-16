@@ -46,6 +46,10 @@ public class Commande {
         return this.modeLivraison;
     }
 
+    public void setNumcom(int numcom) {
+        this.numcom = numcom;
+    }
+
     void setClient(Client client) {
         this.client = client;
     }

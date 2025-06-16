@@ -8,8 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerRechercherLivre">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerRechercherLivre">
    <children>
       <ImageView fitHeight="75.0" fitWidth="182.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -19,7 +18,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </HBox.margin>
       </ImageView>
-      <TextField fx:id="clientSearchBar" onKeyPressed="#startRecherche" prefHeight="36.0" prefWidth="300.0" promptText="Chercher un livre">
+      <TextField fx:id="clientSearchBar" onKeyPressed="#startRecherche" prefHeight="36.0" prefWidth="739.0" promptText="Chercher un livre">
          <HBox.margin>
             <Insets top="27.0" />
          </HBox.margin>
@@ -42,4 +41,7 @@
          </children>
       </VBox>
    </children>
+   <padding>
+      <Insets left="20.0" right="20.0" />
+   </padding>
 </HBox>
