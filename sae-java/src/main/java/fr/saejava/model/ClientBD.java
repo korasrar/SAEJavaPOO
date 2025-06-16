@@ -207,7 +207,7 @@ public class ClientBD {
             pstDetail.setDouble(5, detail.getLivre().getPrix());
             pstDetail.executeUpdate();
             if(magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin())==0){
-                for(Magasin magasin:magasinConnexion.chargerMagasin()){
+                for(Magasin mag:magasinConnexion.chargerMagasin()){
                     if(magasinConnexion.getQuantiteLivre(detail.getLivre(),magasin)>detail.getQte()){
                         magasinConnexion.ajoutStock(magasin,detail.getLivre(),detail.getQte());
                     }
@@ -216,7 +216,7 @@ public class ClientBD {
             else if(magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin())<detail.getQte()){
                 int qteRestante=detail.getQte()-magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin());
                 magasinConnexion.ajoutStock(panier.getMagasin(),detail.getLivre(),detail.getQte()-qteRestante);
-                for(Magasin magasin:magasinConnexion.chargerMagasin()){
+                for(Magasin mag:magasinConnexion.chargerMagasin()){
                     if(magasinConnexion.getQuantiteLivre(detail.getLivre(),magasin)>qteRestante){
                         magasinConnexion.ajoutStock(magasin,detail.getLivre(),qteRestante);
                     }

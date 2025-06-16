@@ -10,8 +10,6 @@ public class ControllerRechercherLivre {
     @FXML
     private TextField clientSearchBar;
 
-    public
-
     public ControllerRechercherLivre() {
         // Constructor logic if needed
     }
