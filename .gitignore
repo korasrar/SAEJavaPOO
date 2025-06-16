@@ -28,3 +28,6 @@ replay_pid*
 
 # pdf files
 *.pdf
+
+# Eclipse files
+.idea/
