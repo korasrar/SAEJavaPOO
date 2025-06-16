@@ -41,15 +41,10 @@ public class ConnexionMySQL {
 	 */
 	public void connecter(String nomServeur, String nomBase, String nomLogin, String motDePasse) throws SQLException {
         System.out.println("Tentative de connexion...");
-        try {
             mysql=DriverManager.getConnection(
             "jdbc:mysql://mysql:3306/librairie?allowPublicKeyRetrieval=true&useSSL=false",
             "user_saejava","saejava");
             System.out.println("Connexion réussie");
-            } catch (SQLException ex){
-                System.out.println("Voici le message d'erreur : "+ex.getMessage()+
-                " Code erreur: "+ex.getErrorCode());
-            }
 		this.connecte=this.mysql!=null;
 	}
     
