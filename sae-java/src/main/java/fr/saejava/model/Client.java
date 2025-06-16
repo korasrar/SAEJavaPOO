@@ -3,6 +3,7 @@ package fr.saejava.model;
 import java.io.FileOutputStream;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
@@ -71,9 +72,6 @@ public class Client extends Utilisateur{
 
 
     // *--------------------------------* //
-    // pas sur de cette méthode
-    public void modeDeReception(){
-    }
 
     /**
      * édite la facture d'une commande et peut etre genérer un PDF
@@ -141,5 +139,9 @@ public class Client extends Utilisateur{
 
     void creeCommande(Date date) throws SQLException {
         panier = new Commande(0,date,this,null, null);
+    }
+
+    void ajouterLivre(Livre livre, int quantite) {
+        panier.ajouterDetailCommande(new DetailCommande(quantite, livre, panier));
     }
 }

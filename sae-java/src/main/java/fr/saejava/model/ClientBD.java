@@ -33,21 +33,6 @@ public class ClientBD {
         
     }
 
-    /**
-     * pour passer une commande
-     * @param commande la commande à passer
-     */
-
-    public void passerCommande(Commande commande) throws SQLException{
-        Statement st = connexion.createStatement();
-        try {
-            // Demander les informations au client
-            st.executeUpdate("");
-        } finally {
-            if (st != null) st.close();
-        }
-    }
-
     // *------------------------ Méthode pour onVousRecommande() ------------------------* //
 
 
@@ -183,12 +168,12 @@ public class ClientBD {
      * @param modeLivraison le mode de livraison choisi par le client
      * @throws SQLException si une erreur SQL se produit
      */
-    public void finaliseCommande(Client client, ModeLivraison modeLivraison, Commande panier) throws SQLException{
+    public void finaliseCommande(Client client, ModeLivraison modeLivraison, Commande panier, Magasin magasin) throws SQLException{
         MagasinBD magasinConnexion = new MagasinBD(connexion);
         CommandeBD commandeConnexion = new CommandeBD(connexion);
         panier.setModeLivraison(modeLivraison);
         if(modeLivraison.equals(ModeLivraison.MAGASIN)){
-            panier.setMagasin(menuChoisirMagasin());
+            panier.setMagasin(magasin);
         }
         else if(modeLivraison.equals(ModeLivraison.MAISON)){
             panier.setMagasin(magasinConnexion.trouverMeilleurMagasin(panier));
