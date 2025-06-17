@@ -19,19 +19,24 @@ public class ControllerConnexion {
     private Button buttonQuitter;
 
     @FXML
+    private Button buttonInscription;
+
+    @FXML
     private TextField textFieldIdentifiant;
 
     @FXML
     private PasswordField textFieldMotDePasse;
 
-    private ConnexionMySQL connexion;
     private UtilisateurBD utilisateurBD;
     private ApplicationLibrairie app;
 
-    public ControllerConnexion(ApplicationLibrairie app, ConnexionMySQL connexion){
+    public ControllerConnexion() {
+        // Default constructor
+    }
+
+    public ControllerConnexion(ApplicationLibrairie app, UtilisateurBD utilisateurBD) {
         this.app = app;
-        this.connexion = connexion;
-        this.utilisateurBD = new UtilisateurBD(connexion);
+        this.utilisateurBD = utilisateurBD;
     }
 
     @FXML
@@ -47,7 +52,16 @@ public class ControllerConnexion {
 
         try {
             Utilisateur utilisateur = utilisateurBD.getUtilisateur(identifiant, motDePasse);
-            app.afficherAjoutMagasinView();
+            utilisateurBD.setUtilisateurConnecter(utilisateur);
+            if (utilisateur instanceof Admin) {
+                // Afficher main Admin
+            } 
+            else if (utilisateur instanceof Vendeur) {
+                app.afficherVendeurMainView(app.getStage());
+            } 
+            else if (utilisateur instanceof Client) {
+                // Afficher main Client
+            }
         }
         catch (SQLException e){
             app.afficherErreur("Erreur de connexion à la base de données.");
@@ -65,8 +79,13 @@ public class ControllerConnexion {
     }
 
     @FXML
-    void quitter(MouseEvent event) {
+    void inscrire(MouseEvent event) {
+        app.afficherInscriptionView(app.getStage());
+    }
 
+    @FXML
+    void quitter(MouseEvent event) {
+        app.exit();
     }
 
 }

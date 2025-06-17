@@ -6,6 +6,7 @@ import java.sql.Statement;
 
 public class UtilisateurBD {
     ConnexionMySQL connexion;
+    Utilisateur utilisateurConnecter;
 
     public UtilisateurBD(ConnexionMySQL connexion) {
         this.connexion = connexion;
@@ -75,5 +76,13 @@ public class UtilisateurBD {
             if (r != null) r.close();
             if (st != null) st.close();
         }
+    }
+
+    public void setUtilisateurConnecter(Utilisateur util){
+        this.utilisateurConnecter=util;
+    }
+
+    public Utilisateur getUtilisateurConnecter(){
+        return utilisateurConnecter;
     }
 }

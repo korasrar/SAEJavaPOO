@@ -3,6 +3,7 @@ package fr.saejava.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VendeurBD {
@@ -216,6 +217,18 @@ public class VendeurBD {
             st.close();
             throw new VendeurSansMagasinException();
         }
+    }
+
+    public List<Livre> getMeilleurVente(Magasin magasin) throws SQLException{
+        List<Livre> listMeilleursVente = new ArrayList<>();
+        Statement st = connexion.createStatement();
+        // requete meilleur vente
+        ResultSet r = st.executeQuery("select isbn, titre, nbpages, datepubli, prix, SUM(qte) nbVente from LIVRE natural join DETAILCOMMANDE natural join COMMANDE natural join MAGASIN where idmag = 2 group by isbn order by nbVente DESC limit 5");
+        while(r.next()){
+            Livre livre = new Livre(r.getString("isbn"), r.getString("titre"), r.getInt("nbpages"), r.getString("datepubli"), r.getDouble("prix"));
+            listMeilleursVente.add(livre);
+        }
+        return listMeilleursVente;
     }
 
 
