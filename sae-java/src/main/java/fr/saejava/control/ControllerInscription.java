@@ -38,7 +38,6 @@ public class ControllerInscription {
     @FXML
     private TextField textFieldVIlle;
 
-    private ConnexionMySQL connexion;
     private UtilisateurBD utilisateurBD;
     private ClientBD clientBD;
     private ApplicationLibrairie app;
@@ -60,11 +59,10 @@ public class ControllerInscription {
         // Default constructor
     }
 
-    public ControllerInscription(ApplicationLibrairie app, ConnexionMySQL connexion) {
+    public ControllerInscription(ApplicationLibrairie app, UtilisateurBD utilisateurBD, ClientBD clientBD) {
         this.app = app;
-        this.connexion=connexion;
-        this.utilisateurBD = new UtilisateurBD(connexion);
-        this.clientBD= new ClientBD(connexion);
+        this.utilisateurBD = utilisateurBD;
+        this.clientBD = clientBD;
     }
 
     @FXML

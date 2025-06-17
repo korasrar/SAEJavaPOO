@@ -27,7 +27,6 @@ public class ControllerConnexion {
     @FXML
     private PasswordField textFieldMotDePasse;
 
-    private ConnexionMySQL connexion;
     private UtilisateurBD utilisateurBD;
     private ApplicationLibrairie app;
 
@@ -35,10 +34,9 @@ public class ControllerConnexion {
         // Default constructor
     }
 
-    public ControllerConnexion(ApplicationLibrairie app, ConnexionMySQL connexion){
+    public ControllerConnexion(ApplicationLibrairie app, UtilisateurBD utilisateurBD) {
         this.app = app;
-        this.connexion = connexion;
-        this.utilisateurBD = new UtilisateurBD(connexion);
+        this.utilisateurBD = utilisateurBD;
     }
 
     @FXML
@@ -54,6 +52,7 @@ public class ControllerConnexion {
 
         try {
             Utilisateur utilisateur = utilisateurBD.getUtilisateur(identifiant, motDePasse);
+            utilisateurBD.setUtilisateurConnecter(utilisateur);
             if (utilisateur instanceof Admin) {
                 // Afficher main Admin
             } 

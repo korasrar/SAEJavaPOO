@@ -37,7 +37,6 @@ public class ControllerVendeurAcceuil {
     private ListView<Livre> listViewMeilleurVentes;
 
     private ApplicationLibrairie app;
-    private ConnexionMySQL connexion;
     private UtilisateurBD utilisateurBD;
     private VendeurBD vendeurBD;
     private AdminBD adminBD;
@@ -46,12 +45,11 @@ public class ControllerVendeurAcceuil {
         // Default controller
     }
 
-    public ControllerVendeurAcceuil(ApplicationLibrairie app, ConnexionMySQL connexion){
+    public ControllerVendeurAcceuil(ApplicationLibrairie app, VendeurBD vendeurBD, UtilisateurBD utilisateurBD) {
         this.app=app;
-        this.connexion=connexion;
-        this.adminBD=new AdminBD(connexion);
-        this.utilisateurBD=new UtilisateurBD(connexion);
-        this.vendeurBD= new VendeurBD(connexion);
+        //this.adminBD=new AdminBD(connexion);
+        this.utilisateurBD=utilisateurBD;
+        this.vendeurBD=vendeurBD;
         
     }
 

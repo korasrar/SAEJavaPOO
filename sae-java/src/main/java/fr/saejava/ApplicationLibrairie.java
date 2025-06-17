@@ -74,7 +74,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
     public void afficherInscriptionView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/InscriptionView.fxml"));
         try {
-            ControllerInscription controllerInscription = new ControllerInscription(this, connexion);
+            ControllerInscription controllerInscription = new ControllerInscription(this, utilisateurConnexion, clientConnexion);
             loader.setController(controllerInscription);
             this.root = loader.load();
             this.scene = new Scene(this.root);
@@ -102,7 +102,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
     public void afficherConnexion(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/ConnexionView.fxml"));
         try {
-            ControllerConnexion controllerConnexion = new ControllerConnexion(this, connexion);
+            ControllerConnexion controllerConnexion = new ControllerConnexion(this, utilisateurConnexion);
             loader.setController(controllerConnexion);
             this.root = loader.load();
             this.scene = new Scene(this.root);
@@ -117,15 +117,21 @@ public class ApplicationLibrairie extends javafx.application.Application {
     public void afficherVendeurMainView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/VendeurAccueilCenter.fxml"));
         try {
-            ControllerVendeurAcceuil controllerVendeurAcceuil = new ControllerVendeurAcceuil();
-            loader.setController(controllerVendeurAcceuil);
+            ControllerVendeurAcceuil controllerVendeurAccueil = new ControllerVendeurAcceuil(this, vendeurConnexion, utilisateurConnexion);
+            System.out.println("Affichage de la vue VendeurAccueilCenter");
+            loader.setController(controllerVendeurAccueil);
+            System.out.println("Affichage de la vue VendeurAccueilCenter2");
             this.root = loader.load();
+            System.out.println("Affichage de la vue VendeurAccueilCenter3");
             this.scene = new Scene(this.root);
+            System.out.println("Affichage de la vue VendeurAccueilCenter4");
             stage.setScene(scene);
+            System.out.println("Affichage de la vue VendeurAccueilCenter5");
             stage.setTitle("Menu Vendeur");
             stage.show();
         } catch (Exception e) {
-            afficherErreur("Erreur lors du chargement de la vue de connexion : " + e.getMessage());
+            afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -137,6 +143,16 @@ public class ApplicationLibrairie extends javafx.application.Application {
         try {
             connexion = new ConnexionMySQL();
             connexion.connecter("", "", "", "");
+
+            // Partage de la connexion avec les autres classes
+            utilisateurConnexion = new UtilisateurBD(connexion);
+            vendeurConnexion = new VendeurBD(connexion);
+            adminConnexion = new AdminBD(connexion);
+            commandeConnexion = new CommandeBD(connexion);
+            clientConnexion = new ClientBD(connexion);
+            livreConnexion = new LivreBD(connexion);
+            magasinConnexion = new MagasinBD(connexion);
+
             estConnecteBD = true;
         } catch (SQLTimeoutException e) {
             afficherErreur("La connexion à la base de données a expiré.");
@@ -149,7 +165,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
         if(estConnecteBD) {
             loader = new FXMLLoader(getClass().getResource("/view/ConnexionView.fxml"));
-            ControllerConnexion controllerConnexion = new ControllerConnexion(this, connexion);
+            ControllerConnexion controllerConnexion = new ControllerConnexion(this, utilisateurConnexion);
             loader.setController(controllerConnexion);
             this.root = loader.load();
             this.scene = new Scene(this.root);
