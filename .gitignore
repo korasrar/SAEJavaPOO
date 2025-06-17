@@ -28,3 +28,10 @@ replay_pid*
 
 # pdf files
 *.pdf
+
+# Eclipse files
+.idea/
+
+# javafx lib
+javafx/
+javafx.properties

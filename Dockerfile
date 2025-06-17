@@ -1,7 +1,8 @@
-FROM openjdk:17-jdk-slim
+FROM openjdk:23
 
 WORKDIR /app
 
 COPY sae-java/target/sae-java-1.0-SNAPSHOT-jar-with-dependencies.jar app.jar
+COPY javafx/ ./javafx/
 
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "--module-path", "javafx", "--add-modules", "javafx.controls,javafx.fxml", "-jar", "app.jar"]
