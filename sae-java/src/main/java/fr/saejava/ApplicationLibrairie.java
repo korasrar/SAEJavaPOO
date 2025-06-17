@@ -1,7 +1,11 @@
 package fr.saejava;
 
+import fr.saejava.control.ControllerConnexion;
+import fr.saejava.control.ControllerInscription;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.chart.Chart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
@@ -31,6 +35,10 @@ public class ApplicationLibrairie extends javafx.application.Application {
     Commande panier;
     Livre livreSelectionner;
 
+    public Stage getStage() {
+        return (Stage) root.getScene().getWindow();
+    }
+
     /**
      * Permet d'afficher une alerte d'erreur
      * @param message le message d'erreur à afficher
@@ -53,17 +61,55 @@ public class ApplicationLibrairie extends javafx.application.Application {
         warning.showAndWait();
     }
 
-    public void afficherAjoutMagasinView(){
+    public void afficherInformation(String message) {
+        Alert warning = new Alert(AlertType.INFORMATION);
+        warning.setTitle("Information");
+        warning.setHeaderText(message);
+        warning.showAndWait();
+    }
+
+
+
+    public void afficherInscriptionView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/InscriptionView.fxml"));
+        try {
+            ControllerInscription controllerInscription = new ControllerInscription(this, connexion);
+            loader.setController(controllerInscription);
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Inscription");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue pour s'inscrire : " + e.getMessage());
+        }
+    }
+
+    public void afficherAjoutMagasinView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/AjoutMagasinView.fxml"));
         try {
             this.root = loader.load();
             this.scene = new Scene(this.root);
-            Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("Ajout d'un magasin");
             stage.show();
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue d'ajout de magasin : " + e.getMessage());
+        }
+    }
+
+    public void afficherConnexion(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/ConnexionView.fxml"));
+        try {
+            ControllerConnexion controllerConnexion = new ControllerConnexion(this, connexion);
+            loader.setController(controllerConnexion);
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Connexion");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue de connexion : " + e.getMessage());
         }
     }
 
@@ -87,6 +133,8 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
         if(estConnecteBD) {
             loader = new FXMLLoader(getClass().getResource("/view/ConnexionView.fxml"));
+            ControllerConnexion controllerConnexion = new ControllerConnexion(this, connexion);
+            loader.setController(controllerConnexion);
             this.root = loader.load();
             this.scene = new Scene(this.root);
 
@@ -94,6 +142,10 @@ public class ApplicationLibrairie extends javafx.application.Application {
             primaryStage.setTitle("SAE Java Application");
             primaryStage.show();
         }
+    }
+
+    public void exit(){
+        Platform.exit();
     }
 
     public static void main(String[] args) {

@@ -18,11 +18,15 @@ public class ClientBD {
     }
 
     public void creeCompteClient(int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse) throws SQLException{
-        PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+num+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','client'),");
+        System.out.println(""+num);
+        PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+num+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','client')");
+        System.out.println("Préparation de l'insertion de l'utilisateur...");
         pstmt.executeUpdate();
+        System.out.println("Utilisateur inséré avec succès !");
         pstmt.close();
-        pstmt = this.connexion.prepareStatement("insert into CLIENT values ("+num+", '"+adresse+"', '"+codePostal+"', '"+ville+"'),");
+        pstmt = this.connexion.prepareStatement("insert into CLIENT values ("+num+", '"+adresse+"', '"+codePostal+"', '"+ville+"')");
         pstmt.executeUpdate();
+        System.out.print("Client inséré avec succès !");
         pstmt.close();
     }
 

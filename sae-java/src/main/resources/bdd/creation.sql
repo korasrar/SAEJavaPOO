@@ -7,6 +7,8 @@ CREATE DATABASE IF NOT EXISTS `librairie`
 
 USE `librairie`;
 
+-- copier a partir d'ici
+
 CREATE TABLE AUTEUR (
   PRIMARY KEY (idauteur),
   idauteur   varchar(11) NOT NULL,
