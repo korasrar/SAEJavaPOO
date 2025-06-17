@@ -54,7 +54,15 @@ public class ControllerConnexion {
 
         try {
             Utilisateur utilisateur = utilisateurBD.getUtilisateur(identifiant, motDePasse);
-            app.afficherAjoutMagasinView(app.getStage());
+            if (utilisateur instanceof Admin) {
+                // Afficher main Admin
+            } 
+            else if (utilisateur instanceof Vendeur) {
+                app.afficherVendeurMainView(app.getStage());
+            } 
+            else if (utilisateur instanceof Client) {
+                // Afficher main Client
+            }
         }
         catch (SQLException e){
             app.afficherErreur("Erreur de connexion à la base de données.");

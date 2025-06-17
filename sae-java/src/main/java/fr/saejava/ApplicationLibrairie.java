@@ -2,6 +2,7 @@ package fr.saejava;
 
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
+import fr.saejava.control.ControllerVendeurAcceuil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -107,6 +108,21 @@ public class ApplicationLibrairie extends javafx.application.Application {
             this.scene = new Scene(this.root);
             stage.setScene(scene);
             stage.setTitle("Connexion");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue de connexion : " + e.getMessage());
+        }
+    }
+
+    public void afficherVendeurMainView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/VendeurAccueilCenter.fxml"));
+        try {
+            ControllerVendeurAcceuil controllerVendeurAcceuil = new ControllerVendeurAcceuil();
+            loader.setController(controllerVendeurAcceuil);
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Menu Vendeur");
             stage.show();
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue de connexion : " + e.getMessage());

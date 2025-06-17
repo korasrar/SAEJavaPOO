@@ -11,7 +11,7 @@ public class ControllerRechercherLivre {
     private TextField clientSearchBar;
 
     public ControllerRechercherLivre() {
-        // Constructor logic if needed
+        // jsp
     }
 
     @FXML
