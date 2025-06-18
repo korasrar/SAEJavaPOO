@@ -3,12 +3,14 @@ package fr.saejava.control;
 import java.sql.SQLException;
 
 import fr.saejava.ApplicationLibrairie;
+import fr.saejava.model.LivreBD;
 import fr.saejava.model.UtilisateurBD;
 import fr.saejava.model.VendeurBD;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 public class ControllerGererStock {
 
@@ -37,22 +39,22 @@ public class ControllerGererStock {
     private Label labelGererStockTitre;
 
     @FXML
-    private TextField textFieldGererStockDatePubli;
+    private TextField textFieldGererStockDatePubli; //setText DatePubli
 
     @FXML
-    private TextField textFieldGererStockISBN;
+    private TextField textFieldGererStockISBN; //setText ISBN
 
     @FXML
-    private TextField textFieldGererStockNBPages;
+    private TextField textFieldGererStockNBPages; //setText NBPages
 
     @FXML
-    private TextField textFieldGererStockPrix;
+    private TextField textFieldGererStockPrix; //setText Prix
 
     @FXML
-    private TextField textFieldGererStockQuantite;
+    private TextField textFieldGererStockQuantite; //setText Quantité
 
     @FXML
-    private TextField textFieldGererStockTitre;
+    private TextField textFieldGererStockTitre; //setText Titre
 
     @FXML
     private TextField textFieldGererStockTitreLivre;
@@ -60,15 +62,63 @@ public class ControllerGererStock {
     private ApplicationLibrairie app;
     private UtilisateurBD utilisateurBD;
     private VendeurBD vendeurBD;
+    private LivreBD livreBD;
 
-        public ControllerGererStock(ApplicationLibrairie app, VendeurBD vendeurBD, UtilisateurBD utilisateurBD) throws SQLException{
-            this.app=app;
+        public ControllerGererStock(ApplicationLibrairie app, VendeurBD vendeurBD, UtilisateurBD utilisateurBD, LivreBD livreBD) throws SQLException{
+            this.app = app;
             //this.adminBD=new AdminBD(connexion);
-            this.utilisateurBD=utilisateurBD;
-            this.vendeurBD=vendeurBD;
+            this.utilisateurBD = utilisateurBD;
+            this.vendeurBD = vendeurBD;
+            this.livreBD = livreBD;
         }
 
         @FXML
-        public void initialize() {
-    }
+        public void initialize(){
+            this.labelGererStockISBN.setText("ISBN : ...");
+            this.labelGererStockTitre.setText("Titre : ...");
+            this.labelGererStockNBPages.setText("Nombre de Pages : ...");
+            this.labelGererStockDatePubli.setText("Date de Publication : ...");
+            this.labelGererStockPrix.setText("Prix : ...");
+            this.labelGererStockQuantite.setText("Quantité : ...");
+
+            this.textFieldGererStockISBN.setDisable(true);
+            this.textFieldGererStockTitre.setDisable(true);
+            this.textFieldGererStockNBPages.setDisable(true);
+            this.textFieldGererStockDatePubli.setDisable(true);
+            this.textFieldGererStockPrix.setDisable(true);
+            this.textFieldGererStockQuantite.setDisable(true);
+        }
+
+        @FXML
+        public String titreLivre(){
+            return this.textFieldGererStockTitreLivre.getText();
+        }
+
+        @FXML
+        public void nouveauLivre(MouseEvent event) {
+            this.buttonGererStockNouveauLivre = (Button) (event.getSource());
+
+            this.textFieldGererStockISBN.setDisable(false);
+            this.textFieldGererStockTitre.setDisable(false);
+            this.textFieldGererStockNBPages.setDisable(false);
+            this.textFieldGererStockDatePubli.setDisable(false);
+            this.textFieldGererStockPrix.setDisable(false);
+            this.textFieldGererStockQuantite.setDisable(false);
+
+            this.textFieldGererStockISBN.setText(null);
+            this.textFieldGererStockTitre.setText(null);
+            this.textFieldGererStockNBPages.setText(null);
+            this.textFieldGererStockDatePubli.setText(null);
+            this.textFieldGererStockPrix.setText(null);
+            this.textFieldGererStockQuantite.setText(null);
+
+            this.textFieldGererStockISBN.setPromptText("ISBN");
+            this.textFieldGererStockTitre.setPromptText("Titre");
+            this.textFieldGererStockNBPages.setPromptText("NBPages");
+            this.textFieldGererStockDatePubli.setPromptText("DatePubli");
+            this.textFieldGererStockPrix.setPromptText("Prix");
+            this.textFieldGererStockQuantite.setPromptText("Quantité");
+        }
 }
+
+

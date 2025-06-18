@@ -52,6 +52,6 @@ public class ControllerVendeurTransfererLivre {
 
         @FXML
         public void initialize() {
-    }
 
+        }
 }

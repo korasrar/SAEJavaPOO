@@ -189,7 +189,7 @@ public void afficherVendeurGererStock(Stage stage) { // A coder
         Pane headerPane = headerLoader.load();
         
         FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStock.fxml"));
-        ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion);
+        ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion, livreConnexion);
         centerLoader.setController(centerController);
         Pane centerPane = centerLoader.load();
         

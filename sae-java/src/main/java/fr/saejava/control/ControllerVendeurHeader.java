@@ -32,32 +32,25 @@ public class ControllerVendeurHeader {
 
     @FXML
     public void gererStock(MouseEvent event) {
-        Button button = (Button) (event.getSource());
-        if (button.getText().contains("Gérer Stocks")){
+        this.buttonGererStock = (Button) (event.getSource());
             app.afficherVendeurGererStock(app.getStage());
-        }
     }
 
     @FXML
     public void tranfererLivre(MouseEvent event) {
-        Button button = (Button) (event.getSource());
-        if (button.getText().contains("Transférer Livre")){
+        this.buttonTransfererLivre = (Button) (event.getSource());
             app.afficherVendeurTransfererLivre(app.getStage());
-        }
     }
 
     @FXML
     public void verifierDispo(MouseEvent event) {
-        Button button = (Button) (event.getSource());
-        if (button.getText().contains("Vérifier les Dispos")){
-        }
+        this.buttonVerifierDispo = (Button) (event.getSource());
+        // A implementer
     }
 
     @FXML
     public void retourAccueil(MouseEvent event) {
-        ImageView image = (ImageView) (event.getSource());
-        if (image == this.imagesViewRetourAccueil){
+        this.imagesViewRetourAccueil = (ImageView) (event.getSource());
             app.afficherVendeurMainView(app.getStage());
-        }      
     }
 }
