@@ -94,32 +94,32 @@
             </VBox>
             <VBox prefHeight="500.0" prefWidth="350.0">
                <children>
-                  <TextField fx:id="textFieldGererStockISBN" text="...">
+                  <TextField fx:id="textFieldGererStockISBN" onKeyPressed="#setISBN" text="...">
                      <VBox.margin>
                         <Insets bottom="5.0" right="50.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="textFieldGererStockTitre" text="...">
+                  <TextField fx:id="textFieldGererStockTitre" onKeyPressed="#setTitre" text="...">
                      <VBox.margin>
                         <Insets bottom="5.0" right="50.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="textFieldGererStockNBPages" text="...">
+                  <TextField fx:id="textFieldGererStockNBPages" onKeyPressed="#setNBPages" text="...">
                      <VBox.margin>
                         <Insets bottom="5.0" right="50.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="textFieldGererStockDatePubli" text="...">
+                  <TextField fx:id="textFieldGererStockDatePubli" onKeyPressed="#setDatePubli" text="...">
                      <VBox.margin>
                         <Insets bottom="5.0" right="50.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="textFieldGererStockPrix" text="...">
+                  <TextField fx:id="textFieldGererStockPrix" onKeyPressed="#setPrix" text="...">
                      <VBox.margin>
                         <Insets bottom="5.0" right="50.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="textFieldGererStockQuantite" text="...">
+                  <TextField fx:id="textFieldGererStockQuantite" onKeyPressed="#setQuantite" text="...">
                      <VBox.margin>
                         <Insets bottom="5.0" right="50.0" />
                      </VBox.margin>

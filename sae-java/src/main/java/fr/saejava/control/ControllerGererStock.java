@@ -125,16 +125,9 @@ public class ControllerGererStock {
         @FXML
         public void rechercheTitre(KeyEvent event){
             if(event.getCode() == KeyCode.ENTER){
-                app.afficherRechercheLivreView(app.getStage(), textFieldGererStockTitreLivre.getText());
+            //    app.afficherRechercheLivreView(app.getStage(), textFieldGererStockTitreLivre.getText());
             }
         }
-        
-        // @FXML
-        // void startRecherche(KeyEvent event) {
-        //     if(event.getCode() == KeyCode.ENTER){
-        //         app.afficherRechercheLivreView(app.getStage(), clientSearchBar.getText());
-        //     }
-        // }
 }
 
 

@@ -121,23 +121,23 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
-    public void afficherRechercheLivreView(Stage stage, String titreLivre){
-            loader = new FXMLLoader(getClass().getResource("/view/RechercheLivreView.fxml"));
-            try {
-                Stage stageRechercheLivre = new Stage();
-                stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
-                stageRechercheLivre.initOwner(stage);
-                ControllerRechercherLivre controllerRechercherLivre = new ControllerRechercherLivre(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre);
-                loader.setController(controllerRechercherLivre);
-                Pane paneRechercheLivre = loader.load();
-                Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
-                stageRechercheLivre.setScene(sceneRechercheLivre);
-                stageRechercheLivre.setTitle("Résultat recherche Livre");
-                stageRechercheLivre.showAndWait();
-            } catch (Exception e) {
-                afficherErreur("Erreur lors du chargement de la vue de recherche de livre : " + e.getMessage());
-            }
-        }
+    //public void afficherRechercheLivreView(Stage stage, String titreLivre){
+    //        loader = new FXMLLoader(getClass().getResource("/view/RechercheLivreView.fxml"));
+    //        try {
+    //            Stage stageRechercheLivre = new Stage();
+    //            stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
+    //            stageRechercheLivre.initOwner(stage);
+    //            ControllerRechercherLivre controllerRechercherLivre = new ControllerRechercherLivre(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre);
+    //            loader.setController(controllerRechercherLivre);
+    //            Pane paneRechercheLivre = loader.load();
+    //            Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
+    //            stageRechercheLivre.setScene(sceneRechercheLivre);
+    //            stageRechercheLivre.setTitle("Résultat recherche Livre");
+    //            stageRechercheLivre.showAndWait();
+    //        } catch (Exception e) {
+    //            afficherErreur("Erreur lors du chargement de la vue de recherche de livre : " + e.getMessage());
+    //        }
+    //    }
     
     public void afficherVendeurMainView(Stage stage) {
     try {
