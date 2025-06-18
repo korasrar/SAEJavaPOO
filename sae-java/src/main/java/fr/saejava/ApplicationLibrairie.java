@@ -1,20 +1,29 @@
 package fr.saejava;
 
+import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
+
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
 import fr.saejava.control.ControllerVendeurAcceuil;
+import fr.saejava.model.AdminBD;
+import fr.saejava.model.ClientBD;
+import fr.saejava.model.Commande;
+import fr.saejava.model.CommandeBD;
+import fr.saejava.model.ConnexionMySQL;
+import fr.saejava.model.Livre;
+import fr.saejava.model.LivreBD;
+import fr.saejava.model.MagasinBD;
+import fr.saejava.model.Utilisateur;
+import fr.saejava.model.UtilisateurBD;
+import fr.saejava.model.VendeurBD;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.chart.Chart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import fr.saejava.model.*;
-
-import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
 
 public class ApplicationLibrairie extends javafx.application.Application {
 
@@ -142,7 +151,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
         estConnecteBD= false;
         try {
             connexion = new ConnexionMySQL();
-            connexion.connecter("", "", "", "");
+            connexion.connecter("servinfo-maria", "DBcosme", "cosme", "cosme");
 
             // Partage de la connexion avec les autres classes
             utilisateurConnexion = new UtilisateurBD(connexion);
