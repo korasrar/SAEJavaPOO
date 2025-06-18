@@ -7,17 +7,7 @@ import fr.saejava.control.ControllerClientAccueil;
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
 import fr.saejava.control.ControllerVendeurAcceuil;
-import fr.saejava.model.AdminBD;
-import fr.saejava.model.ClientBD;
-import fr.saejava.model.Commande;
-import fr.saejava.model.CommandeBD;
-import fr.saejava.model.ConnexionMySQL;
-import fr.saejava.model.Livre;
-import fr.saejava.model.LivreBD;
-import fr.saejava.model.MagasinBD;
-import fr.saejava.model.Utilisateur;
-import fr.saejava.model.UtilisateurBD;
-import fr.saejava.model.VendeurBD;
+import fr.saejava.model.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -160,26 +150,34 @@ public class ApplicationLibrairie extends javafx.application.Application {
     }
 }
 
-    public void afficherClientMainView(Stage stage){
-        loader = new FXMLLoader(getClass().getResource("/view/accueil.fxml"));
-        try {
-            ControllerClientAccueil controllerClientAccueil = new ControllerClientAccueil(this, utilisateurConnexion, clientConnexion);
-            System.out.println("Affichage de la vue ClientAccueil");
-            loader.setController(controllerClientAccueil);
-            System.out.println("Affichage de la vue ClientAccueil2");
-            this.root = loader.load();
-            System.out.println("Affichage de la vue ClientAccueil3");
-            this.scene = new Scene(this.root);
-            System.out.println("Affichage de la vue ClientAccueil4");
-            stage.setScene(scene);
-            System.out.println("Affichage de la vue ClientAccueil5");
-            stage.setTitle("Menu Client");
-            stage.show();
-        } catch (Exception e) {
-            afficherErreur("Erreur lors du chargement de la vue main du Client : " + e.getMessage());
-            e.printStackTrace();
-        }
+    public void afficherClientMainView(Stage stage) {
+    try {
+        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/ClientMainViewContainer.fxml"));
+        BorderPane mainPane = mainLoader.load();
+        
+        FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/ClientHeaderView.fxml"));
+        ControllerClientHeader headerController = new ControllerClientHeader();
+        headerLoader.setController(headerController);
+        Pane headerPane = headerLoader.load();
+
+        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/ClientAccueilCenter.fxml"));
+        ControllerClientAccueil centerController = new ControllerClientAccueil(this, utilisateurConnexion, clientConnexion);
+        centerLoader.setController(centerController);
+        Pane centerPane = centerLoader.load();
+        
+        mainPane.setTop(headerPane);
+        mainPane.setCenter(centerPane);
+        
+        this.root = mainPane;
+        this.scene = new Scene(this.root);
+        stage.setScene(scene);
+        stage.setTitle("Menu Client");
+        stage.show();
+    } catch (Exception e) {
+        afficherErreur("Erreur lors du chargement de la vue main du Client : " + e.getMessage());
+        e.printStackTrace();
     }
+}
 
  
 
