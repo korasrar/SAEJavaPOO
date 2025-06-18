@@ -219,7 +219,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
         estConnecteBD= false;
         try {
             connexion = new ConnexionMySQL();
-            connexion.connecter("servinfo-maria", "DBcosme", "", "");
+            connexion.connecter("localhost", "DBcosme", "fushi", "1234");
 
             // Partage de la connexion avec les autres classes
             utilisateurConnexion = new UtilisateurBD(connexion);
