@@ -1,10 +1,13 @@
 package fr.saejava.control;
 
+import com.itextpdf.text.Image;
+
 import fr.saejava.ApplicationLibrairie;
 import fr.saejava.model.UtilisateurBD;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 public class ControllerVendeurHeader {
@@ -18,6 +21,9 @@ public class ControllerVendeurHeader {
     @FXML
     private Button buttonVerifierDispo;
 
+    @FXML
+    private ImageView imagesViewRetourAccueil;
+
     private ApplicationLibrairie app;
 
     public ControllerVendeurHeader(ApplicationLibrairie app){
@@ -25,28 +31,33 @@ public class ControllerVendeurHeader {
     }
 
     @FXML
-    void gererStock(MouseEvent event) {
+    public void gererStock(MouseEvent event) {
         Button button = (Button) (event.getSource());
         if (button.getText().contains("Gérer Stocks")){
-            System.out.println("trois");
+            app.afficherVendeurGererStock(app.getStage());
         }
     }
 
     @FXML
-    void tranfererLivre(MouseEvent event) {
+    public void tranfererLivre(MouseEvent event) {
         Button button = (Button) (event.getSource());
         if (button.getText().contains("Transférer Livre")){
-            System.out.println("un");
             app.afficherVendeurTransfererLivre(app.getStage());
         }
     }
 
     @FXML
-    void verifierDispo(MouseEvent event) {
+    public void verifierDispo(MouseEvent event) {
         Button button = (Button) (event.getSource());
         if (button.getText().contains("Vérifier les Dispos")){
-            System.out.println("deux");
         }
     }
 
+    @FXML
+    public void retourAccueil(MouseEvent event) {
+        ImageView image = (ImageView) (event.getSource());
+        if (image == this.imagesViewRetourAccueil){
+            app.afficherVendeurMainView(app.getStage());
+        }      
+    }
 }

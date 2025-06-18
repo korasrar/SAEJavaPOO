@@ -58,9 +58,9 @@ public class ControllerVendeurAcceuil {
     public void initialize() throws VendeurSansMagasinException {
         try{
             this.listViewMeilleurVentes.setItems(FXCollections.observableArrayList(vendeurBD.getMeilleurVente(((Vendeur)utilisateurBD.getUtilisateurConnecter()).getMagasin())));
-            this.labelAccueilVendeurNomVendeur.setText(this.utilisateurBD.getUtilisateurConnecter().getNom());
-            this.labelAccueilVendeurPrenomVendeur.setText(this.utilisateurBD.getUtilisateurConnecter().getPrenom());
-            this.labelAccueilVendeuIDVendeur.setText(Integer.toString(this.utilisateurBD.getUtilisateurConnecter().getId()));
+            this.labelAccueilVendeurNomVendeur.setText("Nom : "+this.utilisateurBD.getUtilisateurConnecter().getNom());
+            this.labelAccueilVendeurPrenomVendeur.setText("Prenom : "+this.utilisateurBD.getUtilisateurConnecter().getPrenom());
+            this.labelAccueilVendeuIDVendeur.setText("ID : "+Integer.toString(this.utilisateurBD.getUtilisateurConnecter().getId()));
             this.labelAccueilVendeurBienvunueNomVendeur.setText("Bienvenue Mr "+this.utilisateurBD.getUtilisateurConnecter().getNom()+"! Voici vos informations >");
             //"Bienvenue "+this.utilisateurBD.getUtilisateurConnecter().getNom()+"! Voici vos informations >"
             this.labelAccueilVendeurNomMagasinVendeur.setText(this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()).toString());

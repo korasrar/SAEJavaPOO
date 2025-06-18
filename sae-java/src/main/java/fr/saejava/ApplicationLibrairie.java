@@ -1,8 +1,10 @@
 package fr.saejava;
 
 import fr.saejava.control.ControllerConnexion;
+import fr.saejava.control.ControllerGererStock;
 import fr.saejava.control.ControllerInscription;
 import fr.saejava.control.ControllerVendeurAcceuil;
+import fr.saejava.control.ControllerGererStock;
 import fr.saejava.control.ControllerVendeurTransfererLivre;
 import fr.saejava.control.ControllerVendeurHeader;
 import javafx.application.Platform;
@@ -147,7 +149,6 @@ public class ApplicationLibrairie extends javafx.application.Application {
     }
 }
 
-//===============================================================================================================================
 public void afficherVendeurTransfererLivre(Stage stage) { // A coder
     try {
         FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurTransfereLivreContainer.fxml"));
@@ -169,7 +170,7 @@ public void afficherVendeurTransfererLivre(Stage stage) { // A coder
         this.root = mainPane;
         this.scene = new Scene(this.root);
         stage.setScene(scene);
-        stage.setTitle("Menu Transférer livre");
+        stage.setTitle("Menu Transférer Livre");
         stage.show();
     } catch (Exception e) {
         afficherErreur("Erreur lors du chargement de la vue transférer du Vendeur : " + e.getMessage());
@@ -177,7 +178,35 @@ public void afficherVendeurTransfererLivre(Stage stage) { // A coder
     }
 }
 //===============================================================================================================================
-
+public void afficherVendeurGererStock(Stage stage) { // A coder
+    try {
+        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStockContainer.fxml"));
+        BorderPane mainPane = mainLoader.load();
+        
+        FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
+        ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
+        headerLoader.setController(headerController);
+        Pane headerPane = headerLoader.load();
+        
+        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStock.fxml"));
+        ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion);
+        centerLoader.setController(centerController);
+        Pane centerPane = centerLoader.load();
+        
+        mainPane.setTop(headerPane);
+        mainPane.setCenter(centerPane);
+        
+        this.root = mainPane;
+        this.scene = new Scene(this.root);
+        stage.setScene(scene);
+        stage.setTitle("Menu Gérer Stock");
+        stage.show();
+    } catch (Exception e) {
+        afficherErreur("Erreur lors du chargement de la vue gerer stock du Vendeur : " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+//===============================================================================================================================
     // Load la page de connexion par défaut
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -186,6 +215,7 @@ public void afficherVendeurTransfererLivre(Stage stage) { // A coder
             connexion = new ConnexionMySQL();
             connexion.connecter("servinfo-maria", "DBkerrien", "kerrien", "kerrien");
             // Partage de la connexion avec les autres classes
+
             utilisateurConnexion = new UtilisateurBD(connexion);
             vendeurConnexion = new VendeurBD(connexion);
             adminConnexion = new AdminBD(connexion);
