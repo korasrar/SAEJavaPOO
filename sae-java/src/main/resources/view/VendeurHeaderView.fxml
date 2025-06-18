@@ -22,7 +22,7 @@
          <children>
             <Button fx:id="buttonTransfererLivre" mnemonicParsing="false" onMouseClicked="#tranfererLivre" prefWidth="120.0" text="Transférer Livre" textAlignment="RIGHT" />
             <Button fx:id="buttonGererStock" mnemonicParsing="false" onMouseClicked="#gererStock" prefWidth="120.0" text="Gérer Stocks" />
-            <Button fx:id="buttonVerifierDispo" mnemonicParsing="false" onMouseClicked="#verifierDispo" prefHeight="26.0" prefWidth="134.0" text="Vérifier les dispos" />
+            <Button fx:id="buttonVerifierDispo" mnemonicParsing="false" onMouseClicked="#verifierDispo" prefHeight="26.0" prefWidth="134.0" text="Vérifier les Dispos" />
          </children>
          <opaqueInsets>
             <Insets />

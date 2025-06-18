@@ -3,6 +3,7 @@ package fr.saejava;
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
 import fr.saejava.control.ControllerVendeurAcceuil;
+import fr.saejava.control.ControllerVendeurTransfererLivre;
 import fr.saejava.control.ControllerVendeurHeader;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -119,27 +120,22 @@ public class ApplicationLibrairie extends javafx.application.Application {
 
     public void afficherVendeurMainView(Stage stage) {
     try {
-        // 1. Chargez séparément chaque fichier FXML
         FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurMainViewContainer.fxml"));
         BorderPane mainPane = mainLoader.load();
         
-        // 2. Chargez le header
         FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
-        ControllerVendeurHeader headerController = new ControllerVendeurHeader();
+        ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
         headerLoader.setController(headerController);
         Pane headerPane = headerLoader.load();
         
-        // 3. Chargez le contenu central 
         FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurAccueilCenter.fxml"));
         ControllerVendeurAcceuil centerController = new ControllerVendeurAcceuil(this, vendeurConnexion, utilisateurConnexion);
         centerLoader.setController(centerController);
         Pane centerPane = centerLoader.load();
         
-        // 4. Assemblez les composants
         mainPane.setTop(headerPane);
         mainPane.setCenter(centerPane);
         
-        // 5. Configurez la scène
         this.root = mainPane;
         this.scene = new Scene(this.root);
         stage.setScene(scene);
@@ -151,6 +147,36 @@ public class ApplicationLibrairie extends javafx.application.Application {
     }
 }
 
+//===============================================================================================================================
+public void afficherVendeurTransfererLivre(Stage stage) { // A coder
+    try {
+        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurTransfereLivreContainer.fxml"));
+        BorderPane mainPane = mainLoader.load();
+        
+        FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
+        ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
+        headerLoader.setController(headerController);
+        Pane headerPane = headerLoader.load();
+        
+        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurTransfereLivre.fxml"));
+        ControllerVendeurTransfererLivre centerController = new ControllerVendeurTransfererLivre(this, vendeurConnexion, utilisateurConnexion);
+        centerLoader.setController(centerController);
+        Pane centerPane = centerLoader.load();
+        
+        mainPane.setTop(headerPane);
+        mainPane.setCenter(centerPane);
+        
+        this.root = mainPane;
+        this.scene = new Scene(this.root);
+        stage.setScene(scene);
+        stage.setTitle("Menu Transférer livre");
+        stage.show();
+    } catch (Exception e) {
+        afficherErreur("Erreur lors du chargement de la vue transférer du Vendeur : " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+//===============================================================================================================================
 
     // Load la page de connexion par défaut
     @Override
