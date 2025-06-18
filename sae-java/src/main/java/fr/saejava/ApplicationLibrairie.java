@@ -7,12 +7,24 @@ import fr.saejava.control.ControllerClientAccueil;
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
 import fr.saejava.control.ControllerVendeurAcceuil;
-import fr.saejava.model.*;
+import fr.saejava.model.AdminBD;
+import fr.saejava.model.ClientBD;
+import fr.saejava.model.Commande;
+import fr.saejava.model.CommandeBD;
+import fr.saejava.model.ConnexionMySQL;
+import fr.saejava.model.Livre;
+import fr.saejava.model.LivreBD;
+import fr.saejava.model.MagasinBD;
+import fr.saejava.model.Utilisateur;
+import fr.saejava.model.UtilisateurBD;
+import fr.saejava.model.VendeurBD;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -114,26 +126,40 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
-    public void afficherVendeurMainView(Stage stage){
-        loader = new FXMLLoader(getClass().getResource("/view/VendeurAccueilCenter.fxml"));
-        try {
-            ControllerVendeurAcceuil controllerVendeurAccueil = new ControllerVendeurAcceuil(this, vendeurConnexion, utilisateurConnexion);
-            System.out.println("Affichage de la vue VendeurAccueilCenter");
-            loader.setController(controllerVendeurAccueil);
-            System.out.println("Affichage de la vue VendeurAccueilCenter2");
-            this.root = loader.load();
-            System.out.println("Affichage de la vue VendeurAccueilCenter3");
-            this.scene = new Scene(this.root);
-            System.out.println("Affichage de la vue VendeurAccueilCenter4");
-            stage.setScene(scene);
-            System.out.println("Affichage de la vue VendeurAccueilCenter5");
-            stage.setTitle("Menu Vendeur");
-            stage.show();
-        } catch (Exception e) {
-            afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
-            e.printStackTrace();
-        }
+    public void afficherVendeurMainView(Stage stage) {
+    try {
+        // 1. Chargez séparément chaque fichier FXML
+        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurMainViewContainer.fxml"));
+        BorderPane mainPane = mainLoader.load();
+        
+        // 2. Chargez le header
+        FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
+        ControllerVendeurHeader headerController = new ControllerVendeurHeader();
+        headerLoader.setController(headerController);
+        Pane headerPane = headerLoader.load();
+        
+        // 3. Chargez le contenu central 
+        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurAccueilCenter.fxml"));
+        ControllerVendeurAcceuil centerController = new ControllerVendeurAcceuil(this, vendeurConnexion, utilisateurConnexion);
+        centerLoader.setController(centerController);
+        Pane centerPane = centerLoader.load();
+        
+        // 4. Assemblez les composants
+        mainPane.setTop(headerPane);
+        mainPane.setCenter(centerPane);
+        
+        // 5. Configurez la scène
+        this.root = mainPane;
+        this.scene = new Scene(this.root);
+        stage.setScene(scene);
+        stage.setTitle("Menu Vendeur");
+        stage.show();
+    } catch (Exception e) {
+        afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
+        e.printStackTrace();
     }
+}
+
     public void afficherClientMainView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/accueil.fxml"));
         try {
@@ -155,8 +181,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
-    
-
+ 
 
     // Load la page de connexion par défaut
     @Override
@@ -165,7 +190,6 @@ public class ApplicationLibrairie extends javafx.application.Application {
         try {
             connexion = new ConnexionMySQL();
             connexion.connecter("servinfo-maria", "DBcosme", "cosme", "cosme");
-
             // Partage de la connexion avec les autres classes
             utilisateurConnexion = new UtilisateurBD(connexion);
             vendeurConnexion = new VendeurBD(connexion);
