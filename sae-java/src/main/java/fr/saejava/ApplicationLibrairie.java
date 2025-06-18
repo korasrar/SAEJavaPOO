@@ -1,23 +1,23 @@
 package fr.saejava;
 
+import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
+
+import fr.saejava.control.ControllerClientAccueil;
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
 import fr.saejava.control.ControllerVendeurAcceuil;
 import fr.saejava.control.ControllerVendeurHeader;
+import fr.saejava.model.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.chart.Chart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import fr.saejava.model.*;
-
-import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
 
 public class ApplicationLibrairie extends javafx.application.Application {
 
@@ -151,6 +151,28 @@ public class ApplicationLibrairie extends javafx.application.Application {
     }
 }
 
+    public void afficherClientMainView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/accueil.fxml"));
+        try {
+            ControllerClientAccueil controllerClientAccueil = new ControllerClientAccueil(this, utilisateurConnexion, clientConnexion);
+            System.out.println("Affichage de la vue ClientAccueil");
+            loader.setController(controllerClientAccueil);
+            System.out.println("Affichage de la vue ClientAccueil2");
+            this.root = loader.load();
+            System.out.println("Affichage de la vue ClientAccueil3");
+            this.scene = new Scene(this.root);
+            System.out.println("Affichage de la vue ClientAccueil4");
+            stage.setScene(scene);
+            System.out.println("Affichage de la vue ClientAccueil5");
+            stage.setTitle("Menu Client");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue main du Client : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+ 
 
     // Load la page de connexion par défaut
     @Override
@@ -158,7 +180,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
         estConnecteBD= false;
         try {
             connexion = new ConnexionMySQL();
-            connexion.connecter("servinfo-maria", "DBkerrien", "kerrien", "kerrien");
+            connexion.connecter("servinfo-maria", "DBcosme", "cosme", "cosme");
             // Partage de la connexion avec les autres classes
             utilisateurConnexion = new UtilisateurBD(connexion);
             vendeurConnexion = new VendeurBD(connexion);

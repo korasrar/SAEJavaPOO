@@ -60,7 +60,7 @@ public class ControllerConnexion {
                 app.afficherVendeurMainView(app.getStage());
             } 
             else if (utilisateur instanceof Client) {
-                // Afficher main Client
+                app.afficherClientMainView(app.getStage());
             }
         }
         catch (SQLException e){

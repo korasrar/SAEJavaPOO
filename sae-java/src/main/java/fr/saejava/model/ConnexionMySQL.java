@@ -26,23 +26,6 @@ public class ConnexionMySQL {
             }
         this.connecte=this.mysql!=null;
     }
-
-	/**
-	 * pour connecter tout à la base de données MySQL
-	 * @param nomServeur le nom du serveur 
-	 * @param nomBase le nom de la base 
-	 * @param nomLogin le nom d'utilisateur 
-	 * @param motDePasse le mot de passe 
-	 * @throws SQLException si une erreur SQL se produit lors de la connexion
-	 */
-	//public void connecter(String nomServeur, String nomBase, String nomLogin, String motDePasse) throws SQLException {
-    //    System.out.println("Tentative de connexion...");
-    //        mysql=DriverManager.getConnection(
-    //        "jdbc:mysql://localhost:3306/librairie?allowPublicKeyRetrieval=true&useSSL=false",
-    //        "root","44314431aqw!A");
-    //        System.out.println("Connexion réussie");
-	//	this.connecte=this.mysql!=null;
-	//}
     
 	public void close() throws SQLException {
 		this.connecte=false;

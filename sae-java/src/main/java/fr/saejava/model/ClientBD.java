@@ -1,6 +1,7 @@
 package fr.saejava.model;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -243,5 +244,18 @@ public class ClientBD {
             System.out.println("Erreur lors du reset du panier " + e.getMessage());
         }
     }
+
+     public List<Livre> getMeilleurVente() throws SQLException{
+        List<Livre> listMeilleursVente = new ArrayList<>();
+        Statement st = connexion.createStatement();
+        // requete meilleur vente
+        ResultSet r = st.executeQuery("select isbn, titre, nbpages, datepubli, prix, SUM(qte) nbVente from LIVRE natural join DETAILCOMMANDE natural join COMMANDE group by isbn order by nbVente DESC limit 5");
+        while(r.next()){
+            Livre livre = new Livre(r.getString("isbn"), r.getString("titre"), r.getInt("nbpages"), r.getString("datepubli"), r.getDouble("prix"));
+            listMeilleursVente.add(livre);
+        }
+        return listMeilleursVente;
+    }
+
 }
 
