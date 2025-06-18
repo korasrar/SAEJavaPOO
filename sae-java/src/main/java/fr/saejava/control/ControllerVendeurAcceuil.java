@@ -9,6 +9,7 @@ import fr.saejava.model.Livre;
 import fr.saejava.model.UtilisateurBD;
 import fr.saejava.model.Vendeur;
 import fr.saejava.model.VendeurBD;
+import fr.saejava.model.VendeurSansMagasinException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -54,12 +55,19 @@ public class ControllerVendeurAcceuil {
     }
 
     @FXML
-    public void initialize() {
+    public void initialize() throws VendeurSansMagasinException {
         try{
-            listViewMeilleurVentes.setItems(FXCollections.observableArrayList(vendeurBD.getMeilleurVente(((Vendeur)utilisateurBD.getUtilisateurConnecter()).getMagasin())));
+            this.listViewMeilleurVentes.setItems(FXCollections.observableArrayList(vendeurBD.getMeilleurVente(((Vendeur)utilisateurBD.getUtilisateurConnecter()).getMagasin())));
+            this.labelAccueilVendeurNomVendeur.setText(this.utilisateurBD.getUtilisateurConnecter().getNom());
+            this.labelAccueilVendeuIDVendeur.setText(Integer.toString(this.utilisateurBD.getUtilisateurConnecter().getId()));
+            this.labelAccueilVendeurBienvunueNomVendeur.setText("Bienvenue "+this.utilisateurBD.getUtilisateurConnecter().getNom()+"! Voici vos informations >");
+            //"Bienvenue "+this.utilisateurBD.getUtilisateurConnecter().getNom()+"! Voici vos informations >"
+            this.labelAccueilVendeurNomMagasinVendeur.setText(this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()).toString());
+
         }
         catch(SQLException e){
-            app.afficherErreur("Erreur lors de la récupération des meilleurs vente");
+            //app.afficherErreur("Erreur lors de la récupération des meilleurs vente");
+            app.afficherErreur("Erreur lors de la récupération de certaines données");
         }
     }
 
