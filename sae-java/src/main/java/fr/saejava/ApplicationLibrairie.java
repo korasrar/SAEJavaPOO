@@ -10,6 +10,7 @@ import fr.saejava.control.ControllerClientAccueil;
 import fr.saejava.control.ControllerClientHeader;
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
+import fr.saejava.control.ControllerPanierView;
 import fr.saejava.control.ControllerRechercherLivre;
 import fr.saejava.control.ControllerVendeurAcceuil;
 import fr.saejava.control.ControllerVendeurHeader;
@@ -98,7 +99,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             Stage stageRechercheLivre = new Stage();
             stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
             stageRechercheLivre.initOwner(stage);
-            ControllerRechercherLivre controllerRechercherLivre = new ControllerRechercherLivre(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre);
+            ControllerRechercherLivre controllerRechercherLivre = new ControllerRechercherLivre(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre, stageRechercheLivre);
             loader.setController(controllerRechercherLivre);
             Pane paneRechercheLivre = loader.load();
             Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
@@ -153,6 +154,25 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
+    public void afficherPanierView(Stage stage) {
+    try {
+        Stage stagePanier = new Stage();
+        stagePanier.initModality(Modality.APPLICATION_MODAL);
+        stagePanier.initOwner(stage);
+        FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierView.fxml"));
+        ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion);
+        panierLoader.setController(controllerPanier);
+        Pane panierPane = panierLoader.load();
+        Scene panierScene = new Scene(panierPane);
+        stagePanier.setScene(panierScene);
+        stagePanier.setTitle("Mon Panier");
+        stagePanier.showAndWait();
+    } catch (Exception e) {
+        afficherErreur("Erreur lors du chargement de la vue du panier : " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
     // --------------- Vue Utilisateur Main --------------- //
 
     public void afficherClientMainView(Stage stage) {
@@ -161,7 +181,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             BorderPane mainPane = mainLoader.load();
             
             FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/ClientHeaderView.fxml"));
-            ControllerClientHeader headerController = new ControllerClientHeader(this, clientConnexion);
+            ControllerClientHeader headerController = new ControllerClientHeader(this, clientConnexion, utilisateurConnexion);
             headerLoader.setController(headerController);
             Pane headerPane = headerLoader.load();
 

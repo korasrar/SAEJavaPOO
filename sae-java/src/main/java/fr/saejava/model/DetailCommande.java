@@ -70,11 +70,11 @@ public class DetailCommande {
         if(obj==this){return true;}
         if(!(obj instanceof DetailCommande)){return false;}
         DetailCommande detailCommande=(DetailCommande) obj;
-        return this.numLig==detailCommande.getNumLig() && this.livre.equals(detailCommande.getLivre()) && this.prixVente==detailCommande.getPrixVente() && this.qte==detailCommande.getQte();
+        return this.numLig==detailCommande.getNumLig() && this.livre.equals(detailCommande.getLivre()) && this.prixVente==detailCommande.getPrixVente();
     }
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(numLig) + livre.hashCode() + Double.hashCode(prixVente) + Integer.hashCode(qte);
+        return Integer.hashCode(numLig) + livre.hashCode() + Double.hashCode(prixVente);
     }
 }
