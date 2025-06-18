@@ -53,9 +53,7 @@ public class ControllerClientAccueil{
     @FXML
     public void ajouterPanier(MouseEvent event) {
         try {
-            
-           
-            
+    
         } catch (Exception e) {
           System.out.println("Erreur lors de l'ajout au panier : " + e.getMessage());
         }

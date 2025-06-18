@@ -89,7 +89,7 @@
       </TextArea>
       <ImageView fitHeight="359.0" fitWidth="248.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1">
          <image>
-            <Image url="@../../Téléchargements/cover.jpg" />
+            <Image url="@../img/cover.jpg" />
          </image>
          <GridPane.margin>
             <Insets left="120.0" top="40.0" />

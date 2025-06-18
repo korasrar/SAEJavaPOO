@@ -1,7 +1,9 @@
 package fr.saejava.control;
 
+
 import fr.saejava.ApplicationLibrairie;
 import fr.saejava.model.ClientBD;
+import fr.saejava.model.UtilisateurBD;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -26,14 +28,16 @@ public class ControllerClientHeader {
 
     private ApplicationLibrairie app;
     private ClientBD clientBD;
+    private UtilisateurBD utilisateurBD;
 
     public ControllerClientHeader(){
         // Default Constructor
     }
 
-    public ControllerClientHeader(ApplicationLibrairie app, ClientBD clientBD){
+    public ControllerClientHeader(ApplicationLibrairie app, ClientBD clientBD, UtilisateurBD utilisateurBD){
         this.app=app;
         this.clientBD=clientBD;
+        this.utilisateurBD=utilisateurBD;
     }
 
     @FXML
@@ -50,10 +54,14 @@ public class ControllerClientHeader {
 
     @FXML
     void afficherProfil(MouseEvent event) {
-
+        app.afficherClientProfil(app.getStage());
     }
 
-    
-
+    @FXML
+    void initialize() {
+       clientUsername.setText(utilisateurBD.getUtilisateurConnecter().getPrenom());
+       this.logoLibrairieHome.setOnMouseClicked(this::retourAcceuil);
+       this.logoUserProfil.setOnMouseClicked(this::afficherProfil);
+       this.clientSearchBar.setOnKeyPressed(this::startRecherche);
+    }
 }
-

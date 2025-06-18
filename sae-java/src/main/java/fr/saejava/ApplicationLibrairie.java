@@ -6,24 +6,8 @@ import java.sql.SQLTimeoutException;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 
-import fr.saejava.control.ControllerClientAccueil;
-import fr.saejava.control.ControllerClientHeader;
-import fr.saejava.control.ControllerConnexion;
-import fr.saejava.control.ControllerInscription;
-import fr.saejava.control.ControllerRechercherLivre;
-import fr.saejava.control.ControllerVendeurAcceuil;
-import fr.saejava.control.ControllerVendeurHeader;
-import fr.saejava.model.AdminBD;
-import fr.saejava.model.ClientBD;
-import fr.saejava.model.Commande;
-import fr.saejava.model.CommandeBD;
-import fr.saejava.model.ConnexionMySQL;
-import fr.saejava.model.Livre;
-import fr.saejava.model.LivreBD;
-import fr.saejava.model.MagasinBD;
-import fr.saejava.model.Utilisateur;
-import fr.saejava.model.UtilisateurBD;
-import fr.saejava.model.VendeurBD;
+import fr.saejava.control.*;
+import fr.saejava.model.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -161,7 +145,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             BorderPane mainPane = mainLoader.load();
             
             FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/ClientHeaderView.fxml"));
-            ControllerClientHeader headerController = new ControllerClientHeader(this, clientConnexion);
+            ControllerClientHeader headerController = new ControllerClientHeader(this, clientConnexion, utilisateurConnexion);
             headerLoader.setController(headerController);
             Pane headerPane = headerLoader.load();
 
@@ -212,6 +196,24 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
+    public void afficherClientProfil(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/ClientProfil.fxml"));
+        try {
+            Stage stageClientProfil = new Stage();
+            stageClientProfil.initModality(Modality.APPLICATION_MODAL);
+            stageClientProfil.initOwner(stage);
+            ControllerClientProfil controllerClientProfil = new ControllerClientProfil(this, utilisateurConnexion, clientConnexion);
+            loader.setController(controllerClientProfil);
+            Pane paneClientProfil = loader.load();
+            Scene sceneClientProfil = new Scene(paneClientProfil);
+            stageClientProfil.setScene(sceneClientProfil);
+            stageClientProfil.setTitle("Profil Client");
+            stageClientProfil.showAndWait();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue de profil client : " + e.getMessage());
+        }
+    }
+
 
     // Load la page de connexion par défaut
     @Override
@@ -219,7 +221,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
         estConnecteBD= false;
         try {
             connexion = new ConnexionMySQL();
-            connexion.connecter("servinfo-maria", "DBcosme", "", "");
+            connexion.connecter("servinfo-maria", "DBcosme", "cosme", "cosme");
 
             // Partage de la connexion avec les autres classes
             utilisateurConnexion = new UtilisateurBD(connexion);
