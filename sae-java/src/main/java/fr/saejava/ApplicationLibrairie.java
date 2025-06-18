@@ -1,5 +1,6 @@
 package fr.saejava;
 
+import fr.saejava.control.ControllerClientHeader;
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
 import fr.saejava.control.ControllerVendeurAcceuil;
@@ -128,6 +129,20 @@ public class ApplicationLibrairie extends javafx.application.Application {
             stage.setScene(scene);
             System.out.println("Affichage de la vue VendeurAccueilCenter5");
             stage.setTitle("Menu Vendeur");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void afficherClientMainView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/ClientAcceuilView.fxml"));
+        try {
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Menu Client");
             stage.show();
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
