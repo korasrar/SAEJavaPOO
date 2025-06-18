@@ -224,7 +224,7 @@ public class ClientBD {
                 boolean stockTrouve = false;
                 
                 for (Magasin autreMagasin : magasinConnexion.chargerMagasin()) {
-                    if (autreMagasin.getId() != magasin.getId()) {
+                    if (autreMagasin.getId() != panier.getMagasin().getId()) {
                         int stockAutreMagasin = magasinConnexion.getQuantiteLivre(livre, autreMagasin);
                         
                         if (stockAutreMagasin >= detail.getQte()) {
