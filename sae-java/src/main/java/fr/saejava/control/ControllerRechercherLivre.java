@@ -81,7 +81,6 @@ public class ControllerRechercherLivre {
     @FXML
     void selectionnerLivre(MouseEvent event) {
         livreSelectionner = listViewResultatRecherche.getSelectionModel().getSelectedItem();
-
     }
 
 }

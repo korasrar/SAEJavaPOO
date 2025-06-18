@@ -21,6 +21,9 @@ public class ControllerClientHeader {
     @FXML
     private ImageView logoLibrairieHome;
 
+    @FXML
+    private ImageView logoUserProfil;
+
     private ApplicationLibrairie app;
     private ClientBD clientBD;
 

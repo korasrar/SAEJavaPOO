@@ -17,16 +17,18 @@ import javafx.scene.control.Label;
 public class ControllerClientAccueil{
 
     @FXML
-    private Button idAjouterPanier;
-    
+    private Button buttonAjouterPanier;
+
     @FXML
-    private ListView<Livre> listViewMeilleurVentes2;
+    private ListView<Livre> listViewMeiileurVentes;
 
     private ApplicationLibrairie app;
     private UtilisateurBD utilisateurBD;
     private ClientBD clientBD;
 
-    public ControllerClientAccueil (){}
+    public ControllerClientAccueil (){
+        // Default Constructor
+    }
 
     public ControllerClientAccueil(ApplicationLibrairie app, UtilisateurBD utilisateurBD, ClientBD clientBD){
         this.app = app;
@@ -38,7 +40,7 @@ public class ControllerClientAccueil{
     @FXML
     public void initialize() {
         try{
-             listViewMeilleurVentes2.setItems(FXCollections.observableArrayList(clientBD.getMeilleurVente()));
+            listViewMeiileurVentes.setItems(FXCollections.observableArrayList(clientBD.getMeilleurVente()));
 
         }
         catch(SQLException e){
@@ -49,7 +51,7 @@ public class ControllerClientAccueil{
   
     
     @FXML
-    private void ajouterPanier(MouseEvent event) {
+    public void ajouterPanier(MouseEvent event) {
         try {
             
            
@@ -58,30 +60,6 @@ public class ControllerClientAccueil{
           System.out.println("Erreur lors de l'ajout au panier : " + e.getMessage());
         }
     }
-    
-    /**
-     * Ajoute l'article recommandé au panier
-     */
-    private void ajouterArticleAuPanier() {
-        System.out.println("Article ajouté au panier");
-    }
 
     
-    private void configurerBoutonAjout() {
-        if (idAjouterPanier != null) {
-            idAjouterPanier.setDisable(false);
-        }
-    }
-    
-    public void naviguerVersVitrine() {
-        // 
-    }
-    
-    public void naviguerVersPromos() {
-        // 
-    }
-    
-    public void naviguerVersExclusifs() {
-        //
-    }
 }
