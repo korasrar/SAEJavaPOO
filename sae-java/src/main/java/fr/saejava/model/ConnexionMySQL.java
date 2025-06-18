@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ConnexionMySQL {
-
-	private Connection mysql=null;
+    // Connection avec JDBC 
+    private Connection mysql=null;
 	private boolean connecte=false;
 
 	public ConnexionMySQL() throws ClassNotFoundException{
@@ -25,10 +25,6 @@ public class ConnexionMySQL {
                 ex.getErrorCode());
             }
         this.connecte=this.mysql!=null;
-    }
-
-    public ConnexionMySQL() throws ClassNotFoundException{
-        Class.forName("com.mysql.cj.jdbc.Driver");
     }
     
 	public void close() throws SQLException {
