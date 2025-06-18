@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -40,7 +40,18 @@
             <artifactId>pdfbox</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>23.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>23.0.2</version>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
@@ -51,7 +62,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.saejava.ApplicationTerminal</mainClass>
+                            <mainClass>fr.saejava.ApplicationLibrairie</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -67,6 +78,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>fr.saejava.ApplicationLibrairie</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
