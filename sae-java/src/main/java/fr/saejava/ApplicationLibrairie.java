@@ -3,8 +3,13 @@ package fr.saejava;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 
+import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
+
+import fr.saejava.control.ControllerClientHeader;
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerInscription;
+import fr.saejava.control.ControllerRechercherLivre;
 import fr.saejava.control.ControllerVendeurAcceuil;
 import fr.saejava.model.AdminBD;
 import fr.saejava.model.ClientBD;
@@ -19,10 +24,12 @@ import fr.saejava.model.UtilisateurBD;
 import fr.saejava.model.VendeurBD;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ApplicationLibrairie extends javafx.application.Application {
@@ -61,8 +68,8 @@ public class ApplicationLibrairie extends javafx.application.Application {
     }
 
     /**
-     * Permet d'afficher une alerte d'information
-     * @param message le message d'information à afficher
+     * Permet d'afficher une alerte warning
+     * @param message le message de warning à afficher
      */
     public void afficherWarning(String message) {
         Alert warning = new Alert(AlertType.WARNING);
@@ -71,6 +78,10 @@ public class ApplicationLibrairie extends javafx.application.Application {
         warning.showAndWait();
     }
 
+    /**
+     * Permet d'afficher une alerte d'information
+     * @param message le message d'information à afficher
+     */
     public void afficherInformation(String message) {
         Alert warning = new Alert(AlertType.INFORMATION);
         warning.setTitle("Information");
@@ -78,20 +89,21 @@ public class ApplicationLibrairie extends javafx.application.Application {
         warning.showAndWait();
     }
 
-
-
-    public void afficherInscriptionView(Stage stage){
-        loader = new FXMLLoader(getClass().getResource("/view/InscriptionView.fxml"));
+    public void afficherRechercheLivreView(Stage stage, String titreLivre){
+        loader = new FXMLLoader(getClass().getResource("/view/RechercheLivreView.fxml"));
         try {
-            ControllerInscription controllerInscription = new ControllerInscription(this, utilisateurConnexion, clientConnexion);
-            loader.setController(controllerInscription);
-            this.root = loader.load();
-            this.scene = new Scene(this.root);
-            stage.setScene(scene);
-            stage.setTitle("Inscription");
-            stage.show();
+            Stage stageRechercheLivre = new Stage();
+            stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
+            stageRechercheLivre.initOwner(stage);
+            ControllerRechercherLivre controllerRechercherLivre = new ControllerRechercherLivre(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre);
+            loader.setController(controllerRechercherLivre);
+            Pane paneRechercheLivre = loader.load();
+            Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
+            stageRechercheLivre.setScene(scene);
+            stageRechercheLivre.setTitle("Résultat recherche Livre");
+            stageRechercheLivre.showAndWait();
         } catch (Exception e) {
-            afficherErreur("Erreur lors du chargement de la vue pour s'inscrire : " + e.getMessage());
+            afficherErreur("Erreur lors du chargement de la vue de recherche de livre : " + e.getMessage());
         }
     }
 
@@ -123,6 +135,23 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
+    public void afficherInscriptionView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/InscriptionView.fxml"));
+        try {
+            ControllerInscription controllerInscription = new ControllerInscription(this, utilisateurConnexion, clientConnexion);
+            loader.setController(controllerInscription);
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Inscription");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue pour s'inscrire : " + e.getMessage());
+        }
+    }
+
+    // --------------- Vue Utilisateur Main --------------- //
+
     public void afficherVendeurMainView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/VendeurAccueilCenter.fxml"));
         try {
@@ -137,6 +166,20 @@ public class ApplicationLibrairie extends javafx.application.Application {
             stage.setScene(scene);
             System.out.println("Affichage de la vue VendeurAccueilCenter5");
             stage.setTitle("Menu Vendeur");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void afficherClientMainView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/ClientAcceuilView.fxml"));
+        try {
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Menu Client");
             stage.show();
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());

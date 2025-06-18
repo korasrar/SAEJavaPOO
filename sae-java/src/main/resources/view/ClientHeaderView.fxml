@@ -10,7 +10,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerRechercherLivre">
    <children>
-      <ImageView fitHeight="75.0" fitWidth="182.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="logoLibrairieHome" fitHeight="75.0" fitWidth="182.0" onMouseClicked="#retourAcceuil" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/logo.png" />
          </image>
@@ -25,7 +25,7 @@
       </TextField>
       <VBox prefHeight="97.0" prefWidth="141.0">
          <children>
-            <ImageView fitHeight="45.0" fitWidth="142.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="logoUserProfil" fitHeight="45.0" fitWidth="142.0" onMouseClicked="#afficherProfil" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/userIcon.png" />
                </image>
