@@ -160,7 +160,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
         stagePanier.initModality(Modality.APPLICATION_MODAL);
         stagePanier.initOwner(stage);
         FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierView.fxml"));
-        ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion);
+        ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion, magasinConnexion);
         panierLoader.setController(controllerPanier);
         Pane panierPane = panierLoader.load();
         Scene panierScene = new Scene(panierPane);

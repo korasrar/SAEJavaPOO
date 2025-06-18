@@ -173,7 +173,8 @@ public class ClientBD {
      * @param modeLivraison le mode de livraison choisi par le client
      * @throws SQLException si une erreur SQL se produit
      */
-    public void finaliseCommande(Client client, ModeLivraison modeLivraison, Commande panier, Magasin magasin) throws SQLException{
+    public void finaliseCommande(Client client, ModeLivraison modeLivraison, Commande panier, Magasin magasin) throws SQLException, LivrePasDansStockMagasinException {
+        VendeurBD vendeurConnexion = new VendeurBD(connexion);
         MagasinBD magasinConnexion = new MagasinBD(connexion);
         CommandeBD commandeConnexion = new CommandeBD(connexion);
         panier.setModeLivraison(modeLivraison);
@@ -186,6 +187,7 @@ public class ClientBD {
         else{
             throw new SQLException("Mode de livraison inconnu");
         }
+        
         panier.setNumcom(commandeConnexion.getDerniereIdCommande()+1);
         String sqlCommande = "INSERT INTO COMMANDE(numcom, datecom, enligne, livraison, idcli, idmag) VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement pstCommande = connexion.prepareStatement(sqlCommande);
@@ -205,28 +207,60 @@ public class ClientBD {
 
         int numlig = 1;
         for(DetailCommande detail : panier.contenue){
+
+            Livre livre = detail.getLivre();
+            int quantiteRequise = detail.getQte();
+            Magasin magasinLivraison = panier.getMagasin();
+
             pstDetail.setInt(1, panier.getNumcom());
             pstDetail.setInt(2, numlig);
             pstDetail.setString(3, detail.getLivre().getIsbn());
             pstDetail.setInt(4, detail.getQte());
             pstDetail.setDouble(5, detail.getLivre().getPrix());
             pstDetail.executeUpdate();
-            if(magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin())==0){
-                for(Magasin mag:magasinConnexion.chargerMagasin()){
-                    if(magasinConnexion.getQuantiteLivre(detail.getLivre(),magasin)>detail.getQte()){
-                        magasinConnexion.ajoutStock(magasin,detail.getLivre(),detail.getQte());
+
+            int stockDisponible = magasinConnexion.getQuantiteLivre(livre, panier.getMagasin());
+            if (stockDisponible == 0) {
+                boolean stockTrouve = false;
+                
+                for (Magasin autreMagasin : magasinConnexion.chargerMagasin()) {
+                    if (autreMagasin.getId() != magasin.getId()) {
+                        int stockAutreMagasin = magasinConnexion.getQuantiteLivre(livre, autreMagasin);
+                        
+                        if (stockAutreMagasin >= detail.getQte()) {
+                            vendeurConnexion.transferer(livre, magasin, autreMagasin, quantiteRequise);
+                            stockTrouve = true;
+                            break;
+                        }
                     }
                 }
-            }
-            else if(magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin())<detail.getQte()){
-                int qteRestante=detail.getQte()-magasinConnexion.getQuantiteLivre(detail.getLivre(),panier.getMagasin());
-                magasinConnexion.ajoutStock(panier.getMagasin(),detail.getLivre(),detail.getQte()-qteRestante);
-                for(Magasin mag:magasinConnexion.chargerMagasin()){
-                    if(magasinConnexion.getQuantiteLivre(detail.getLivre(),magasin)>qteRestante){
-                        magasinConnexion.ajoutStock(magasin,detail.getLivre(),qteRestante);
+                
+                if (!stockTrouve) {
+                    throw new SQLException("Stock insuffisant pour le livre " + livre.getTitre());
+                }
+            } 
+            else if (stockDisponible < quantiteRequise) {
+                int quantiteManquante = quantiteRequise - stockDisponible;
+                boolean stockTrouve = false;
+                
+                vendeurConnexion.transferer(livre, null, magasinLivraison, stockDisponible);
+                
+                for (Magasin autreMagasin : magasinConnexion.chargerMagasin()) {
+                    if (autreMagasin.getId() != magasinLivraison.getId()) {
+                        int stockAutreMagasin = magasinConnexion.getQuantiteLivre(livre, autreMagasin);
+                        
+                        if (stockAutreMagasin >= quantiteManquante) {
+                            vendeurConnexion.transferer(livre, null, autreMagasin, quantiteManquante);
+                            stockTrouve = true;
+                            break;
+                        }
                     }
                 }
-            }
+                
+                if (!stockTrouve) {
+                    throw new SQLException("Stock insuffisant pour le livre " + livre.getTitre());
+                }
+            } 
             else{
                 magasinConnexion.ajoutStock(panier.getMagasin(),detail.getLivre(),detail.getQte()*-1);
             }
@@ -245,7 +279,7 @@ public class ClientBD {
         }
     }
 
-     public List<Livre> getMeilleurVente() throws SQLException{
+    public List<Livre> getMeilleurVente() throws SQLException{
         List<Livre> listMeilleursVente = new ArrayList<>();
         Statement st = connexion.createStatement();
         // requete meilleur vente

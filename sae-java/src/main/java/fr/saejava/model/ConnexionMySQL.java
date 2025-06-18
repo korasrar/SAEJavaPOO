@@ -26,7 +26,7 @@ public class ConnexionMySQL {
     public void connecter(String nomServeur, String nomBase, String nomLogin, String motDePasse) throws SQLException {
         System.out.println("Tentative de connection...");
         try {
-            mysql=DriverManager.getConnection("jdbc:mariadb://"+nomServeur+":3306/"+nomBase,nomLogin,motDePasse);
+            mysql=DriverManager.getConnection("jdbc:mariadb://localhost:3306/librairie","root","44314431aqw!A");
             System.out.println("Connection réussi");
             } catch (SQLException ex){
                 System.out.println("Voici le message d'erreur : "+ex.getMessage()+
