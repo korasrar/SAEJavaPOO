@@ -19,7 +19,7 @@ public class ControllerVendeurHeader {
     private Button buttonTransfererLivre;
 
     @FXML
-    private Button buttonVerifierDispo;
+    private Button buttonCommander;
 
     @FXML
     private ImageView imagesViewRetourAccueil;
@@ -43,8 +43,8 @@ public class ControllerVendeurHeader {
     }
 
     @FXML
-    public void verifierDispo(MouseEvent event) {
-        this.buttonVerifierDispo = (Button) (event.getSource());
+    public void commander(MouseEvent event) {
+        this.buttonCommander = (Button) (event.getSource());
         // A implementer
     }
 
