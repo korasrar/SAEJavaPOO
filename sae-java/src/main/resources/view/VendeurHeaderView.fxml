@@ -10,7 +10,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <ImageView fitHeight="75.0" fitWidth="182.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="imagesViewRetourAccueil" fitHeight="75.0" fitWidth="182.0" onMouseClicked="#retourAccueil" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../img/logo.png" />
             </image>
@@ -22,7 +22,7 @@
          <children>
             <Button fx:id="buttonTransfererLivre" mnemonicParsing="false" onMouseClicked="#tranfererLivre" prefWidth="120.0" text="Transférer Livre" textAlignment="RIGHT" />
             <Button fx:id="buttonGererStock" mnemonicParsing="false" onMouseClicked="#gererStock" prefWidth="120.0" text="Gérer Stocks" />
-            <Button fx:id="buttonVerifierDispo" mnemonicParsing="false" onMouseClicked="#verifierDispo" prefHeight="26.0" prefWidth="134.0" text="Vérifier les dispos" />
+            <Button fx:id="buttonVerifierDispo" mnemonicParsing="false" onMouseClicked="#verifierDispo" prefHeight="26.0" prefWidth="134.0" text="Vérifier les Dispos" />
          </children>
          <opaqueInsets>
             <Insets />
