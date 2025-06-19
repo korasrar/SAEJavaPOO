@@ -213,11 +213,6 @@ public class ApplicationLibrairie extends javafx.application.Application {
             
             this.root = mainPane;
             this.scene = new Scene(this.root);
-            System.out.println("Affichage de la vue Admin4");
-            stage.setScene(scene);
-            System.out.println("Affichage de la vue Admin5");
-            controllerAdmin.chargeComboMagasin();
-            controllerAdmin.initComboTypeChart();
             stage.setTitle("Menu Vendeur");
             stage.show();
         } catch (Exception e) {
