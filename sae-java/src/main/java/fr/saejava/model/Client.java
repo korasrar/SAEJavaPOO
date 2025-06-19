@@ -141,7 +141,11 @@ public class Client extends Utilisateur{
         panier = new Commande(0,date,this,null, null);
     }
 
-    void ajouterLivre(Livre livre, int quantite) {
+    public void ajouterLivre(Livre livre, int quantite) {
         panier.ajouterDetailCommande(new DetailCommande(quantite, livre, panier));
+    }
+
+    public Commande getPanier() {
+        return panier;
     }
 }

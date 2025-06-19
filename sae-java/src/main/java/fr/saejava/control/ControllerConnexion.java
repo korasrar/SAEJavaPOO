@@ -40,15 +40,15 @@ public class ControllerConnexion {
     }
 
     @FXML
+    public void initialize(){
+        buttonConfirmer.disableProperty().bind(textFieldIdentifiant.textProperty().isEmpty()
+            .or(textFieldMotDePasse.textProperty().isEmpty()));
+    }
+
+    @FXML
     public void connexion(MouseEvent event) {
         String identifiant = textFieldIdentifiant.getText();
         String motDePasse = textFieldMotDePasse.getText();
-
-
-        if (identifiant.isEmpty() || motDePasse.isEmpty()) {
-            app.afficherErreur("Veuillez remplir tous les champs.");
-            return;
-        }
 
         try {
             Utilisateur utilisateur = utilisateurBD.getUtilisateur(identifiant, motDePasse);
@@ -58,9 +58,9 @@ public class ControllerConnexion {
             } 
             else if (utilisateur instanceof Vendeur) {
                 app.afficherVendeurMainView(app.getStage());
-            } 
+            }
             else if (utilisateur instanceof Client) {
-                // Afficher main Client
+                app.afficherClientMainView(app.getStage());
             }
         }
         catch (SQLException e){

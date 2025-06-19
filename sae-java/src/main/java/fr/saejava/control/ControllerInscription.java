@@ -42,18 +42,8 @@ public class ControllerInscription {
     private ClientBD clientBD;
     private ApplicationLibrairie app;
 
-    // Règle pour le textField de codePostal
-    @FXML
-    public void initialize() {
-        limiterTextField(textFieldCodePostal,5);
-    }
 
-    private void limiterTextField(TextField textField, int tailleMax) {
-        textField.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue.length() > tailleMax) {
-                textField.setText(oldValue);
-            }});
-    }
+   
 
     public ControllerInscription() {
         // Default constructor
@@ -63,6 +53,26 @@ public class ControllerInscription {
         this.app = app;
         this.utilisateurBD = utilisateurBD;
         this.clientBD = clientBD;
+    }
+
+        // Règle pour le textField de codePostal
+    @FXML
+    public void initialize() {
+        limiterTextField(textFieldCodePostal,5);
+        buttonConfirmer.disableProperty().bind(textFieldAdresse.textProperty().isEmpty()
+            .or(textFieldCodePostal.textProperty().isEmpty())
+            .or(textFieldIdentifiant.textProperty().isEmpty())
+            .or(textFieldMotDePasse.textProperty().isEmpty())
+            .or(textFieldNom.textProperty().isEmpty())
+            .or(textFieldPrenom.textProperty().isEmpty())
+            .or(textFieldVIlle.textProperty().isEmpty()));
+    }
+
+    private void limiterTextField(TextField textField, int tailleMax) {
+        textField.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.length() > tailleMax) {
+                textField.setText(oldValue);
+            }});
     }
 
     @FXML
@@ -79,16 +89,10 @@ public class ControllerInscription {
             int codePostalInt = 0;
             codePostalInt = Integer.parseInt(codePostal);
 
-            if (identifiant.isEmpty() || motDePasse.isEmpty() || nom.isEmpty() || prenom.isEmpty() ||
-                adresse.isEmpty() || codePostal.isEmpty() || ville.isEmpty()) {
-                app.afficherErreur("Veuillez remplir tous les champs.");
-            }
-            else{
-                int idCLient = (utilisateurBD.getDernierID()+1);
-                // int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse
-                clientBD.creeCompteClient(idCLient, adresse, ville, codePostalInt, nom, prenom, identifiant, motDePasse);
-                app.afficherInformation("Inscription réussie !");
-            }
+            int idCLient = (utilisateurBD.getDernierID()+1);
+            // int num, String adresse, String ville, int codePostal, String nom, String prenom, String username, String motDePasse
+            clientBD.creeCompteClient(idCLient, adresse, ville, codePostalInt, nom, prenom, identifiant, motDePasse);
+            app.afficherInformation("Inscription réussie !");
         }
         catch (NumberFormatException e){
             app.afficherErreur("Le code postal doit être un nombre.");
