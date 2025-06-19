@@ -1,6 +1,10 @@
 package fr.saejava.control;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.itextpdf.text.List;
 
 import fr.saejava.ApplicationLibrairie;
 import fr.saejava.model.Livre;
@@ -182,6 +186,13 @@ public class ControllerGererStock {
             }
         }
 
+        public boolean isbnIsInt(String unISBN){
+            boolean res = true;
+            String valeurs = "1234567890";
+            return res;
+
+        }
+
         @FXML
         public void enregistrer(MouseEvent event) throws NumberFormatException, SQLException, VendeurSansMagasinException, ISBNInvalideException {
             this.buttonGererStockEnregistrer = (Button) (event.getSource());
@@ -191,6 +202,9 @@ public class ControllerGererStock {
                     //this.buttonGererStockEnregistrer.setDisable(false);
                     if (this.textFieldGererStockISBN.getText().length() != 13){  //si la taille de l'isbn est < que 9782226208095
                         System.out.println("L'ISBN n'est pas assez grand");
+                    }
+                    else if (){
+
                     }
                     else{
                         Livre livre = new Livre(this.textFieldGererStockISBN.getText(), this.textFieldGererStockTitre.getText(), Integer.parseInt(this.textFieldGererStockNBPages.getText()), this.textFieldGererStockDatePubli.getText(), Double.parseDouble(this.textFieldGererStockDatePubli.getText()));
