@@ -1,5 +1,6 @@
 package fr.saejava.model;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,67 +18,118 @@ public class MagasinBD {
         Statement st = connexion.createStatement();
         ResultSet rs = null;
         try {
-            rs = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = '"+magasin.getId()+"'");
+            // livre
+            PreparedStatement pstCheck = connexion.prepareStatement("SELECT qte FROM POSSEDER WHERE isbn = ? AND idmag = ?");
+            pstCheck.setString(1, l.getIsbn());
+            pstCheck.setInt(2, magasin.getId());
+            rs = pstCheck.executeQuery();
             if(rs.next()){
                 int qteExistante = rs.getInt("qte");
                 int nouvelleQte = qteExistante+qte;
                 rs.close();
-                st.executeUpdate("UPDATE POSSEDER SET qte ="+nouvelleQte+" WHERE isbn = "+l.getIsbn()+" AND idmag = "+magasin.getId());
+                PreparedStatement pstUpdate = connexion.prepareStatement("UPDATE POSSEDER SET qte = ? WHERE isbn = ? AND idmag = ?");
+                pstUpdate.setInt(1, nouvelleQte);
+                pstUpdate.setString(2, l.getIsbn());
+                pstUpdate.setInt(3, magasin.getId());
+                pstUpdate.executeUpdate();
             }
             else{
-                rs.close();
-                st.executeUpdate("insert into LIVRE(isbn, titre, nbpages, datepubli, prix) values ('"+l.getIsbn()+"','"+l.getTitre()+"',"+l.getNbPages()+","+l.getDatePubli()+","+l.getPrix()+");");
-                List<Editeur> editeursL = l.getEditeurs();
-                List<Auteur> auteursL = l.getAuteurs();
-                List<Classification> classificationsL = l.getClassifications();
+                PreparedStatement pstLivreExist = connexion.prepareStatement("SELECT isbn FROM LIVRE WHERE isbn = ?");
+                pstLivreExist.setString(1, l.getIsbn());
+                rs = pstLivreExist.executeQuery();
 
-                for(Editeur editeur: editeursL){
-                    rs = st.executeQuery("SELECT idedit FROM EDITEUR WHERE idauteur"+editeur.getIdEdit());
-                    if(rs.next()){
-                        rs.close();
-                        continue;
-                    }
-                    else{
-                        rs.close();
-                        st.executeUpdate("insert into EDITEUR(nomedit,idedit) values ('"+editeur.getNomEdit()+"'',"+editeur.getIdEdit()+");");
-                        st.executeUpdate("insert into EDITER(isbn,idedit) values ('"+l.getIsbn()+"',"+editeur.getIdEdit()+");");
-                        System.out.println("Ajout de l'éditeur "+editeur.getNomEdit());
-                    }
+                if(!rs.next()){
+                    rs.close();
+                    PreparedStatement pstInsertLivre = connexion.prepareStatement("INSERT INTO LIVRE(isbn, titre, nbpages, datepubli, prix) VALUES (?, ?, ?, ?, ?)");
+                    pstInsertLivre.setString(1, l.getIsbn());
+                    pstInsertLivre.setString(2, l.getTitre());
+                    pstInsertLivre.setInt(3, l.getNbPages());
+                    pstInsertLivre.setString(4, l.getDatePubli());
+                    pstInsertLivre.setDouble(5, l.getPrix());
+                    pstInsertLivre.executeUpdate();
                 }
-
-                for(Auteur auteur: auteursL){
-                    rs = st.executeQuery("SELECT idauteur FROM AUTEUR WHERE idedit"+auteur.getIdAuteur());
-                    if(rs.next()){
-                        rs.close();
-                        continue;
-                    }
-                    else{
-                        rs.close();
-                        st.executeUpdate("insert into AUTEUR(idauteur, nomauteur,anneenais,anneedeces) values ('"+auteur.getIdAuteur()+"','"+auteur.getNomAuteur()+"',"+auteur.getAnneeNais()+","+auteur.getAnneeDeces()+");");
-                        st.executeUpdate("insert into ECRIRE(isbn,idauteur) values ()");
-                        System.out.println("Ajout de l'auteur "+auteur.getNomAuteur());
-                    }
+                else{
+                    rs.close();
                 }
-
-                for(Classification classification : classificationsL){
-                    rs = st.executeQuery("SELECT * FROM CLASSIFICAtiON WHERE iddewey"+classification.getIdDewey());
-                    if(rs.next()){
-                        rs.close();
-                        continue;
-                    }
-                    else{
-                        rs.close();
-                        st.executeUpdate("insert into CLASSIFICATION(iddewey, nomclass) values ("+classification+",'"+classification.getNomClass()+"');");
-                        st.executeUpdate("insert into THEMES(isbn,iddewey) values ('"+l.getIsbn()+"',"+classification.getIdDewey()+")");
-                        System.out.println("Ajout de la classification "+ classification.getNomClass());
-                    }
+            
+            rs.close();
+            PreparedStatement pstInsertPosseder = connexion.prepareStatement("INSERT INTO POSSEDER(isbn, idmag, qte) VALUES (?, ?, ?)");
+            pstInsertPosseder.setString(1, l.getIsbn());
+            pstInsertPosseder.setInt(2, magasin.getId());
+            pstInsertPosseder.setInt(3, qte);
+            pstInsertPosseder.executeUpdate();
+            List<Editeur> editeursL = l.getEditeurs();
+            List<Auteur> auteursL = l.getAuteurs();
+            List<Classification> classificationsL = l.getClassifications();
+            // editeur
+            for(Editeur editeur: editeursL){
+                PreparedStatement pstCheckEditeur = connexion.prepareStatement("SELECT idedit FROM EDITEUR WHERE idedit = ?");
+                pstCheckEditeur.setInt(1, editeur.getIdEdit());
+                rs = pstCheckEditeur.executeQuery();
+                if(rs.next()){
+                    rs.close();
+                    continue;
+                }
+                else{
+                    rs.close();
+                    PreparedStatement pstInsertEditeur = connexion.prepareStatement("INSERT INTO EDITEUR(nomedit, idedit) VALUES (?, ?)");
+                    pstInsertEditeur.setString(1, editeur.getNomEdit());
+                    pstInsertEditeur.setInt(2, editeur.getIdEdit());
+                    pstInsertEditeur.executeUpdate();
+                    System.out.println("Ajout de l'éditeur "+editeur.getNomEdit());
+                    PreparedStatement pstInsertEditer = connexion.prepareStatement("INSERT INTO EDITER(isbn, idedit) VALUES (?, ?)");
+                    pstInsertEditer.setString(1, l.getIsbn());
+                    pstInsertEditer.setInt(2, editeur.getIdEdit());
+                    pstInsertEditer.executeUpdate();
                 }
             }
+            // auteur
+            for(Auteur auteur: auteursL){
+                PreparedStatement pstCheckAuteur = connexion.prepareStatement("SELECT idauteur FROM AUTEUR WHERE idauteur = ?");
+                pstCheckAuteur.setInt(1, auteur.getIdAuteur());
+                rs = pstCheckAuteur.executeQuery();
+                if(rs.next()){
+                    rs.close();
+                    continue;
+                }
+                else{
+                    rs.close();
+                    PreparedStatement pstInsertAuteur = connexion.prepareStatement("INSERT INTO AUTEUR(idauteur, nomauteur, anneenais, anneedeces) VALUES (?, ?, ?, ?)");
+                    pstInsertAuteur.setInt(1, auteur.getIdAuteur());
+                    pstInsertAuteur.setString(2, auteur.getNomAuteur());
+                    pstInsertAuteur.setInt(3, auteur.getAnneeNais());
+                    pstInsertAuteur.setInt(4, auteur.getAnneeDeces());
+                    pstInsertAuteur.executeUpdate();
+                    PreparedStatement pstInsertEcrire = connexion.prepareStatement("INSERT INTO ECRIRE(isbn, idauteur) VALUES (?, ?)");
+                    pstInsertEcrire.setString(1, l.getIsbn());
+                    pstInsertEcrire.setInt(2, auteur.getIdAuteur());
+                    pstInsertEcrire.executeUpdate();
+                }
+            }
+            // classification
+            for(Classification classification : classificationsL){
+                PreparedStatement pstCheckClassification = connexion.prepareStatement("SELECT iddewey FROM CLASSIFICATION WHERE iddewey = ?");
+                pstCheckClassification.setInt(1, classification.getIdDewey());
+                rs = pstCheckClassification.executeQuery();
+                if(rs.next()){
+                    rs.close();
+                    continue;
+                }
+                else{
+                    rs.close();
+                    PreparedStatement pstInsertClassification = connexion.prepareStatement("INSERT INTO CLASSIFICATION(iddewey, nomclass) VALUES (?, ?)");
+                    pstInsertClassification.setInt(1, classification.getIdDewey());
+                    pstInsertClassification.setString(2, classification.getNomClass());
+                    pstInsertClassification.executeUpdate();
+                }
+            }
+        }
         } finally {
             if (rs != null) rs.close();
             if (st != null) st.close();
         }
     }
+
 
 
     public List<Magasin> chargerMagasin() throws SQLException {

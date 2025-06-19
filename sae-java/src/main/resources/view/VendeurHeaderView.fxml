@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerVendeurHeader">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <ImageView fitHeight="75.0" fitWidth="182.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fx:id="imagesViewRetourAccueil" fitHeight="75.0" fitWidth="182.0" onMouseClicked="#retourAccueil" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../img/logo.png" />
             </image>
@@ -18,11 +18,11 @@
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </HBox.margin>
         </ImageView>
-      <HBox alignment="BASELINE_CENTER" prefHeight="97.0" prefWidth="739.0" spacing="90.0">
+      <HBox alignment="BASELINE_CENTER" prefHeight="97.0" prefWidth="739.0" spacing="40.0">
          <children>
             <Button fx:id="buttonTransfererLivre" mnemonicParsing="false" onMouseClicked="#tranfererLivre" prefWidth="120.0" text="Transférer Livre" textAlignment="RIGHT" />
             <Button fx:id="buttonGererStock" mnemonicParsing="false" onMouseClicked="#gererStock" prefWidth="120.0" text="Gérer Stocks" />
-            <Button fx:id="buttonVerifierDispo" mnemonicParsing="false" onMouseClicked="#verifierDispo" prefWidth="120.0" text="Vérifier les dispos" />
+            <Button fx:id="buttonVerifierDispo" mnemonicParsing="false" onMouseClicked="#verifierDispo" prefHeight="26.0" prefWidth="134.0" text="Vérifier les Dispos" />
          </children>
          <opaqueInsets>
             <Insets />
@@ -41,12 +41,12 @@
                         <Image url="@../img/userIcon.png" />
                     </image>
                     <VBox.margin>
-                        <Insets left="45.0" top="10.0" />
+                        <Insets left="15.0" right="20.0" top="10.0" />
                     </VBox.margin>
                 </ImageView>
                 <Label fx:id="clientUsername" text="Label">
                     <padding>
-                        <Insets left="55.0" top="10.0" />
+                        <Insets left="20.0" right="20.0" top="10.0" />
                     </padding>
                 </Label>
             </children>

@@ -88,26 +88,19 @@ public class VendeurBD {
                 st.close();
                 throw new LivrePasDansStockMagasinException();
             }
-            if (verifierDispo(magasinRecoit, l)){
-                ResultSet r2 = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinRecoit.getId());
+            if (verifierDispo(magasinEnvoit, l)){
+                r = st.executeQuery("SELECT qte FROM POSSEDER where isbn = '"+l.getIsbn()+"' AND idmag = "+magasinEnvoit.getId());
                 Integer quantiteInit = null;
-                if(r2.next()){
-                    quantiteInit = r2.getInt("qte");
+                if(r.next()){
+                    quantiteInit = r.getInt("qte");
                 }
-                Integer nouvelleQte = quantiteInit + qte;
-                if (r2 != null) r2.close();
-                st.executeUpdate("UPDATE POSSEDER SET qte = " + nouvelleQte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinRecoit.getId());
-            } else {
-                st.executeUpdate("INSERT INTO POSSEDER (isbn, idmag, qte) VALUES ('" + l.getIsbn() + "', " + magasinRecoit.getId() + ", " + qte + ")");
+                Integer nouvelleQte = quantiteInit - qte;
+                if (r != null) r.close();
+                r.close();
+                st.executeUpdate("UPDATE POSSEDER SET qte = " + nouvelleQte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinEnvoit.getId());
+                magasinBD.ajoutStock(magasinRecoit, l, qte);
             }
-            st.executeUpdate("UPDATE POSSEDER SET qte = qte - " + qte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + magasinEnvoit.getId());
-            if (r != null) r.close();
-        } else {
-            if (r != null) r.close();
-            st.close();
-            throw new LivrePasDansStockMagasinException();
         }
-        st.close();
     }
 
     /**
@@ -174,6 +167,22 @@ public class VendeurBD {
             r.close();
             st.close();
             throw new PasStockPourLivreException();
+        }
+    }
+
+    public Integer getQteDispo(Livre l) throws SQLException{
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn");
+        if (r.next()){
+            int qteDispo = r.getInt("qtett");
+            if (r != null) r.close();
+            st.close();
+            return qteDispo;
+        }
+        else {
+            r.close();
+            st.close();
+            return 0;
         }
     }
 
