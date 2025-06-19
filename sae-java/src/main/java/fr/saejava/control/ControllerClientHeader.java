@@ -26,6 +26,9 @@ public class ControllerClientHeader {
     @FXML
     private ImageView logoUserProfil;
 
+    @FXML
+    private ImageView imageViewCart;
+
     private ApplicationLibrairie app;
     private ClientBD clientBD;
     private UtilisateurBD utilisateurBD;
@@ -34,10 +37,16 @@ public class ControllerClientHeader {
         // Default Constructor
     }
 
-    public ControllerClientHeader(ApplicationLibrairie app, ClientBD clientBD, UtilisateurBD utilisateurBD){
+    public ControllerClientHeader(ApplicationLibrairie app, ClientBD clientBD, UtilisateurBD utilisateurBD) {
         this.app=app;
         this.clientBD=clientBD;
         this.utilisateurBD=utilisateurBD;
+        this.utilisateurBD=utilisateurBD;
+    }
+
+    @FXML
+    public void initialize() {
+        clientUsername.setText(utilisateurBD.getUtilisateurConnecter().getPseudo());
     }
 
     @FXML
@@ -54,14 +63,15 @@ public class ControllerClientHeader {
 
     @FXML
     void afficherProfil(MouseEvent event) {
-        app.afficherClientProfil(app.getStage());
+
     }
 
     @FXML
-    void initialize() {
-       clientUsername.setText(utilisateurBD.getUtilisateurConnecter().getPrenom());
-       this.logoLibrairieHome.setOnMouseClicked(this::retourAcceuil);
-       this.logoUserProfil.setOnMouseClicked(this::afficherProfil);
-       this.clientSearchBar.setOnKeyPressed(this::startRecherche);
+    void panier(MouseEvent event) {
+        app.afficherPanierView(app.getStage());
     }
+
+    
+
 }
+

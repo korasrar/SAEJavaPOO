@@ -6,8 +6,26 @@ import java.sql.SQLTimeoutException;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 
-import fr.saejava.control.*;
-import fr.saejava.model.*;
+import fr.saejava.control.ControllerClientAccueil;
+import fr.saejava.control.ControllerClientHeader;
+import fr.saejava.control.ControllerClientProfil;
+import fr.saejava.control.ControllerConnexion;
+import fr.saejava.control.ControllerInscription;
+import fr.saejava.control.ControllerPanierView;
+import fr.saejava.control.ControllerRechercherLivre;
+import fr.saejava.control.ControllerVendeurAcceuil;
+import fr.saejava.control.ControllerVendeurHeader;
+import fr.saejava.model.AdminBD;
+import fr.saejava.model.ClientBD;
+import fr.saejava.model.Commande;
+import fr.saejava.model.CommandeBD;
+import fr.saejava.model.ConnexionMySQL;
+import fr.saejava.model.Livre;
+import fr.saejava.model.LivreBD;
+import fr.saejava.model.MagasinBD;
+import fr.saejava.model.Utilisateur;
+import fr.saejava.model.UtilisateurBD;
+import fr.saejava.model.VendeurBD;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -82,7 +100,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             Stage stageRechercheLivre = new Stage();
             stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
             stageRechercheLivre.initOwner(stage);
-            ControllerRechercherLivre controllerRechercherLivre = new ControllerRechercherLivre(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre);
+            ControllerRechercherLivre controllerRechercherLivre = new ControllerRechercherLivre(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre, stageRechercheLivre);
             loader.setController(controllerRechercherLivre);
             Pane paneRechercheLivre = loader.load();
             Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
@@ -136,6 +154,25 @@ public class ApplicationLibrairie extends javafx.application.Application {
             afficherErreur("Erreur lors du chargement de la vue pour s'inscrire : " + e.getMessage());
         }
     }
+
+    public void afficherPanierView(Stage stage) {
+    try {
+        Stage stagePanier = new Stage();
+        stagePanier.initModality(Modality.APPLICATION_MODAL);
+        stagePanier.initOwner(stage);
+        FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierView.fxml"));
+        ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion);
+        panierLoader.setController(controllerPanier);
+        Pane panierPane = panierLoader.load();
+        Scene panierScene = new Scene(panierPane);
+        stagePanier.setScene(panierScene);
+        stagePanier.setTitle("Mon Panier");
+        stagePanier.showAndWait();
+    } catch (Exception e) {
+        afficherErreur("Erreur lors du chargement de la vue du panier : " + e.getMessage());
+        e.printStackTrace();
+    }
+}
 
     // --------------- Vue Utilisateur Main --------------- //
 
@@ -222,7 +259,6 @@ public class ApplicationLibrairie extends javafx.application.Application {
         try {
             connexion = new ConnexionMySQL();
             connexion.connecter("servinfo-maria", "DBcosme", "cosme", "cosme");
-
             // Partage de la connexion avec les autres classes
             utilisateurConnexion = new UtilisateurBD(connexion);
             vendeurConnexion = new VendeurBD(connexion);

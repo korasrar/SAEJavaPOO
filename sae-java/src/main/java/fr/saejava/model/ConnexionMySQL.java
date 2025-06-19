@@ -34,7 +34,7 @@ public class ConnexionMySQL {
             }
         this.connecte=this.mysql!=null;
     }
-    
+
 	public void close() throws SQLException {
 		this.connecte=false;
 	}

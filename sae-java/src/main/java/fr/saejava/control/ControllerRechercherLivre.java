@@ -16,6 +16,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class ControllerRechercherLivre {
 
@@ -36,18 +37,20 @@ public class ControllerRechercherLivre {
     private UtilisateurBD utilisateurBD;
     private String livreARechercher;
     private List<Livre> listeLivreResultat;
+    private Stage stage;
 
     public ControllerRechercherLivre(){
         // Default Constructor
     }
 
-    public ControllerRechercherLivre(ApplicationLibrairie app, ClientBD clientBD, LivreBD livreBD, VendeurBD vendeurBD,UtilisateurBD utilisateurBD, String livreARechercher){
+    public ControllerRechercherLivre(ApplicationLibrairie app, ClientBD clientBD, LivreBD livreBD, VendeurBD vendeurBD,UtilisateurBD utilisateurBD, String livreARechercher, Stage stage){
         this.app=app;
         this.clientBD=clientBD;
         this.livreBD=livreBD;
         this.vendeurBD=vendeurBD;
         this.utilisateurBD=utilisateurBD;
         this.livreARechercher=livreARechercher;
+        this.stage = stage;
     }
 
     @FXML
@@ -75,7 +78,7 @@ public class ControllerRechercherLivre {
 
     @FXML
     void retour(MouseEvent event) {
-        app.afficherClientMainView(app.getStage());
+        stage.close();
     }
 
     @FXML
