@@ -55,8 +55,11 @@
                   </ImageView>
                   <Label fx:id="adminUsername" text="Label">
                      <padding>
-                        <Insets left="55.0" top="10.0" />
+                        <Insets left="50.0" top="10.0" />
                      </padding>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
                   </Label>
                </children>
             </VBox>

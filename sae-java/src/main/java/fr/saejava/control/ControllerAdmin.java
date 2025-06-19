@@ -124,6 +124,7 @@ public class ControllerAdmin {
     @FXML
     public void initialize() {
         buttonMenueVendeur.setDisable(true);
+        adminUsername.setText(utilisateurBD.getUtilisateurConnecter().getPseudo());
     }
 
     @FXML
