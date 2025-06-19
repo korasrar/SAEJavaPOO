@@ -72,14 +72,15 @@ public class ControllerClientAccueil{
     
     @FXML
     public void ajouterPanier(MouseEvent event) {
-            ((Client) utilisateurBD.getUtilisateurConnecter()).ajouterLivre(livreSelectionner, comboBoxQuantite.getSelectionModel().getSelectedItem());
+        ((Client) utilisateurBD.getUtilisateurConnecter()).ajouterLivre(livreSelectionner, comboBoxQuantite.getSelectionModel().getSelectedItem());
+        app.afficherInformation("Livre ajouté au panier avec succès !");
     }
 
     @FXML
     void selectionnerLivre(MouseEvent event) {
-        Livre livreSelectionner = listViewRecommande.getSelectionModel().getSelectedItem();
+        livreSelectionner = listViewRecommande.getSelectionModel().getSelectedItem();
         comboBoxQuantite.getItems().clear();
-       Integer quantiteMax = 0;
+        Integer quantiteMax = 0;
         if (livreSelectionner != null) {
             try{
                 quantiteMax = vendeurBD.getQteDispo(livreSelectionner);
