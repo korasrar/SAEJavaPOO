@@ -132,7 +132,7 @@ public class ControllerGererStock {
             this.textFieldGererStockISBN.setPromptText("ISBN (13)");
             this.textFieldGererStockTitre.setPromptText("Titre");
             this.textFieldGererStockNBPages.setPromptText("NBPages");
-            this.textFieldGererStockDatePubli.setPromptText("DatePubli");
+            this.textFieldGererStockDatePubli.setPromptText("DatePubli (Année)");
             this.textFieldGererStockPrix.setPromptText("Prix");
             this.textFieldGererStockQuantite.setPromptText("Quantité");
         }
@@ -187,10 +187,12 @@ public class ControllerGererStock {
         }
 
         public boolean isbnIsInt(String unISBN){
-            boolean res = true;
-            String valeurs = "1234567890";
-            return res;
-
+            for (int i = 0; i < unISBN.length(); i++) {
+                if (!Character.isDigit(unISBN.charAt(i))) {
+                    return false; 
+                }
+            }
+            return true;
         }
 
         @FXML
@@ -203,11 +205,11 @@ public class ControllerGererStock {
                     if (this.textFieldGererStockISBN.getText().length() != 13){  //si la taille de l'isbn est < que 9782226208095
                         System.out.println("L'ISBN n'est pas assez grand");
                     }
-                    else if (){
-
+                    else if (this.isbnIsInt(this.textFieldGererStockISBN.getText()) == false){
+                        System.out.println("L'ISBN n'est pas composé uniquement de chiffres");
                     }
                     else{
-                        Livre livre = new Livre(this.textFieldGererStockISBN.getText(), this.textFieldGererStockTitre.getText(), Integer.parseInt(this.textFieldGererStockNBPages.getText()), this.textFieldGererStockDatePubli.getText(), Double.parseDouble(this.textFieldGererStockDatePubli.getText()));
+                        Livre livre = new Livre(this.textFieldGererStockISBN.getText(), this.textFieldGererStockTitre.getText(), Integer.parseInt(this.textFieldGererStockNBPages.getText()), this.textFieldGererStockDatePubli.getText(), Double.parseDouble(this.textFieldGererStockPrix.getText()));
                         System.out.println("2");
 
                         this.magasinBD.ajoutStock(this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()), livre, Integer.parseInt(this.textFieldGererStockQuantite.getText()));
