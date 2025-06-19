@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.itextpdf.text.List;
+import com.mysql.cj.conf.PropertyDefinitions.SslMode;
 
 import fr.saejava.ApplicationLibrairie;
 import fr.saejava.model.Livre;
@@ -22,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class ControllerGererStock {
 
@@ -77,8 +79,10 @@ public class ControllerGererStock {
     private UtilisateurBD utilisateurBD;
     private VendeurBD vendeurBD;
     private MagasinBD magasinBD;
+    private LivreBD livreBD;
+    private Stage stage;
 
-        public ControllerGererStock(ApplicationLibrairie app, VendeurBD vendeurBD, UtilisateurBD utilisateurBD, MagasinBD magasinBD) throws SQLException{
+        public ControllerGererStock(ApplicationLibrairie app, VendeurBD vendeurBD, UtilisateurBD utilisateurBD, MagasinBD magasinBD, LivreBD livreBD, Stage stage) throws SQLException{
             this.app = app;
             //this.adminBD=new AdminBD(connexion);
             this.utilisateurBD = utilisateurBD;
@@ -140,7 +144,9 @@ public class ControllerGererStock {
         @FXML
         public void rechercheTitre(KeyEvent event){
             if(event.getCode() == KeyCode.ENTER){
-            //    app.afficherRechercheLivreView(app.getStage(), textFieldGererStockTitreLivre.getText());
+                app.afficherRechercheLivreVendeurView(app.getStage(), textFieldGererStockTitreLivre.getText());
+                //ControllerRechercherLivreVendeur lesLivres = new ControllerRechercherLivreVendeur(app, stage, this.textFieldGererStockTitreLivre.getText(), livreBD);
+                //System.out.println(lesLivres);
             }
         }
 

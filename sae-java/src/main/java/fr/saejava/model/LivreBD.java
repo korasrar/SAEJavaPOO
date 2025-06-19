@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class LivreBD {
     ConnexionMySQL connexion;
+    Livre livreSelectionner;
 
     public LivreBD(ConnexionMySQL connexion) {
         this.connexion = connexion;
@@ -232,5 +233,13 @@ public class LivreBD {
             if (r != null) r.close();
             if (st != null) st.close();
         }
+    }
+
+    public Livre getLivreSelectionner() {
+        return livreSelectionner;
+    }
+    
+    public void setLivreSelectionner(Livre livreSelectionner) {
+        this.livreSelectionner = livreSelectionner;
     }
 }

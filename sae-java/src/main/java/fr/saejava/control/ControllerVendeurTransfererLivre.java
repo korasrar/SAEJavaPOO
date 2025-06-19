@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class ControllerVendeurTransfererLivre {
 
@@ -34,24 +36,27 @@ public class ControllerVendeurTransfererLivre {
     private Label labelTransfrerLivreQuantite;
 
     @FXML
-    private TextField textFieldTransfererLivreAuteurLivre;
-
-    @FXML
     private TextField textFieldTransfererLivreTitreLivre;
 
     private ApplicationLibrairie app;
     private UtilisateurBD utilisateurBD;
     private VendeurBD vendeurBD;
 
-        public ControllerVendeurTransfererLivre(ApplicationLibrairie app, VendeurBD vendeurBD, UtilisateurBD utilisateurBD) throws SQLException{
-            this.app=app;
-            //this.adminBD=new AdminBD(connexion);
-            this.utilisateurBD=utilisateurBD;
-            this.vendeurBD=vendeurBD;
-        }
+    public ControllerVendeurTransfererLivre(ApplicationLibrairie app, VendeurBD vendeurBD, UtilisateurBD utilisateurBD) throws SQLException{
+        this.app=app;
+        //this.adminBD=new AdminBD(connexion);
+        this.utilisateurBD=utilisateurBD;
+        this.vendeurBD=vendeurBD;
+    }
 
-        @FXML
-        public void initialize() {
+    @FXML
+    public void initialize() {
+    }
 
+    @FXML
+    void startRecherche(KeyEvent event) {
+        if(event.getCode()==KeyCode.ENTER){
+            app.afficherRechercheLivreVendeurView(app.getStage(), textFieldTransfererLivreTitreLivre.getText());
         }
+    }
 }

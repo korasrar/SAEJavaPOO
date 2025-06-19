@@ -178,23 +178,24 @@ public class ApplicationLibrairie extends javafx.application.Application {
             e.printStackTrace();
         }
     }
-    //public void afficherRechercheLivreVendeurView(Stage stage, String titreLivre){
-    //        loader = new FXMLLoader(getClass().getResource("/view/RechercheLivreView.fxml"));
-    //        try {
-    //            Stage stageRechercheLivre = new Stage();
-    //            stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
-    //            stageRechercheLivre.initOwner(stage);
-    //            ControllerRechercherLivreVendeur controllerRechercherLivre = new ControllerRechercherLivreVendeur(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre);
-    //            loader.setController(controllerRechercherLivre);
-    //            Pane paneRechercheLivre = loader.load();
-    //            Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
-    //            stageRechercheLivre.setScene(sceneRechercheLivre);
-    //            stageRechercheLivre.setTitle("Résultat recherche Livre");
-    //            stageRechercheLivre.showAndWait();
-    //        } catch (Exception e) {
-    //            afficherErreur("Erreur lors du chargement de la vue de recherche de livre : " + e.getMessage());
-    //        }
-    //    }
+
+    public void afficherRechercheLivreVendeurView(Stage stage, String titreLivre){
+            loader = new FXMLLoader(getClass().getResource("/view/RechercherLivreVendeurView.fxml"));
+            try {
+                Stage stageRechercheLivre = new Stage();
+                stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
+                stageRechercheLivre.initOwner(stage);
+                ControllerRechercherLivreVendeur controllerRechercherLivre = new ControllerRechercherLivreVendeur(this, stageRechercheLivre, titreLivre, livreConnexion);
+                loader.setController(controllerRechercherLivre);
+                Pane paneRechercheLivre = loader.load();
+                Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
+                stageRechercheLivre.setScene(sceneRechercheLivre);
+                stageRechercheLivre.setTitle("Résultat recherche Livre");
+                stageRechercheLivre.showAndWait();
+            } catch (Exception e) {
+                afficherErreur("Erreur lors du chargement de la vue de recherche de livre : " + e.getMessage());
+            }
+        }
 
     // --------------- Vue Utilisateur Main --------------- //
 
@@ -296,7 +297,7 @@ public void afficherVendeurGererStock(Stage stage) { // A coder
         Pane headerPane = headerLoader.load();
         
         FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStock.fxml"));
-        ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion, magasinConnexion);
+        ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion, magasinConnexion, livreConnexion, stage);
         centerLoader.setController(centerController);
         Pane centerPane = centerLoader.load();
         
