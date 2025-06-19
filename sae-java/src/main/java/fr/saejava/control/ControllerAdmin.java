@@ -123,7 +123,7 @@ public class ControllerAdmin {
 
     @FXML
     public void initialize() {
-        
+        buttonMenueVendeur.setDisable(true);
     }
 
     @FXML
@@ -207,7 +207,5 @@ public class ControllerAdmin {
     void pageAjouterVendeur(MouseEvent event) {
         this.app.afficherAjoutVendeurView(this.app.getStage());
     }
-   
-
 }
 
