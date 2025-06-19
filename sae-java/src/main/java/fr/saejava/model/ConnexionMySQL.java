@@ -10,7 +10,7 @@ public class ConnexionMySQL {
     // Connection avec JDBC 
     private Connection mysql=null;
 	private boolean connecte=false;
-
+	
 	public ConnexionMySQL() throws ClassNotFoundException{
 		Class.forName("com.mysql.cj.jdbc.Driver");
 	}
@@ -34,6 +34,7 @@ public class ConnexionMySQL {
             }
         this.connecte=this.mysql!=null;
     }
+
 	public void close() throws SQLException {
 		this.connecte=false;
 	}

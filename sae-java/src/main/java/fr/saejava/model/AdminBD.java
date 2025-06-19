@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AdminBD {
     ConnexionMySQL connexion;
@@ -23,10 +25,10 @@ public class AdminBD {
      * @throws SQLException pour gérer si il y a une erreur SQL
      */
     public void creeCompteVendeur(int idVendeur, String nom, String prenom,String username, String motDePasse, Magasin magasin) throws SQLException{
-        PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+idVendeur+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','vendeur'),");
+        PreparedStatement pstmt = this.connexion.prepareStatement("insert into UTILISATEUR values ("+idVendeur+",'"+nom+"','"+prenom+"','"+username+"','"+motDePasse+"','vendeur');");
         pstmt.executeUpdate();
         pstmt.close();
-        pstmt = this.connexion.prepareStatement("insert into VENDEUR values ("+idVendeur+", '"+magasin+"'),");
+        pstmt = this.connexion.prepareStatement("insert into VENDEUR values ("+idVendeur+", '"+magasin.getId()+"');");
         pstmt.executeUpdate();
         pstmt.close();
     }
@@ -109,6 +111,23 @@ public class AdminBD {
             if (st != null) st.close();
         }
     }
+
+    public int getDernierIDMagasin() throws SQLException {
+        Statement st = connexion.createStatement();
+        ResultSet r = null;
+        try {
+            r = st.executeQuery("SELECT MAX(idmag) AS dernierID FROM MAGASIN");
+            if (r.next()) {
+                return r.getInt("dernierID");
+            } else {
+                return 0;
+            }
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
+        }
+    }
+
 
     /**
      * Supprime un livre de la base de données
@@ -209,6 +228,88 @@ public class AdminBD {
             if (st != null) st.close();
         }
     }
+
+    public HashMap<Integer,Double> RequeteChiffreAffaire(Magasin magasin) throws SQLException {
+        Statement st = connexion.createStatement();
+        ResultSet r = null;
+        HashMap<Integer,Double> res=new HashMap<>();
+        try {
+            r = st.executeQuery("select year(C.datecom) annee,M.nommag as Magasin,sum(D.qte*prixvente) CA\r\n" +
+                            "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
+                            "where idmag ="+magasin.getId()+"\r\n" +
+                            "group by annee;");
+            while (r.next()) {
+                res.put(r.getInt("annee"), r.getDouble("CA"));
+            }
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
+        }
+        System.out.println(res);
+        return res;
+    }
+
+    public HashMap<Integer,Integer> RequeteNbLivreVendu(Magasin magasin) throws SQLException {
+        Statement st = connexion.createStatement();
+        ResultSet r = null;
+        HashMap<Integer,Integer> res=new HashMap<>();
+        try {
+            r = st.executeQuery("select year(C.datecom) annee,M.nommag as Magasin,sum(D.qte) CA\r\n" +
+                            "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
+                            "where idmag ="+magasin.getId()+"\r\n" +
+                            "group by annee;");
+            while (r.next()) {
+                res.put(r.getInt("annee"), r.getInt("CA"));
+            }
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
+        }
+        System.out.println(res);
+        return res;
+    }
+
+
+        public HashMap<Integer,Double> RequeteChiffreAffaire() throws SQLException {
+        Statement st = connexion.createStatement();
+        ResultSet r = null;
+        HashMap<Integer,Double> res=new HashMap<>();
+        try {
+            r = st.executeQuery("select year(C.datecom) annee,M.nommag as Magasin,sum(D.qte*prixvente) CA\r\n" +
+                            "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
+                            "group by annee;");
+            while (r.next()) {
+                res.put(r.getInt("annee"), r.getDouble("CA"));
+            }
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
+        }
+        System.out.println(res);
+        return res;
+    }
+
+
+    public HashMap<Integer,Integer> RequeteNbLivreVendu() throws SQLException {
+        Statement st = connexion.createStatement();
+        ResultSet r = null;
+        HashMap<Integer,Integer> res=new HashMap<>();
+        try {
+            r = st.executeQuery("select year(C.datecom) annee,M.nommag as Magasin,sum(D.qte) CA\r\n" +
+                            "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
+                            "group by annee;");
+            while (r.next()) {
+                res.put(r.getInt("annee"), r.getInt("CA"));
+            }
+        } finally {
+            if (r != null) r.close();
+            if (st != null) st.close();
+        }
+        System.out.println(res);
+        return res;
+    }
+
+    
 
     public void Requete5() throws SQLException {
         Statement st = connexion.createStatement();

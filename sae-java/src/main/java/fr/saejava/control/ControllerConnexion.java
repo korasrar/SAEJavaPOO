@@ -54,7 +54,7 @@ public class ControllerConnexion {
             Utilisateur utilisateur = utilisateurBD.getUtilisateur(identifiant, motDePasse);
             utilisateurBD.setUtilisateurConnecter(utilisateur);
             if (utilisateur instanceof Admin) {
-                // Afficher main Admin
+                app.afficherAdminMainView(app.getStage());
             } 
             else if (utilisateur instanceof Vendeur) {
                 app.afficherVendeurMainView(app.getStage());

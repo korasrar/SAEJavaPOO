@@ -3,33 +3,8 @@ package fr.saejava;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 
-import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
-
-import fr.saejava.control.ControllerClientAccueil;
-import fr.saejava.control.ControllerClientHeader;
-import fr.saejava.control.ControllerConnexion;
-import fr.saejava.control.ControllerGererStock;
-import fr.saejava.control.ControllerInscription;
-import fr.saejava.control.ControllerPanierView;
-import fr.saejava.control.ControllerRechercherLivre;
-import fr.saejava.control.ControllerRechercherLivre;
-import fr.saejava.control.ControllerRechercherLivreVendeur;
-import fr.saejava.control.ControllerVendeurAcceuil;
-import fr.saejava.control.ControllerGererStock;
-import fr.saejava.control.ControllerVendeurTransfererLivre;
-import fr.saejava.control.ControllerVendeurHeader;
-import fr.saejava.model.AdminBD;
-import fr.saejava.model.ClientBD;
-import fr.saejava.model.Commande;
-import fr.saejava.model.CommandeBD;
-import fr.saejava.model.ConnexionMySQL;
-import fr.saejava.model.Livre;
-import fr.saejava.model.LivreBD;
-import fr.saejava.model.MagasinBD;
-import fr.saejava.model.Utilisateur;
-import fr.saejava.model.UtilisateurBD;
-import fr.saejava.model.VendeurBD;
+import fr.saejava.control.*;
+import fr.saejava.model.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -119,6 +94,8 @@ public class ApplicationLibrairie extends javafx.application.Application {
     public void afficherAjoutMagasinView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/AjoutMagasinView.fxml"));
         try {
+            ControllerAjouteMagasin controller = new ControllerAjouteMagasin(this, utilisateurConnexion,this.adminConnexion);
+            loader.setController(controller);
             this.root = loader.load();
             this.scene = new Scene(this.root);
             stage.setScene(scene);
@@ -126,6 +103,22 @@ public class ApplicationLibrairie extends javafx.application.Application {
             stage.show();
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue d'ajout de magasin : " + e.getMessage());
+        }
+    }
+
+    public void afficherAjoutVendeurView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/AjoutVendeurView.fxml"));
+        try {
+            ControllerAjouteVendeur controller = new ControllerAjouteVendeur(this, utilisateurConnexion,this.adminConnexion,this.magasinConnexion);
+            loader.setController(controller);
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Ajout d'un vendeur");
+            controller.chargeComboMagasin();
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue d'ajout de vendeur : " + e.getMessage());
         }
     }
 
@@ -143,6 +136,8 @@ public class ApplicationLibrairie extends javafx.application.Application {
             afficherErreur("Erreur lors du chargement de la vue de connexion : " + e.getMessage());
         }
     }
+
+
 
     public void afficherInscriptionView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/InscriptionView.fxml"));
@@ -218,8 +213,12 @@ public class ApplicationLibrairie extends javafx.application.Application {
             
             this.root = mainPane;
             this.scene = new Scene(this.root);
+            System.out.println("Affichage de la vue Admin4");
             stage.setScene(scene);
-            stage.setTitle("Menu Client");
+            System.out.println("Affichage de la vue Admin5");
+            controllerAdmin.chargeComboMagasin();
+            controllerAdmin.initComboTypeChart();
+            stage.setTitle("Menu Vendeur");
             stage.show();
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue main du Client : " + e.getMessage());
@@ -249,6 +248,50 @@ public class ApplicationLibrairie extends javafx.application.Application {
             stage.setScene(scene);
             stage.setTitle("Menu Vendeur");
             stage.show();
+            
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void afficherAdminMenueVendeur(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/adminMenueVendeur.fxml"));
+        try{
+            ControllerAdminMenueVendeur controllerAdminMenueVendeur=new ControllerAdminMenueVendeur(this, this.utilisateurConnexion, this.magasinConnexion);
+            loader.setController(controllerAdminMenueVendeur);
+            this.root=loader.load();
+            controllerAdminMenueVendeur.chargeComboMagasin();
+            this.scene=new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Admin menue vendeur");
+            stage.show();
+
+        }
+        catch(Exception e){
+            afficherErreur("Erreur lors du chargement de la vue admin menue vendeur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void afficherAdminMainView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/admin.fxml"));
+        try {
+            ControllerAdmin controllerAdmin = new ControllerAdmin(this, this.utilisateurConnexion,this.magasinConnexion,this.adminConnexion);
+            System.out.println("Affichage de la vue Admin1");
+            loader.setController(controllerAdmin);
+            System.out.println("Affichage de la vue Admin2");
+            this.root = loader.load();
+            System.out.println("Affichage de la vue Admin3");
+            this.scene = new Scene(this.root);
+            System.out.println("Affichage de la vue Admin4");
+            stage.setScene(scene);
+            System.out.println("Affichage de la vue Admin5");
+            controllerAdmin.chargeComboMagasin();
+            controllerAdmin.initComboTypeChart();
+            stage.setTitle("Menu Vendeur");
+            stage.show();
+            
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
             e.printStackTrace();
@@ -320,7 +363,7 @@ public void afficherVendeurGererStock(Stage stage) { // A coder
         estConnecteBD= false;
         try {
             connexion = new ConnexionMySQL();
-            connexion.connecter("localhost", "DBcosme", "fushi", "1234");
+            connexion.connecter("", "", "", "");
 
             // Partage de la connexion avec les autres classes
 
