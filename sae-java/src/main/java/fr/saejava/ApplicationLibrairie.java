@@ -233,7 +233,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             BorderPane mainPane = mainLoader.load();
             
             FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
-            ControllerClientHeader headerController = new ControllerClientHeader(this, clientConnexion, utilisateurConnexion);
+            ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
             headerLoader.setController(headerController);
             Pane headerPane = headerLoader.load();
             
@@ -320,7 +320,7 @@ public void afficherVendeurGererStock(Stage stage) { // A coder
         estConnecteBD= false;
         try {
             connexion = new ConnexionMySQL();
-            connexion.connecter("localhost", "DBcosme", "fushi", "1234");
+            connexion.connecter("servinfo-maria", "DBkerrien", "kerrien", "kerrien");
 
             // Partage de la connexion avec les autres classes
 

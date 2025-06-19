@@ -10,6 +10,7 @@ import fr.saejava.model.MagasinBD;
 import fr.saejava.model.UtilisateurBD;
 import fr.saejava.model.VendeurBD;
 import fr.saejava.model.VendeurSansMagasinException;
+import fr.saejava.model.ISBNInvalideException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -124,7 +125,7 @@ public class ControllerGererStock {
             this.textFieldGererStockPrix.setText(null);
             this.textFieldGererStockQuantite.setText(null);
 
-            this.textFieldGererStockISBN.setPromptText("ISBN");
+            this.textFieldGererStockISBN.setPromptText("ISBN (13)");
             this.textFieldGererStockTitre.setPromptText("Titre");
             this.textFieldGererStockNBPages.setPromptText("NBPages");
             this.textFieldGererStockDatePubli.setPromptText("DatePubli");
@@ -181,23 +182,40 @@ public class ControllerGererStock {
             }
         }
 
-        public @FXML
-            void enregistrer(MouseEvent event) throws NumberFormatException, SQLException, VendeurSansMagasinException {
-                this.buttonGererStockEnregistrer = (Button) (event.getSource());
-                System.out.println("1");
+        @FXML
+        public void enregistrer(MouseEvent event) throws NumberFormatException, SQLException, VendeurSansMagasinException, ISBNInvalideException {
+            this.buttonGererStockEnregistrer = (Button) (event.getSource());
+            System.out.println("1");
+            try{
                 if (this.textFieldGererStockDatePubli != null || this.textFieldGererStockISBN != null || this.textFieldGererStockNBPages != null || this.textFieldGererStockPrix != null || this.textFieldGererStockQuantite != null || this.textFieldGererStockTitre != null){
                     //this.buttonGererStockEnregistrer.setDisable(false);
-                    Livre livre = new Livre(this.textFieldGererStockISBN.getText(), this.textFieldGererStockTitre.getText(), Integer.parseInt(this.textFieldGererStockNBPages.getText()), this.textFieldGererStockDatePubli.getText(), Double.parseDouble(this.textFieldGererStockDatePubli.getText()));
-                    System.out.println("2");
+                    if (this.textFieldGererStockISBN.getText().length() != 13){  //si la taille de l'isbn est < que 9782226208095
+                        System.out.println("L'ISBN n'est pas assez grand");
+                    }
+                    else{
+                        Livre livre = new Livre(this.textFieldGererStockISBN.getText(), this.textFieldGererStockTitre.getText(), Integer.parseInt(this.textFieldGererStockNBPages.getText()), this.textFieldGererStockDatePubli.getText(), Double.parseDouble(this.textFieldGererStockDatePubli.getText()));
+                        System.out.println("2");
 
-                    this.magasinBD.ajoutStock(this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()), livre, Integer.parseInt(this.textFieldGererStockQuantite.getText()));
-                    System.out.println("3");
+                        this.magasinBD.ajoutStock(this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()), livre, Integer.parseInt(this.textFieldGererStockQuantite.getText()));
+                        System.out.println("3");
 
-                    System.out.println(livre);
+                        System.out.println(livre);
+                    }
                 }
-                else
-                    System.out.println("Il manque des informations pour le livre !");
             }
+            catch (NullPointerException e){
+                System.out.println("Il manque des informations pour le livre !");
+            }
+            catch (NumberFormatException e){
+                System.out.println("Vous devez mettre des chiffre sur Nombre de Pages, Prix et Quantité");   
+            }
+            catch (VendeurSansMagasinException e){
+                System.out.println("Le vendeur n'a pas de magasin");   
+            }
+            catch (SQLException e){
+                System.out.println("Erreur");   
+            }
+        }
             
             @FXML
             public void supprimer(MouseEvent event) {

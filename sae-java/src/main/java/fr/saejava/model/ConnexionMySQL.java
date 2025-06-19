@@ -12,8 +12,8 @@ public class ConnexionMySQL {
 	private boolean connecte=false;
 
 	public ConnexionMySQL() throws ClassNotFoundException{
-		Class.forName("com.mysql.cj.jdbc.Driver");
-	}
+        Class.forName("org.mariadb.jdbc.Driver");
+    }
 
 	/**
 	 * pour connecter tout à la base de données MySQL
@@ -26,7 +26,7 @@ public class ConnexionMySQL {
     public void connecter(String nomServeur, String nomBase, String nomLogin, String motDePasse) throws SQLException {
         System.out.println("Tentative de connection...");
         try {
-            mysql=DriverManager.getConnection("jdbc:mariadb://localhost:3306/librairie","root","44314431aqw!A");
+            mysql=DriverManager.getConnection("jdbc:mariadb://"+nomServeur+":3306/"+nomBase,nomLogin,motDePasse);
             System.out.println("Connection réussi");
             } catch (SQLException ex){
                 System.out.println("Voici le message d'erreur : "+ex.getMessage()+
@@ -34,9 +34,6 @@ public class ConnexionMySQL {
             }
         this.connecte=this.mysql!=null;
     }
-	public void close() throws SQLException {
-		this.connecte=false;
-	}
 
     	public boolean isConnecte() { return this.connecte;}
 	public Statement createStatement() throws SQLException {

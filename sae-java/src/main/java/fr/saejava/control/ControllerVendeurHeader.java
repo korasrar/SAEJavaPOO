@@ -50,7 +50,7 @@ public class ControllerVendeurHeader {
 
     @FXML
     public void retourAccueil(MouseEvent event) {
-        this.imagesViewRetourAccueil = (ImageView) (event.getSource());
+        //this.imagesViewRetourAccueil = (ImageView) (event.getSource());
             app.afficherVendeurMainView(app.getStage());
     }
 }
