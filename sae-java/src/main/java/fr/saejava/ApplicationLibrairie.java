@@ -263,7 +263,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             Pane headerPane = headerLoader.load();
 
             FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/ClientAccueilView.fxml"));
-            ControllerClientAccueil centerController = new ControllerClientAccueil(this, utilisateurConnexion, clientConnexion);
+            ControllerClientAccueil centerController = new ControllerClientAccueil(this, utilisateurConnexion, clientConnexion, vendeurConnexion);
             centerLoader.setController(centerController);
             Pane centerPane = centerLoader.load();
             

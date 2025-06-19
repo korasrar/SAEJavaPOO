@@ -78,6 +78,7 @@ public class ControllerRechercherLivre {
     @FXML
     void ajouterAuPanier(MouseEvent event) {
         ((Client) utilisateurBD.getUtilisateurConnecter()).ajouterLivre(livreSelectionner, comboBoxQuantité.getSelectionModel().getSelectedItem());
+        app.afficherInformation("Livre ajouté au panier avec succès !");
         retour(null);
     }
 
