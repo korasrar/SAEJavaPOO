@@ -160,18 +160,24 @@ public class ApplicationLibrairie extends javafx.application.Application {
     }
 
     public void afficherPanierView(Stage stage) {
-    try {
-        Stage stagePanier = new Stage();
-        stagePanier.initModality(Modality.APPLICATION_MODAL);
-        stagePanier.initOwner(stage);
-        FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierView.fxml"));
-        ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion, magasinConnexion);
-        panierLoader.setController(controllerPanier);
-        Pane panierPane = panierLoader.load();
-        Scene panierScene = new Scene(panierPane);
-        stagePanier.setScene(panierScene);
-        stagePanier.setTitle("Mon Panier");
-        stagePanier.showAndWait();
+        try {
+            Stage stagePanier = new Stage();
+            stagePanier.initModality(Modality.APPLICATION_MODAL);
+            stagePanier.initOwner(stage);
+            FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierView.fxml"));
+            ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion, magasinConnexion);
+            panierLoader.setController(controllerPanier);
+            Pane panierPane = panierLoader.load();
+            Scene panierScene = new Scene(panierPane);
+            stagePanier.setScene(panierScene);
+            stagePanier.setTitle("Mon Panier");
+            stagePanier.showAndWait();
+        }
+        catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue du panier : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     //public void afficherRechercheLivreVendeurView(Stage stage, String titreLivre){
     //        loader = new FXMLLoader(getClass().getResource("/view/RechercheLivreView.fxml"));
     //        try {
@@ -189,35 +195,6 @@ public class ApplicationLibrairie extends javafx.application.Application {
     //            afficherErreur("Erreur lors du chargement de la vue de recherche de livre : " + e.getMessage());
     //        }
     //    }
-    
-    public void afficherVendeurMainView(Stage stage) {
-    try {
-        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurMainViewContainer.fxml"));
-        BorderPane mainPane = mainLoader.load();
-        
-        FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
-        ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
-        headerLoader.setController(headerController);
-        Pane headerPane = headerLoader.load();
-        
-        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurAccueilCenter.fxml"));
-        ControllerVendeurAcceuil centerController = new ControllerVendeurAcceuil(this, vendeurConnexion, utilisateurConnexion);
-        centerLoader.setController(centerController);
-        Pane centerPane = centerLoader.load();
-        
-        mainPane.setTop(headerPane);
-        mainPane.setCenter(centerPane);
-        
-        this.root = mainPane;
-        this.scene = new Scene(this.root);
-        stage.setScene(scene);
-        stage.setTitle("Menu Vendeur");
-        stage.show();
-    } catch (Exception e) {
-        afficherErreur("Erreur lors du chargement de la vue du panier : " + e.getMessage());
-        e.printStackTrace();
-    }
-}
 
     // --------------- Vue Utilisateur Main --------------- //
 
@@ -256,7 +233,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             BorderPane mainPane = mainLoader.load();
             
             FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
-            ControllerVendeurHeader headerController = new ControllerVendeurHeader();
+            ControllerClientHeader headerController = new ControllerClientHeader(this, clientConnexion, utilisateurConnexion);
             headerLoader.setController(headerController);
             Pane headerPane = headerLoader.load();
             
