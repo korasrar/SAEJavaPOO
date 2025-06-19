@@ -59,6 +59,7 @@ public class ControllerRechercherLivre {
 
     @FXML
     public void initialize(){
+        buttonAjouterPanier.setDisable(true);
         try{
         List<Livre> livreDispo = new ArrayList<>();
         Map<Livre,Boolean> mapLivres = livreBD.rechercherLivre(Filtre.titre, "", livreARechercher, "", vendeurBD);

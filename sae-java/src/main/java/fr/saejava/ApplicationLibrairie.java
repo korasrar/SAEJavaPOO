@@ -233,7 +233,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             BorderPane mainPane = mainLoader.load();
             
             FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
-            ControllerClientHeader headerController = new ControllerClientHeader(this, clientConnexion, utilisateurConnexion);
+            ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
             headerLoader.setController(headerController);
             Pane headerPane = headerLoader.load();
             

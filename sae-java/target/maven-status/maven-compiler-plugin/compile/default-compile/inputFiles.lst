@@ -2,11 +2,15 @@ C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\Applicat
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerClientAccueil.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerClientHeader.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerConnexion.java
+C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerGererStock.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerInscription.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerPanierView.java
+C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerRechercherClient.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerRechercherLivre.java
+C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerRechercherLivreVendeur.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerVendeurAcceuil.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerVendeurHeader.java
+C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\control\ControllerVendeurTransfererLivre.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\model\Admin.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\model\AdminBD.java
 C:\Users\koras\BUT\Partie2\SAEJavaPOO\sae-java\src\main\java\fr\saejava\model\Auteur.java

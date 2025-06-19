@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 public class ClientBD {
     ConnexionMySQL connexion;
+    Client clientSelectionner;
 
     public ClientBD(ConnexionMySQL connexion){
         this.connexion = connexion;
@@ -289,6 +290,25 @@ public class ClientBD {
             listMeilleursVente.add(livre);
         }
         return listMeilleursVente;
+    }
+
+    public List<Client> rechercherCLient(String username) throws SQLException {
+        List<Client> listeClient = new ArrayList<>();
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT * FROM CLIENT c JOIN UTILISATEUR u ON c.idcli=u.idutilisateur where u.username like '%" + username + "%' or levenshtein('" + username + "',u.username) beetwen 0 and 2");
+        while (r.next()) {
+            Client client = new Client(r.getInt("idcli"), r.getString("adressecli"), r.getString("villecli"), r.getInt("codepostal"), r.getString("nom"), r.getString("prenom"), r.getString("username"), r.getString("motdepasse"));
+            listeClient.add(client);
+        }
+        return listeClient;
+    }
+
+    public Client getClientSelectionner() {
+        return clientSelectionner;
+    }
+    
+    public void setClientSelectionner(Client clientSelectionner) {
+        this.clientSelectionner = clientSelectionner;
     }
 
 }
