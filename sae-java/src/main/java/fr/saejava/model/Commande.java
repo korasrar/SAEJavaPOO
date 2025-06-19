@@ -22,19 +22,19 @@ public class Commande {
         this.modeLivraison=modeLivraison;
     }
 
-    Client getClient(){
+    public Client getClient(){
         return this.client;
     }
 
-    Magasin getMagasin(){
+    public Magasin getMagasin(){
         return this.magasin;
     }
 
-    List<DetailCommande> getContenue(){
+    public List<DetailCommande> getContenue(){
         return this.contenue;
     }
 
-    int getNumcom(){
+    public int getNumcom(){
         return this.numcom;
     }
 
@@ -50,10 +50,10 @@ public class Commande {
         this.numcom = numcom;
     }
 
-    void setClient(Client client) {
+    public void setClient(Client client) {
         this.client = client;
     }
-    void setMagasin(Magasin magasin) {
+    public void setMagasin(Magasin magasin) {
         this.magasin = magasin;
     }
     public void setDateCommande(Date dateCommande) {
@@ -135,5 +135,13 @@ public class Commande {
         else{
             this.ajouterDetailCommande(new DetailCommande(qte,livre,this));
         }
+    }
+
+    public void supprimerDetail(DetailCommande detail) {
+        this.contenue.remove(detail);
+    }
+
+    public void viderCommande() {
+        this.contenue.clear();
     }
 }
