@@ -3,6 +3,8 @@ package fr.saejava;
 import fr.saejava.control.ControllerConnexion;
 import fr.saejava.control.ControllerGererStock;
 import fr.saejava.control.ControllerInscription;
+import fr.saejava.control.ControllerRechercherLivre;
+import fr.saejava.control.ControllerRechercherLivreVendeur;
 import fr.saejava.control.ControllerVendeurAcceuil;
 import fr.saejava.control.ControllerGererStock;
 import fr.saejava.control.ControllerVendeurTransfererLivre;
@@ -121,13 +123,13 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
-    //public void afficherRechercheLivreView(Stage stage, String titreLivre){
+    //public void afficherRechercheLivreVendeurView(Stage stage, String titreLivre){
     //        loader = new FXMLLoader(getClass().getResource("/view/RechercheLivreView.fxml"));
     //        try {
     //            Stage stageRechercheLivre = new Stage();
     //            stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
     //            stageRechercheLivre.initOwner(stage);
-    //            ControllerRechercherLivre controllerRechercherLivre = new ControllerRechercherLivre(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre);
+    //            ControllerRechercherLivreVendeur controllerRechercherLivre = new ControllerRechercherLivreVendeur(this, clientConnexion,livreConnexion,vendeurConnexion,utilisateurConnexion, titreLivre);
     //            loader.setController(controllerRechercherLivre);
     //            Pane paneRechercheLivre = loader.load();
     //            Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
@@ -208,7 +210,7 @@ public void afficherVendeurGererStock(Stage stage) { // A coder
         Pane headerPane = headerLoader.load();
         
         FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStock.fxml"));
-        ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion, livreConnexion);
+        ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion, magasinConnexion);
         centerLoader.setController(centerController);
         Pane centerPane = centerLoader.load();
         

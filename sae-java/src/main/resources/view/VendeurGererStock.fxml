@@ -128,7 +128,7 @@
             </VBox>
          </children>
       </HBox>
-      <Button fx:id="buttonGererStockEnregistrer" mnemonicParsing="false" prefHeight="37.0" prefWidth="156.0" text="Enregistrer" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+      <Button fx:id="buttonGererStockEnregistrer" mnemonicParsing="false" onMouseClicked="#enregistrer" prefHeight="37.0" prefWidth="156.0" text="Enregistrer" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
@@ -138,5 +138,10 @@
             <Insets left="20.0" />
          </GridPane.margin>
       </TextField>
+      <Button fx:id="buttonGererStockSupprimer" mnemonicParsing="false" onMouseClicked="#supprimer" prefHeight="37.0" prefWidth="156.0" text="Supprimer" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Button>
    </children>
 </GridPane>
