@@ -89,6 +89,7 @@ public class ControllerRechercherLivre {
 
     @FXML
     void selectionnerLivre(MouseEvent event) {
+        buttonAjouterPanier.setDisable(false);
         livreSelectionner = listViewResultatRecherche.getSelectionModel().getSelectedItem();
         comboBoxQuantité.getItems().clear();
         Integer quantiteMax = 0;

@@ -234,7 +234,7 @@ public class AdminBD {
         ResultSet r = null;
         HashMap<Integer,Double> res=new HashMap<>();
         try {
-            r = st.executeQuery("select year(C.datecom) annee,M.nommag as Magasin,sum(D.qte*prixvente) CA\r\n" +
+            r = st.executeQuery("select year(C.datecom) annee,sum(D.qte*prixvente) CA\r\n" +
                             "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
                             "where idmag ="+magasin.getId()+"\r\n" +
                             "group by annee;");
@@ -254,7 +254,7 @@ public class AdminBD {
         ResultSet r = null;
         HashMap<Integer,Integer> res=new HashMap<>();
         try {
-            r = st.executeQuery("select year(C.datecom) annee,M.nommag as Magasin,sum(D.qte) CA\r\n" +
+            r = st.executeQuery("select year(C.datecom) annee,sum(D.qte) CA\r\n" +
                             "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
                             "where idmag ="+magasin.getId()+"\r\n" +
                             "group by annee;");
@@ -275,7 +275,7 @@ public class AdminBD {
         ResultSet r = null;
         HashMap<Integer,Double> res=new HashMap<>();
         try {
-            r = st.executeQuery("select year(C.datecom) annee,M.nommag as Magasin,sum(D.qte*prixvente) CA\r\n" +
+            r = st.executeQuery("select year(C.datecom) annee,sum(D.qte*prixvente) CA\r\n" +
                             "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
                             "group by annee;");
             while (r.next()) {
@@ -295,7 +295,7 @@ public class AdminBD {
         ResultSet r = null;
         HashMap<Integer,Integer> res=new HashMap<>();
         try {
-            r = st.executeQuery("select year(C.datecom) annee,M.nommag as Magasin,sum(D.qte) CA\r\n" +
+            r = st.executeQuery("select year(C.datecom) annee,sum(D.qte) CA\r\n" +
                             "from MAGASIN M NATURAL JOIN COMMANDE C NATURAL JOIN DETAILCOMMANDE D\r\n" +
                             "group by annee;");
             while (r.next()) {

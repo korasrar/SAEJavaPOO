@@ -2,11 +2,7 @@ package fr.saejava.control;
 
 import java.sql.SQLException;
 import fr.saejava.ApplicationLibrairie;
-import fr.saejava.model.AdminBD;
-import fr.saejava.model.ConnexionMySQL;
-import fr.saejava.model.Magasin;
-import fr.saejava.model.MagasinBD;
-import fr.saejava.model.UtilisateurBD;
+import fr.saejava.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
