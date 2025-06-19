@@ -61,27 +61,27 @@
                               <Image url="@../../Téléchargements/user4.png" />
                            </image>
                         </ImageView>
-                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="149.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="234.0" style="-fx-background-radius: 20;" text="Sélectionner un client :" textFill="WHITE">
+                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="149.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="234.0" style="-fx-background-radius: 20;" text="Sélectionner un client :">
                            <font>
                               <Font name="Open Sans Bold" size="17.0" />
                            </font>
                         </Label>
-                        <Label contentDisplay="CENTER" layoutX="54.0" layoutY="231.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="74.0" style="-fx-background-radius: 20;" text="Nom :" textFill="WHITE">
+                        <Label contentDisplay="CENTER" layoutX="54.0" layoutY="231.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="74.0" style="-fx-background-radius: 20;" text="Nom :">
                            <font>
                               <Font name="Open Sans" size="17.0" />
                            </font>
                         </Label>
-                        <Label contentDisplay="CENTER" layoutX="54.0" layoutY="190.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="74.0" style="-fx-background-radius: 20;" text="Prénom :" textFill="WHITE">
+                        <Label contentDisplay="CENTER" layoutX="54.0" layoutY="190.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="74.0" style="-fx-background-radius: 20;" text="Prénom :">
                            <font>
                               <Font name="Open Sans" size="17.0" />
                            </font>
                         </Label>
-                        <Label fx:id="idVendeurPrenomClientSelec" contentDisplay="CENTER" layoutX="141.0" layoutY="190.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="74.0" style="-fx-background-radius: 20;" text="[NAME]" textFill="WHITE">
+                        <Label fx:id="idVendeurPrenomClientSelec" contentDisplay="CENTER" layoutX="141.0" layoutY="190.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="74.0" style="-fx-background-radius: 20;" text="[NAME]">
                            <font>
                               <Font name="Open Sans Italic" size="17.0" />
                            </font>
                         </Label>
-                        <Label fx:id="idVendeurNomClientSelec" contentDisplay="CENTER" layoutX="137.0" layoutY="231.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="74.0" style="-fx-background-radius: 20;" text="[NAME]" textFill="WHITE">
+                        <Label fx:id="idVendeurNomClientSelec" contentDisplay="CENTER" layoutX="137.0" layoutY="231.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="74.0" style="-fx-background-radius: 20;" text="[NAME]">
                            <font>
                               <Font name="Open Sans Italic" size="17.0" />
                            </font>
@@ -104,7 +104,7 @@
                   <Insets left="75.0" />
                </GridPane.margin>
             </Label>
-            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="315.0" style="-fx-background-radius: 20;" text="Remplir son panier &gt;" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="315.0" style="-fx-background-radius: 20;" text="Remplir son panier &gt;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <font>
                   <Font name="Open Sans Bold" size="22.0" />
                </font>
@@ -125,7 +125,7 @@
                   <Font name="Open Sans" size="26.0" />
                </font>
             </TextField>
-            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="315.0" style="-fx-background-radius: 20;" text="Titre :" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="4">
+            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="315.0" style="-fx-background-radius: 20;" text="Titre :" GridPane.columnIndex="3" GridPane.rowIndex="4">
                <font>
                   <Font name="Open Sans" size="20.0" />
                </font>
@@ -133,7 +133,7 @@
                   <Insets bottom="20.0" left="20.0" />
                </GridPane.margin>
             </Label>
-            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="315.0" style="-fx-background-radius: 20;" text="Quantité :" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="5">
+            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="315.0" style="-fx-background-radius: 20;" text="Quantité :" GridPane.columnIndex="3" GridPane.rowIndex="5">
                <font>
                   <Font name="Open Sans" size="20.0" />
                </font>
@@ -141,7 +141,7 @@
                   <Insets bottom="270.0" left="20.0" />
                </GridPane.margin>
             </Label>
-            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="315.0" style="-fx-background-radius: 20;" text="Pour le client :" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="5">
+            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="315.0" style="-fx-background-radius: 20;" text="Pour le client :" GridPane.columnIndex="3" GridPane.rowIndex="5">
                <font>
                   <Font name="Open Sans" size="20.0" />
                </font>
@@ -157,7 +157,7 @@
                   <Insets bottom="70.0" />
                </GridPane.margin>
             </Button>
-            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="435.0" style="-fx-background-radius: 20;" text="Finaliser la commande du panier &gt;" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Label contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="435.0" style="-fx-background-radius: 20;" text="Finaliser la commande du panier &gt;" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <font>
                   <Font name="Open Sans Bold" size="22.0" />
                </font>
@@ -165,11 +165,11 @@
                   <Insets bottom="350.0" />
                </GridPane.margin>
             </Label>
-            <Button mnemonicParsing="false" style="-fx-background-color: 0; -fx-border-width: 1; -fx-border-color: black; -fx-border-radius: 20;" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="6">
+            <Button mnemonicParsing="false" style="-fx-background-color: 0; -fx-border-width: 1; -fx-border-color: black; -fx-border-radius: 20;" GridPane.columnIndex="3" GridPane.rowIndex="6">
                <graphic>
-                  <ImageView fx:id="idVendeurPanierClient" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#ouvrePanier" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="idVendeurPanierClient" fitHeight="150.0" fitWidth="144.0" onMouseClicked="#ouvrePanier" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../Téléchargements/panier.png" />
+                        <Image url="@../../../../../../../../../Téléchargements/panier.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -177,7 +177,7 @@
                   <Insets bottom="65.0" />
                </GridPane.margin>
             </Button>
-            <Label fx:id="idVendeurPanierClient" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#ouvrePanier" prefHeight="50.0" prefWidth="165.0" style="-fx-background-radius: 20;" text="Panier client" textAlignment="JUSTIFY" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="6">
+            <Label fx:id="idVendeurPanierClient" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#ouvrePanier" prefHeight="50.0" prefWidth="165.0" style="-fx-background-radius: 20;" text="Panier client" textAlignment="JUSTIFY" GridPane.columnIndex="3" GridPane.rowIndex="6">
                <font>
                   <Font name="Open Sans Bold" size="22.0" />
                </font>

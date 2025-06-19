@@ -63,7 +63,7 @@ public class ControllerClientHeader {
 
     @FXML
     void afficherProfil(MouseEvent event) {
-
+        app.afficherClientProfil(app.getStage());
     }
 
     @FXML

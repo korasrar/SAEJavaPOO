@@ -29,7 +29,7 @@
             <Font name="Open Sans Bold" size="27.0" />
          </font>
          <GridPane.margin>
-            <Insets bottom="100.0" />
+            <Insets top="10.0" />
          </GridPane.margin>
          <padding>
             <Insets left="100.0" />
@@ -39,6 +39,9 @@
          <font>
             <Font name="Open Sans Bold" size="27.0" />
          </font>
+         <GridPane.margin>
+            <Insets top="110.0" />
+         </GridPane.margin>
          <padding>
             <Insets bottom="100.0" left="75.0" />
          </padding>
@@ -47,13 +50,16 @@
          <font>
             <Font name="Open Sans Bold" size="27.0" />
          </font>
+         <GridPane.margin>
+            <Insets top="110.0" />
+         </GridPane.margin>
          <padding>
             <Insets bottom="100.0" left="330.0" />
          </padding>
       </Label>
-      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+      <ImageView fitHeight="100.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
          <GridPane.margin>
-            <Insets left="60.0" top="150.0" />
+            <Insets left="60.0" top="200.0" />
          </GridPane.margin>
          <image>
             <Image url="@../profil.png" />
@@ -106,17 +112,6 @@
          </font>
          <padding>
             <Insets bottom="220.0" left="50.0" />
-         </padding>
-         <GridPane.margin>
-            <Insets bottom="240.0" left="50.0" />
-         </GridPane.margin>
-      </Label>
-      <Label minWidth="-Infinity" text="Numéro :" textFill="#392727" GridPane.rowIndex="2">
-         <font>
-            <Font name="Open Sans" size="20.0" />
-         </font>
-         <padding>
-            <Insets bottom="140.0" left="50.0" />
          </padding>
          <GridPane.margin>
             <Insets bottom="240.0" left="50.0" />
@@ -175,11 +170,6 @@
             <Insets top="140.0" />
          </GridPane.margin>
       </TextField>
-      <TextField fx:id="idModifierNumeroTel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" promptText="[ID]" GridPane.columnIndex="2" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets top="220.0" />
-         </GridPane.margin>
-      </TextField>
       <TextField fx:id="idModifierAdresse" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" promptText="[ADDRESSE]" GridPane.columnIndex="2" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets top="300.0" />
@@ -195,7 +185,7 @@
             <Insets bottom="150.0" />
          </GridPane.margin>
       </TextField>
-      <Button fx:id="idButtonRetour" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#retourAccueil" prefHeight="52.0" prefWidth="148.0" style="-fx-background-radius: 20;" text="Retour" GridPane.rowIndex="2">
+      <Button fx:id="idButtonDeconnexion" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#deconnexion" prefHeight="52.0" prefWidth="148.0" style="-fx-background-radius: 20;" text="Déconnexion" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets left="120.0" right="50.0" />
          </GridPane.margin>
@@ -210,6 +200,14 @@
          <font>
             <Font name="System Bold" size="19.0" />
          </font>
+      </Button>
+      <Button fx:id="idButtonRetour" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#retourAccueil" prefHeight="52.0" prefWidth="148.0" style="-fx-background-radius: 20; -fx-background-color: 0; -fx-border-width: 1; -fx-border-color: black; -fx-border-radius: 15;" text="&lt; Retour">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+         <GridPane.margin>
+            <Insets bottom="150.0" left="50.0" />
+         </GridPane.margin>
       </Button>
    </children>
 </GridPane>

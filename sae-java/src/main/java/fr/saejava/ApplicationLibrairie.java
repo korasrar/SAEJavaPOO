@@ -156,23 +156,38 @@ public class ApplicationLibrairie extends javafx.application.Application {
     }
 
     public void afficherPanierView(Stage stage) {
-    try {
-        Stage stagePanier = new Stage();
-        stagePanier.initModality(Modality.APPLICATION_MODAL);
-        stagePanier.initOwner(stage);
-        FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierView.fxml"));
-        ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion);
-        panierLoader.setController(controllerPanier);
-        Pane panierPane = panierLoader.load();
-        Scene panierScene = new Scene(panierPane);
-        stagePanier.setScene(panierScene);
-        stagePanier.setTitle("Mon Panier");
-        stagePanier.showAndWait();
-    } catch (Exception e) {
-        afficherErreur("Erreur lors du chargement de la vue du panier : " + e.getMessage());
-        e.printStackTrace();
+        try {
+            Stage stagePanier = new Stage();
+            stagePanier.initModality(Modality.APPLICATION_MODAL);
+            stagePanier.initOwner(stage);
+            FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierView.fxml"));
+            ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion);
+            panierLoader.setController(controllerPanier);
+            Pane panierPane = panierLoader.load();
+            Scene panierScene = new Scene(panierPane);
+            stagePanier.setScene(panierScene);
+            stagePanier.setTitle("Mon Panier");
+            stagePanier.showAndWait();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue du panier : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-}
+
+    public void afficherConnexionView(Stage stage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ConnexionView.fxml"));
+            ControllerConnexion controllerConnexion = new ControllerConnexion(this, utilisateurConnexion);
+            loader.setController(controllerConnexion);
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Connexion");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue de connexion : " + e.getMessage());
+        }
+    }
 
     // --------------- Vue Utilisateur Main --------------- //
 
@@ -239,7 +254,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             Stage stageClientProfil = new Stage();
             stageClientProfil.initModality(Modality.APPLICATION_MODAL);
             stageClientProfil.initOwner(stage);
-            ControllerClientProfil controllerClientProfil = new ControllerClientProfil(this, utilisateurConnexion, clientConnexion);
+            ControllerClientProfil controllerClientProfil = new ControllerClientProfil(this, utilisateurConnexion, clientConnexion, stageClientProfil);
             loader.setController(controllerClientProfil);
             Pane paneClientProfil = loader.load();
             Scene sceneClientProfil = new Scene(paneClientProfil);
@@ -251,6 +266,11 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
+    public void fermerClientMainView(Stage stage) {
+        if (stage != null) {
+            stage.close();
+        }
+    }
 
     // Load la page de connexion par défaut
     @Override
