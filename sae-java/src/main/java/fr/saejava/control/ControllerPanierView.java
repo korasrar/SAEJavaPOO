@@ -157,7 +157,7 @@ public class ControllerPanierView {
     }
 
     @FXML
-    void finaliserCommande(MouseEvent event) {
+    public void finaliserCommande(MouseEvent event) {
         ModeLivraison modeLivraison = comboBoxLivraison.getValue();
         Magasin magasinChoisi = comboBoxChoixMagasin.getValue();
 
@@ -177,5 +177,8 @@ public class ControllerPanierView {
             app.afficherErreur("Un ou plusieurs livres ne sont pas disponibles dans le magasin choisi : " + e.getMessage());
             e.printStackTrace();
         }
+        panierActuel.viderCommande();
+        afficherPanier();
+        app.afficherInformation("Commande finalisée avec succès !");
     }
 }

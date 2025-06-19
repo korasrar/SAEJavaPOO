@@ -170,6 +170,22 @@ public class VendeurBD {
         }
     }
 
+    public Integer getQteDispo(Livre l) throws SQLException{
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn");
+        if (r.next()){
+            int qteDispo = r.getInt("qtett");
+            if (r != null) r.close();
+            st.close();
+            return qteDispo;
+        }
+        else {
+            r.close();
+            st.close();
+            return 0;
+        }
+    }
+
     public boolean verifierQteDispo(Livre l, int qte, Magasin magasin) throws SQLException, PasStockPourLivreException{
         Statement st = connexion.createStatement();
         ResultSet r = st.executeQuery("SELECT SUM(qte) qtett FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' group by isbn and idmag = "+magasin.getId());
