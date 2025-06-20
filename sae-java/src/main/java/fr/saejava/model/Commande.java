@@ -69,11 +69,11 @@ public class Commande {
 
     @Override
     public String toString(){
-        String res=" ";
-        for(DetailCommande article:this.contenue){
-            res+=article;
-        }
-        return res;
+        return "Commande :" +
+                "numcom=" + numcom +
+                ", dateCom=" + dateCom +
+                ", magasin=" + magasin +
+                ", modeLivraison=" + modeLivraison;
     }
 
     @Override

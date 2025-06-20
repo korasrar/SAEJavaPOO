@@ -271,6 +271,24 @@ public class ApplicationLibrairie extends javafx.application.Application {
         }
     }
 
+    public void afficherHistoriqueCommandeView(Stage stage) {
+        try {
+            Stage stageHistorique = new Stage();
+            stageHistorique.initModality(Modality.APPLICATION_MODAL);
+            stageHistorique.initOwner(stage);
+            FXMLLoader historiqueLoader = new FXMLLoader(getClass().getResource("/view/HistoriqueCommandeView.fxml"));
+            ControllerHistoriqueCommande controllerHistorique = new ControllerHistoriqueCommande(this, utilisateurConnexion, commandeConnexion, stageHistorique);
+            historiqueLoader.setController(controllerHistorique);
+            Pane historiquePane = historiqueLoader.load();
+            Scene historiqueScene = new Scene(historiquePane);
+            stageHistorique.setScene(historiqueScene);
+            stageHistorique.setTitle("Historique des Commandes");
+            stageHistorique.showAndWait();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue de l'historique des commandes : " + e.getMessage());
+        }
+    }
+
     //public void afficherRechercheLivreVendeurView(Stage stage, String titreLivre){
     //        loader = new FXMLLoader(getClass().getResource("/view/RechercheLivreView.fxml"));
     //        try {

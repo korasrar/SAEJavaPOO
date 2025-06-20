@@ -15,6 +15,9 @@ import fr.saejava.model.*;
 public class ControllerClientProfil{
 
     @FXML
+    private Button buttonEditerFacture;
+    
+    @FXML
     private Button idButtonConfimer;
 
     @FXML
@@ -118,5 +121,10 @@ public class ControllerClientProfil{
         stage.close();
         app.fermerClientMainView(app.getStage());
         app.afficherConnexionView(stage);
+    }
+
+    @FXML
+    void afficherHistoriqueCommande(MouseEvent event) {
+            app.afficherHistoriqueCommandeView(stage);
     }
 }
