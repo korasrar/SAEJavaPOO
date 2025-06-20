@@ -1,5 +1,6 @@
 package fr.saejava.model;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -56,6 +57,7 @@ public class Client extends Utilisateur{
         this.codePostal = codePostal;
     }
 
+
     @Override
     public boolean equals(Object obj){
         if(obj == null){return false;}
@@ -80,7 +82,11 @@ public class Client extends Utilisateur{
     public void editerFacture(Commande commande){
         Document document = new Document();
         try{
-            PdfWriter.getInstance(document, new FileOutputStream("./facture/facture_client_"+this.num+"_commande_"+commande.getNumcom()+".pdf"));
+            File dossierFacture = new File("facture");
+            if (!dossierFacture.exists()) {
+                dossierFacture.mkdir();
+            }
+            PdfWriter.getInstance(document, new FileOutputStream("facture/facture_client_"+this.num+"_commande_"+commande.getNumcom()+".pdf"));
             document.open();
             Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
             Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);

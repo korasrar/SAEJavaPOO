@@ -3,33 +3,8 @@ package fr.saejava;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 
-import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
-
-import fr.saejava.control.ControllerClientAccueil;
-import fr.saejava.control.ControllerClientHeader;
-import fr.saejava.control.ControllerConnexion;
-import fr.saejava.control.ControllerGererStock;
-import fr.saejava.control.ControllerInscription;
-import fr.saejava.control.ControllerPanierView;
-import fr.saejava.control.ControllerRechercherLivre;
-import fr.saejava.control.ControllerRechercherLivre;
-import fr.saejava.control.ControllerRechercherLivreVendeur;
-import fr.saejava.control.ControllerVendeurAcceuil;
-import fr.saejava.control.ControllerGererStock;
-import fr.saejava.control.ControllerVendeurTransfererLivre;
-import fr.saejava.control.ControllerVendeurHeader;
-import fr.saejava.model.AdminBD;
-import fr.saejava.model.ClientBD;
-import fr.saejava.model.Commande;
-import fr.saejava.model.CommandeBD;
-import fr.saejava.model.ConnexionMySQL;
-import fr.saejava.model.Livre;
-import fr.saejava.model.LivreBD;
-import fr.saejava.model.MagasinBD;
-import fr.saejava.model.Utilisateur;
-import fr.saejava.model.UtilisateurBD;
-import fr.saejava.model.VendeurBD;
+import fr.saejava.control.*;
+import fr.saejava.model.*;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -119,6 +94,8 @@ public class ApplicationLibrairie extends javafx.application.Application {
     public void afficherAjoutMagasinView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/AjoutMagasinView.fxml"));
         try {
+            ControllerAjouteMagasin controller = new ControllerAjouteMagasin(this, utilisateurConnexion,this.adminConnexion);
+            loader.setController(controller);
             this.root = loader.load();
             this.scene = new Scene(this.root);
             stage.setScene(scene);
@@ -126,6 +103,22 @@ public class ApplicationLibrairie extends javafx.application.Application {
             stage.show();
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue d'ajout de magasin : " + e.getMessage());
+        }
+    }
+
+    public void afficherAjoutVendeurView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/AjoutVendeurView.fxml"));
+        try {
+            ControllerAjouteVendeur controller = new ControllerAjouteVendeur(this, utilisateurConnexion,this.adminConnexion,this.magasinConnexion);
+            loader.setController(controller);
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Ajout d'un vendeur");
+            controller.chargeComboMagasin();
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue d'ajout de vendeur : " + e.getMessage());
         }
     }
 
@@ -143,6 +136,8 @@ public class ApplicationLibrairie extends javafx.application.Application {
             afficherErreur("Erreur lors du chargement de la vue de connexion : " + e.getMessage());
         }
     }
+
+
 
     public void afficherInscriptionView(Stage stage){
         loader = new FXMLLoader(getClass().getResource("/view/InscriptionView.fxml"));
@@ -164,7 +159,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             Stage stagePanier = new Stage();
             stagePanier.initModality(Modality.APPLICATION_MODAL);
             stagePanier.initOwner(stage);
-            FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierView.fxml"));
+            FXMLLoader panierLoader = new FXMLLoader(getClass().getResource("/view/PanierClient.fxml"));
             ControllerPanierView controllerPanier = new ControllerPanierView(this, clientConnexion, utilisateurConnexion, commandeConnexion, magasinConnexion);
             panierLoader.setController(controllerPanier);
             Pane panierPane = panierLoader.load();
@@ -197,6 +192,91 @@ public class ApplicationLibrairie extends javafx.application.Application {
                 e.printStackTrace();
             }
         }
+    public void afficherVendeurTransfererLivre(Stage stage) { // A coder
+        try {
+            FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurTransfereLivreContainer.fxml"));
+            BorderPane mainPane = mainLoader.load();
+            
+            FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
+            ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
+            headerLoader.setController(headerController);
+            Pane headerPane = headerLoader.load();
+            
+            FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurTransfereLivre.fxml"));
+            ControllerVendeurTransfererLivre centerController = new ControllerVendeurTransfererLivre(this, vendeurConnexion, utilisateurConnexion);
+            centerLoader.setController(centerController);
+            Pane centerPane = centerLoader.load();
+            
+            mainPane.setTop(headerPane);
+            mainPane.setCenter(centerPane);
+            
+            this.root = mainPane;
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Menu Transférer Livre");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue transférer du Vendeur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void afficherClientProfil(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/ClientProfil.fxml"));
+        try {
+            Stage stageClientProfil = new Stage();
+            stageClientProfil.initModality(Modality.APPLICATION_MODAL);
+            stageClientProfil.initOwner(stage);
+            ControllerClientProfil controllerClientProfil = new ControllerClientProfil(this, utilisateurConnexion, clientConnexion, stageClientProfil);
+            loader.setController(controllerClientProfil);
+            Pane paneClientProfil = loader.load();
+            Scene sceneClientProfil = new Scene(paneClientProfil);
+            stageClientProfil.setScene(sceneClientProfil);
+            stageClientProfil.setTitle("Profil Client");
+            stageClientProfil.showAndWait();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue de profil client : " + e.getMessage());
+        }
+    }
+
+    public void fermerClientMainView(Stage stage) {
+        if (stage != null) {
+            stage.close();
+        }
+    }
+
+    public void afficherConnexionView(Stage stage) {
+        loader = new FXMLLoader(getClass().getResource("/view/ConnexionView.fxml"));
+        try {
+            ControllerConnexion controllerConnexion = new ControllerConnexion(this, utilisateurConnexion);
+            loader.setController(controllerConnexion);
+            this.root = loader.load();
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Connexion");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue de connexion : " + e.getMessage());
+        }
+    }
+
+    public void afficherHistoriqueCommandeView(Stage stage) {
+        try {
+            Stage stageHistorique = new Stage();
+            stageHistorique.initModality(Modality.APPLICATION_MODAL);
+            stageHistorique.initOwner(stage);
+            FXMLLoader historiqueLoader = new FXMLLoader(getClass().getResource("/view/HistoriqueCommandeView.fxml"));
+            ControllerHistoriqueCommande controllerHistorique = new ControllerHistoriqueCommande(this, utilisateurConnexion, commandeConnexion, stageHistorique);
+            historiqueLoader.setController(controllerHistorique);
+            Pane historiquePane = historiqueLoader.load();
+            Scene historiqueScene = new Scene(historiquePane);
+            stageHistorique.setScene(historiqueScene);
+            stageHistorique.setTitle("Historique des Commandes");
+            stageHistorique.showAndWait();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue de l'historique des commandes : " + e.getMessage());
+        }
+    }
 
     // --------------- Vue Utilisateur Main --------------- //
 
@@ -211,7 +291,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
             Pane headerPane = headerLoader.load();
 
             FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/ClientAccueilView.fxml"));
-            ControllerClientAccueil centerController = new ControllerClientAccueil(this, utilisateurConnexion, clientConnexion);
+            ControllerClientAccueil centerController = new ControllerClientAccueil(this, utilisateurConnexion, clientConnexion, vendeurConnexion);
             centerLoader.setController(centerController);
             Pane centerPane = centerLoader.load();
             
@@ -251,79 +331,92 @@ public class ApplicationLibrairie extends javafx.application.Application {
             stage.setScene(scene);
             stage.setTitle("Menu Vendeur");
             stage.show();
+            
         } catch (Exception e) {
             afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    public void afficherAdminMenueVendeur(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/adminMenueVendeur.fxml"));
+        try{
+            ControllerAdminMenueVendeur controllerAdminMenueVendeur=new ControllerAdminMenueVendeur(this, this.utilisateurConnexion, this.magasinConnexion);
+            loader.setController(controllerAdminMenueVendeur);
+            this.root=loader.load();
+            controllerAdminMenueVendeur.chargeComboMagasin();
+            this.scene=new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Admin Menue Vendeur");
+            stage.show();
 
-public void afficherVendeurTransfererLivre(Stage stage) { // A coder
-    try {
-        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurTransfereLivreContainer.fxml"));
-        BorderPane mainPane = mainLoader.load();
-        
-        FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
-        ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
-        headerLoader.setController(headerController);
-        Pane headerPane = headerLoader.load();
-        
-        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurTransfereLivre.fxml"));
-        ControllerVendeurTransfererLivre centerController = new ControllerVendeurTransfererLivre(this, vendeurConnexion, utilisateurConnexion);
-        centerLoader.setController(centerController);
-        Pane centerPane = centerLoader.load();
-        
-        mainPane.setTop(headerPane);
-        mainPane.setCenter(centerPane);
-        
-        this.root = mainPane;
-        this.scene = new Scene(this.root);
-        stage.setScene(scene);
-        stage.setTitle("Menu Transférer Livre");
-        stage.show();
-    } catch (Exception e) {
-        afficherErreur("Erreur lors du chargement de la vue transférer du Vendeur : " + e.getMessage());
-        e.printStackTrace();
+        }
+        catch(Exception e){
+            afficherErreur("Erreur lors du chargement de la vue admin menue vendeur : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-}
+
 //===============================================================================================================================
-public void afficherVendeurGererStock(Stage stage) { 
-    try {
-        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStockContainer.fxml"));
-        BorderPane mainPane = mainLoader.load();
-        
-        FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
-        ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
-        headerLoader.setController(headerController);
-        Pane headerPane = headerLoader.load();
-        
-        FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStock.fxml"));
-        ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion, magasinConnexion, livreConnexion, stage);
-        centerLoader.setController(centerController);
-        Pane centerPane = centerLoader.load();
-        
-        mainPane.setTop(headerPane);
-        mainPane.setCenter(centerPane);
-        
-        this.root = mainPane;
-        this.scene = new Scene(this.root);
-        stage.setScene(scene);
-        stage.setTitle("Menu Gérer Stock");
-        stage.show();
-    } catch (Exception e) {
-        afficherErreur("Erreur lors du chargement de la vue gerer stock du Vendeur : " + e.getMessage());
-        e.printStackTrace();
+    public void afficherVendeurGererStock(Stage stage) { 
+        try {
+            FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStockContainer.fxml"));
+            BorderPane mainPane = mainLoader.load();
+            
+            FXMLLoader headerLoader = new FXMLLoader(getClass().getResource("/view/VendeurHeaderView.fxml"));
+            ControllerVendeurHeader headerController = new ControllerVendeurHeader(this);
+            headerLoader.setController(headerController);
+            Pane headerPane = headerLoader.load();
+            
+            FXMLLoader centerLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStock.fxml"));
+            ControllerGererStock centerController = new ControllerGererStock(this, vendeurConnexion, utilisateurConnexion, magasinConnexion, livreConnexion, stage);
+            centerLoader.setController(centerController);
+            Pane centerPane = centerLoader.load();
+            
+            mainPane.setTop(headerPane);
+            mainPane.setCenter(centerPane);
+            
+            this.root = mainPane;
+            this.scene = new Scene(this.root);
+            stage.setScene(scene);
+            stage.setTitle("Menu Gérer Stock");
+            stage.show();
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue gerer stock du Vendeur : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-}
-//===============================================================================================================================
-    // Load la page de connexion par défaut
+
+    public void afficherAdminMainView(Stage stage){
+        loader = new FXMLLoader(getClass().getResource("/view/admin.fxml"));
+        try {
+            ControllerAdmin controllerAdmin = new ControllerAdmin(this, this.utilisateurConnexion,this.magasinConnexion,this.adminConnexion);
+            System.out.println("Affichage de la vue Admin1");
+            loader.setController(controllerAdmin);
+            System.out.println("Affichage de la vue Admin2");
+            this.root = loader.load();
+            System.out.println("Affichage de la vue Admin3");
+            this.scene = new Scene(this.root);
+            System.out.println("Affichage de la vue Admin4");
+            stage.setScene(scene);
+            System.out.println("Affichage de la vue Admin5");
+            controllerAdmin.chargeComboMagasin();
+            controllerAdmin.initComboTypeChart();
+            stage.setTitle("Menu Vendeur");
+            stage.show();
+            
+        } catch (Exception e) {
+            afficherErreur("Erreur lors du chargement de la vue main du Vendeur : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         estConnecteBD= false;
         try {
             connexion = new ConnexionMySQL();
-            connexion.connecter("servinfo-maria", "DBkerrien", "kerrien", "kerrien");
-
+            connexion.connecter("servinfo-maria", "DBcosme", "cosme", "cosme");
             // Partage de la connexion avec les autres classes
 
             utilisateurConnexion = new UtilisateurBD(connexion);

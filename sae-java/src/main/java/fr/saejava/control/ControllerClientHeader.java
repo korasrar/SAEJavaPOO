@@ -1,5 +1,6 @@
 package fr.saejava.control;
 
+
 import fr.saejava.ApplicationLibrairie;
 import fr.saejava.model.ClientBD;
 import fr.saejava.model.UtilisateurBD;
@@ -40,6 +41,7 @@ public class ControllerClientHeader {
         this.app=app;
         this.clientBD=clientBD;
         this.utilisateurBD=utilisateurBD;
+        this.utilisateurBD=utilisateurBD;
     }
 
     @FXML
@@ -61,7 +63,7 @@ public class ControllerClientHeader {
 
     @FXML
     void afficherProfil(MouseEvent event) {
-
+        app.afficherClientProfil(app.getStage());
     }
 
     @FXML

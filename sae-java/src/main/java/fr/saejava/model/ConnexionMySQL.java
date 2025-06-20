@@ -10,10 +10,10 @@ public class ConnexionMySQL {
     // Connection avec JDBC 
     private Connection mysql=null;
 	private boolean connecte=false;
-
+	
 	public ConnexionMySQL() throws ClassNotFoundException{
-        Class.forName("org.mariadb.jdbc.Driver");
-    }
+		Class.forName("org.mariadb.jdbc.Driver");
+	}
 
 	/**
 	 * pour connecter tout à la base de données MySQL
@@ -26,7 +26,7 @@ public class ConnexionMySQL {
     public void connecter(String nomServeur, String nomBase, String nomLogin, String motDePasse) throws SQLException {
         System.out.println("Tentative de connection...");
         try {
-            mysql=DriverManager.getConnection("jdbc:mariadb://"+nomServeur+":3306/"+nomBase,nomLogin,motDePasse);
+            mysql=DriverManager.getConnection("jdbc:mariadb://servinfo-maria:3306/DBmaubert","maubert","maubert");
             System.out.println("Connection réussi");
             } catch (SQLException ex){
                 System.out.println("Voici le message d'erreur : "+ex.getMessage()+
@@ -34,6 +34,10 @@ public class ConnexionMySQL {
             }
         this.connecte=this.mysql!=null;
     }
+
+	public void close() throws SQLException {
+		this.connecte=false;
+	}
 
     	public boolean isConnecte() { return this.connecte;}
 	public Statement createStatement() throws SQLException {

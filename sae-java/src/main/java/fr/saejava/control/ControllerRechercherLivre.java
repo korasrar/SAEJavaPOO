@@ -59,6 +59,7 @@ public class ControllerRechercherLivre {
 
     @FXML
     public void initialize(){
+        buttonAjouterPanier.setDisable(true);
         try{
         List<Livre> livreDispo = new ArrayList<>();
         Map<Livre,Boolean> mapLivres = livreBD.rechercherLivre(Filtre.titre, "", livreARechercher, "", vendeurBD);
@@ -77,6 +78,7 @@ public class ControllerRechercherLivre {
     @FXML
     void ajouterAuPanier(MouseEvent event) {
         ((Client) utilisateurBD.getUtilisateurConnecter()).ajouterLivre(livreSelectionner, comboBoxQuantité.getSelectionModel().getSelectedItem());
+        app.afficherInformation("Livre ajouté au panier avec succès !");
         retour(null);
     }
 
@@ -87,6 +89,7 @@ public class ControllerRechercherLivre {
 
     @FXML
     void selectionnerLivre(MouseEvent event) {
+        buttonAjouterPanier.setDisable(false);
         livreSelectionner = listViewResultatRecherche.getSelectionModel().getSelectedItem();
         comboBoxQuantité.getItems().clear();
         Integer quantiteMax = 0;
