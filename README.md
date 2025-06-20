@@ -29,7 +29,7 @@ tableau de bord de votre SAE « Exploitation d’une base de données », de gé
 - Docker Compose
 - Vérifier que le port 3306 est disponible !
 
-### Commandes de lancement
+### Commandes de lancement pour la partie 1
 
 ```bash
 # Cloner le projet
@@ -47,3 +47,16 @@ docker-compose build
 # Lancer l'application
 docker-compose run --rm app
 ```
+
+### Commandes de lancement pour la partie 2
+
+```bash
+# Cloner le projet
+git clone https://github.com/korasrar/SAEJavaPOO.git
+cd SAEJavaPOO
+
+# Compiler le projet Java en .jar
+cd sae-java
+mvn javafx:run
+```
+

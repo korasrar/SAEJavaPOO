@@ -12,7 +12,7 @@ public class ConnexionMySQL {
 	private boolean connecte=false;
 	
 	public ConnexionMySQL() throws ClassNotFoundException{
-		Class.forName("com.mysql.cj.jdbc.Driver");
+		Class.forName("org.mariadb.jdbc.Driver");
 	}
 
 	/**
@@ -26,7 +26,7 @@ public class ConnexionMySQL {
     public void connecter(String nomServeur, String nomBase, String nomLogin, String motDePasse) throws SQLException {
         System.out.println("Tentative de connection...");
         try {
-            mysql=DriverManager.getConnection("jdbc:mariadb://localhost:3306/librairie","root","44314431aqw!A");
+            mysql=DriverManager.getConnection("jdbc:mariadb://servinfo-maria:3306/DBmaubert","maubert","maubert");
             System.out.println("Connection réussi");
             } catch (SQLException ex){
                 System.out.println("Voici le message d'erreur : "+ex.getMessage()+
