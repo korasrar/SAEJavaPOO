@@ -185,7 +185,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
                 Stage stageRechercheLivre = new Stage();
                 stageRechercheLivre.initModality(Modality.APPLICATION_MODAL);
                 stageRechercheLivre.initOwner(stage);
-                ControllerRechercherLivreVendeur controllerRechercherLivre = new ControllerRechercherLivreVendeur(this, stageRechercheLivre, titreLivre, livreConnexion);
+                ControllerRechercherLivreVendeur controllerRechercherLivre = new ControllerRechercherLivreVendeur(this, stageRechercheLivre, titreLivre, livreConnexion, vendeurConnexion, magasinConnexion, utilisateurConnexion);
                 loader.setController(controllerRechercherLivre);
                 Pane paneRechercheLivre = loader.load();
                 Scene sceneRechercheLivre = new Scene(paneRechercheLivre);
@@ -194,6 +194,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
                 stageRechercheLivre.showAndWait();
             } catch (Exception e) {
                 afficherErreur("Erreur lors du chargement de la vue de recherche de livre : " + e.getMessage());
+                e.printStackTrace();
             }
         }
 
@@ -286,7 +287,7 @@ public void afficherVendeurTransfererLivre(Stage stage) { // A coder
     }
 }
 //===============================================================================================================================
-public void afficherVendeurGererStock(Stage stage) { // A coder
+public void afficherVendeurGererStock(Stage stage) { 
     try {
         FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/view/VendeurGererStockContainer.fxml"));
         BorderPane mainPane = mainLoader.load();

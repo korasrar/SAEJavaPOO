@@ -10,6 +10,7 @@ import com.mysql.cj.conf.PropertyDefinitions.SslMode;
 import fr.saejava.ApplicationLibrairie;
 import fr.saejava.model.Livre;
 import fr.saejava.model.LivreBD;
+import fr.saejava.model.LivrePasDansStockMagasinException;
 import fr.saejava.model.Magasin;
 import fr.saejava.model.MagasinBD;
 import fr.saejava.model.UtilisateurBD;
@@ -81,6 +82,7 @@ public class ControllerGererStock {
     private MagasinBD magasinBD;
     private LivreBD livreBD;
     private Stage stage;
+    private boolean nouveauLivreUsed;
 
         public ControllerGererStock(ApplicationLibrairie app, VendeurBD vendeurBD, UtilisateurBD utilisateurBD, MagasinBD magasinBD, LivreBD livreBD, Stage stage) throws SQLException{
             this.app = app;
@@ -88,6 +90,9 @@ public class ControllerGererStock {
             this.utilisateurBD = utilisateurBD;
             this.vendeurBD = vendeurBD;
             this.magasinBD = magasinBD;
+            this.livreBD = livreBD;
+            this.stage = stage;
+            this.nouveauLivreUsed = false;
         }
 
         @FXML
@@ -118,6 +123,7 @@ public class ControllerGererStock {
         @FXML
         public void nouveauLivre(MouseEvent event) {
             this.buttonGererStockNouveauLivre = (Button) (event.getSource());
+            this.nouveauLivreUsed = true;
 
             this.textFieldGererStockISBN.setDisable(false);
             this.textFieldGererStockTitre.setDisable(false);
@@ -142,11 +148,33 @@ public class ControllerGererStock {
         }
 
         @FXML
-        public void rechercheTitre(KeyEvent event){
+        public void rechercheTitre(KeyEvent event) throws SQLException, VendeurSansMagasinException{
             if(event.getCode() == KeyCode.ENTER){
                 app.afficherRechercheLivreVendeurView(app.getStage(), textFieldGererStockTitreLivre.getText());
-                //ControllerRechercherLivreVendeur lesLivres = new ControllerRechercherLivreVendeur(app, stage, this.textFieldGererStockTitreLivre.getText(), livreBD);
-                //System.out.println(lesLivres);
+                this.buttonGererStockSupprimer.setDisable(false);
+                if (livreBD.getLivreSelectionner() != null){
+                    Livre selection = livreBD.getLivreSelectionner();
+                    this.labelGererStockISBN.setText("ISBN : "+selection.getIsbn());
+                    this.labelGererStockTitre.setText("Titre : "+selection.getTitre());
+                    this.labelGererStockNBPages.setText("Nombre de Pages : "+selection.getNbPages());
+                    this.labelGererStockDatePubli.setText("Date de Publication : "+selection.getDatePubli());
+                    this.labelGererStockPrix.setText("Prix : "+selection.getPrix());
+                    this.labelGererStockQuantite.setText("Quantité : "+magasinBD.getQuantiteLivre(selection, this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId())));
+                
+                    this.textFieldGererStockISBN.setText(selection.getIsbn());
+                    this.textFieldGererStockTitre.setText(selection.getTitre());
+                    this.textFieldGererStockNBPages.setText(String.valueOf(selection.getNbPages()));
+                    this.textFieldGererStockDatePubli.setText(selection.getDatePubli());
+                    this.textFieldGererStockPrix.setText(String.valueOf(selection.getPrix()));
+                    this.textFieldGererStockQuantite.setText(String.valueOf(magasinBD.getQuantiteLivre(selection, this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()))));
+
+                    //this.textFieldGererStockISBN.setDisable(false);
+                    this.textFieldGererStockTitre.setDisable(false);
+                    this.textFieldGererStockNBPages.setDisable(false);
+                    this.textFieldGererStockDatePubli.setDisable(false);
+                    this.textFieldGererStockPrix.setDisable(false);
+                    this.textFieldGererStockQuantite.setDisable(false);
+                }
             }
         }
 
@@ -202,7 +230,7 @@ public class ControllerGererStock {
         }
 
         @FXML
-        public void enregistrer(MouseEvent event) throws NumberFormatException, SQLException, VendeurSansMagasinException, ISBNInvalideException {
+        public void enregistrer(MouseEvent event) throws NumberFormatException, SQLException, VendeurSansMagasinException, ISBNInvalideException, LivrePasDansStockMagasinException {
             this.buttonGererStockEnregistrer = (Button) (event.getSource());
             System.out.println("1");
             try{
@@ -216,12 +244,17 @@ public class ControllerGererStock {
                     }
                     else{
                         Livre livre = new Livre(this.textFieldGererStockISBN.getText(), this.textFieldGererStockTitre.getText(), Integer.parseInt(this.textFieldGererStockNBPages.getText()), this.textFieldGererStockDatePubli.getText(), Double.parseDouble(this.textFieldGererStockPrix.getText()));
-                        System.out.println("2");
+                        if (this.nouveauLivreUsed == true){
 
-                        this.magasinBD.ajoutStock(this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()), livre, Integer.parseInt(this.textFieldGererStockQuantite.getText()));
-                        System.out.println("3");
+                            this.magasinBD.ajoutStock(this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()), livre, Integer.parseInt(this.textFieldGererStockQuantite.getText()));
 
-                        System.out.println(livre);
+                            System.out.println(livre);
+                            this.nouveauLivreUsed = false;
+                        }
+                        else{
+                            this.vendeurBD.mettreAJourLivre(livre, this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()));
+                            this.magasinBD.ajoutStock(this.vendeurBD.getMagasin(this.utilisateurBD.getUtilisateurConnecter().getId()), livre, Integer.parseInt(this.textFieldGererStockQuantite.getText()));
+                        }
                     }
                 }
             }
@@ -241,6 +274,6 @@ public class ControllerGererStock {
             
             @FXML
             public void supprimer(MouseEvent event) {
-
+                this.buttonGererStockSupprimer = (Button) (event.getSource());
             }
 }       

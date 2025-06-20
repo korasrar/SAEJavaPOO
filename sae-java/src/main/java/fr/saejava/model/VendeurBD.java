@@ -56,7 +56,7 @@ public class VendeurBD {
         Statement st = connexion.createStatement();
         ResultSet r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
         if(r.next()){
-            if (r.getInt("qte")<= qte){
+            if (r.getInt("qte") == 0){
                 if (r != null) r.close();
                 st.close();
                 throw new LivrePasDansStockMagasinException();
@@ -73,8 +73,10 @@ public class VendeurBD {
                 st.executeUpdate("UPDATE POSSEDER SET qte = " + nouvelleQte + " WHERE isbn = '" + l.getIsbn() + "' AND idmag = " + mag.getId());
             }
             else {
-                //ok
             }
+        }
+        else{
+            throw new LivrePasDansStockMagasinException();
         }
         st.close();
     }
@@ -238,6 +240,35 @@ public class VendeurBD {
             listMeilleursVente.add(livre);
         }
         return listMeilleursVente;
+    }
+
+    public void mettreAJourLivre(Livre l, Magasin mag) throws SQLException, LivrePasDansStockMagasinException{
+        Statement st = connexion.createStatement();
+        ResultSet r = st.executeQuery("SELECT * FROM POSSEDER WHERE isbn = '"+l.getIsbn()+"' AND idmag = "+mag.getId());
+        if(r.next()){
+            if (r.getInt("qte") == 0){
+                if (r != null) r.close();
+                st.close();
+                throw new LivrePasDansStockMagasinException();
+            }
+            //if (verifierDispo(mag, l)){
+                //r = st.executeQuery("SELECT qte FROM LIVRE where isbn = '"+l.getIsbn());
+                //Integer quantiteInit = null;
+                //if(r.next()){
+                //    quantiteInit = r.getInt("qte");
+                //}
+                //Integer nouvelleQte = quantiteInit + qte;
+                //if (r != null) r.close();
+                //r.close();
+                st.executeUpdate("UPDATE LIVRE SET titre = " + l.getTitre() + " AND nbpages = " + l.getNbPages() + " AND datepubli = " + l.getDatePubli() + " AND prix = " + l.getPrix() + " WHERE isbn = '" + l.getIsbn());
+            //}
+            //else {
+            //}
+        }
+        else{
+            throw new LivrePasDansStockMagasinException();
+        }
+        st.close();
     }
 
 
