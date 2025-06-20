@@ -10,6 +10,7 @@ import fr.saejava.model.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
@@ -25,6 +26,9 @@ public class ControllerRechercherLivre {
 
     @FXML
     private Button buttonRetour;
+
+    @FXML
+    private ComboBox<Integer> comboBoxQuantité;
     
     @FXML
     private ListView<Livre> listViewResultatRecherche;
@@ -55,6 +59,7 @@ public class ControllerRechercherLivre {
 
     @FXML
     public void initialize(){
+        buttonAjouterPanier.setDisable(true);
         try{
         List<Livre> livreDispo = new ArrayList<>();
         Map<Livre,Boolean> mapLivres = livreBD.rechercherLivre(Filtre.titre, "", livreARechercher, "", vendeurBD);
@@ -72,7 +77,8 @@ public class ControllerRechercherLivre {
 
     @FXML
     void ajouterAuPanier(MouseEvent event) {
-        ((Client) utilisateurBD.getUtilisateurConnecter()).ajouterLivre(livreSelectionner,1);
+        ((Client) utilisateurBD.getUtilisateurConnecter()).ajouterLivre(livreSelectionner, comboBoxQuantité.getSelectionModel().getSelectedItem());
+        app.afficherInformation("Livre ajouté au panier avec succès !");
         retour(null);
     }
 
@@ -83,7 +89,27 @@ public class ControllerRechercherLivre {
 
     @FXML
     void selectionnerLivre(MouseEvent event) {
+        buttonAjouterPanier.setDisable(false);
         livreSelectionner = listViewResultatRecherche.getSelectionModel().getSelectedItem();
+        comboBoxQuantité.getItems().clear();
+        Integer quantiteMax = 0;
+        if (livreSelectionner != null) {
+            try{
+                quantiteMax = vendeurBD.getQteDispo(livreSelectionner);
+            }
+            catch (SQLException e) {
+                app.afficherErreur("Erreur lors de la récupération de la quantité disponible : " + e.getMessage());
+                return;
+            }
+            for (int i = 1; i <= quantiteMax; i++) {
+                comboBoxQuantité.getItems().add(i);
+            }
+            if (!comboBoxQuantité.getItems().isEmpty()) {
+                comboBoxQuantité.getSelectionModel().selectFirst();
+            }
+        } else {
+            app.afficherInformation("Veuillez sélectionner un livre.");
+        }
     }
 
 }

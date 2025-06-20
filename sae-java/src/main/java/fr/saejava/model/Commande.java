@@ -140,4 +140,8 @@ public class Commande {
     public void supprimerDetail(DetailCommande detail) {
         this.contenue.remove(detail);
     }
+
+    public void viderCommande() {
+        this.contenue.clear();
+    }
 }

@@ -12,7 +12,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="logoLibrairieHome" fitHeight="75.0" fitWidth="182.0" onMouseClicked="#retourAcceuil" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="75.0" fitWidth="182.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/logo.png" />
          </image>
@@ -35,7 +35,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ImageView fx:id="logoUserProfil" fitHeight="45.0" fitWidth="142.0" onMouseClicked="#afficherProfil" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="45.0" fitWidth="142.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/userIcon.png" />
                </image>
