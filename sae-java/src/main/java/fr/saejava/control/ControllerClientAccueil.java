@@ -12,9 +12,7 @@ import java.util.ResourceBundle;
 import java.sql.SQLException;
 import fr.saejava.ApplicationLibrairie;
 import fr.saejava.model.*;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.scene.control.Label;
 
 
 

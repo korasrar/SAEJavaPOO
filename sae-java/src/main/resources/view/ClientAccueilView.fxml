@@ -86,7 +86,15 @@
             <Insets left="85.0" top="20.0" />
          </GridPane.margin>
       </TextArea>
-      <ListView fx:id="listViewMeileurVentes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="235.0" prefWidth="838.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <ImageView fitHeight="359.0" fitWidth="248.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1">
+         <image>
+            <Image url="@../img/cover.jpg" />
+         </image>
+         <GridPane.margin>
+            <Insets left="120.0" top="40.0" />
+         </GridPane.margin>
+      </ImageView>
+      <ListView fx:id="listViewMeiileurVentes" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="235.0" prefWidth="838.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
       <Button fx:id="buttonAjouterPanier" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#ajouterPanier" prefHeight="48.0" prefWidth="179.0" style="-fx-background-color: #1252b8;" text="Ajouter au panier!" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets left="100.0" top="200.0" />

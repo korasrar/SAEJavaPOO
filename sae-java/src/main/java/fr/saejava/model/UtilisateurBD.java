@@ -45,8 +45,9 @@ public class UtilisateurBD {
                         case client:
                             int idCli = r.getInt("idcli");
                             String adresse = r.getString("adressecli");
+                            String ville = r.getString("villecli");
                             int codePostal = r.getInt("codepostal");
-                            return new Client(idCli, adresse, motDePasse, codePostal, nom, prenom, username, motDePasse);
+                            return new Client(idCli, adresse, ville, codePostal, nom, prenom, username, motDePasse);
                         default:
                             return null;
                     }
@@ -84,5 +85,9 @@ public class UtilisateurBD {
 
     public Utilisateur getUtilisateurConnecter(){
         return utilisateurConnecter;
+    }
+
+    public void deconnecter() {
+        this.utilisateurConnecter = null;
     }
 }

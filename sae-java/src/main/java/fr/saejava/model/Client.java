@@ -56,6 +56,7 @@ public class Client extends Utilisateur{
         this.codePostal = codePostal;
     }
 
+
     @Override
     public boolean equals(Object obj){
         if(obj == null){return false;}

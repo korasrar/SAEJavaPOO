@@ -358,8 +358,7 @@ public class ApplicationLibrairie extends javafx.application.Application {
         estConnecteBD= false;
         try {
             connexion = new ConnexionMySQL();
-            connexion.connecter("", "", "", "");
-
+            connexion.connecter("servinfo-maria", "DBcosme", "cosme", "cosme");
             // Partage de la connexion avec les autres classes
 
             utilisateurConnexion = new UtilisateurBD(connexion);
