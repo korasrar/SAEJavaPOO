@@ -52,7 +52,7 @@ public class ControllerAdmin {
     private Button buttonAjouteVendeur;
 
     @FXML
-    private Button buttonMenueVendeur;
+    private Button buttonDeconnexion;
 
     @FXML
     private BarChart<String, Integer> chartAdmin;
@@ -123,7 +123,6 @@ public class ControllerAdmin {
 
     @FXML
     public void initialize() {
-        buttonMenueVendeur.setDisable(true);
         adminUsername.setText(utilisateurBD.getUtilisateurConnecter().getPseudo());
     }
 
@@ -195,8 +194,12 @@ public class ControllerAdmin {
     }
 
     @FXML
-    void menueVendeur(MouseEvent event) {
-        this.app.afficherAdminMenueVendeur(this.app.getStage());
+    void deconnecter(MouseEvent event) {
+        utilisateurBD.deconnecter();
+        app.afficherInformation("Déconnexion réussie");
+        app.getStage().close();
+        app.fermerClientMainView(app.getStage());
+        app.afficherConnexionView(app.getStage());
     }
 
     @FXML

@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="1000.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <top>
@@ -38,12 +39,21 @@
                 <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="buttonAjouteMagasin" mnemonicParsing="false" onMouseClicked="#pageAjouterMagasin" prefWidth="120.0" text="Ajouter magasin" GridPane.columnIndex="1" />
-                  <Button fx:id="buttonMenueVendeur" mnemonicParsing="false" onMouseClicked="#menueVendeur" prefWidth="120.0" text="Menue vendeur" />
-                  <Button fx:id="buttonAjouteVendeur" mnemonicParsing="false" onMouseClicked="#pageAjouterVendeur" prefWidth="120.0" text="Ajouter vendeur" GridPane.columnIndex="2" />
+                  <Button fx:id="buttonAjouteMagasin" mnemonicParsing="false" onMouseClicked="#pageAjouterMagasin" prefHeight="45.0" prefWidth="136.0" style="-fx-background-color: #004aad; -fx-background-radius: 20;" text="Ajouter magasin" textFill="WHITE" GridPane.columnIndex="1">
+                     <font>
+                        <Font name="Open Sans Bold" size="13.0" />
+                     </font></Button>
+                  <Button fx:id="buttonDeconnexion" mnemonicParsing="false" onMouseClicked="#deconnecter" prefHeight="45.0" prefWidth="136.0" style="-fx-background-color: #004aad; -fx-background-radius: 20;" text="Déconnexion" textFill="WHITE">
+                     <font>
+                        <Font name="Open Sans Bold" size="13.0" />
+                     </font></Button>
+                  <Button fx:id="buttonAjouteVendeur" mnemonicParsing="false" onMouseClicked="#pageAjouterVendeur" prefHeight="45.0" prefWidth="136.0" style="-fx-background-color: #004aad; -fx-background-radius: 20;" text="Ajouter vendeur" textFill="WHITE" GridPane.columnIndex="2">
+                     <font>
+                        <Font name="Open Sans Bold" size="13.0" />
+                     </font></Button>
                </children>
             </GridPane>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+            <VBox prefHeight="97.0" prefWidth="133.0">
                <children>
                   <ImageView fx:id="iconUser" fitHeight="45.0" fitWidth="142.0" pickOnBounds="true" preserveRatio="true">
                      <VBox.margin>
@@ -53,7 +63,7 @@
                         <Image url="@../img/userIcon.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="adminUsername" text="Label">
+                  <Label fx:id="adminUsername" prefHeight="28.0" prefWidth="135.0" text="Label">
                      <padding>
                         <Insets left="50.0" top="10.0" />
                      </padding>
@@ -82,10 +92,13 @@
             </BarChart>
             <VBox prefHeight="503.0" prefWidth="192.0" spacing="15.0">
                <children>
-                  <ComboBox fx:id="comboAdminTypeChart" onAction="#choisiChart" prefHeight="26.0" prefWidth="191.0" />
-                  <ComboBox fx:id="comboAdmin2" prefHeight="26.0" prefWidth="192.0" />
-                  <ComboBox fx:id="comboAdmin3" prefHeight="26.0" prefWidth="192.0" />
-                  <Button fx:id="buttonAfficherChart" mnemonicParsing="false" onMouseClicked="#afficheChart" text="Afficher" />
+                  <ComboBox fx:id="comboAdminTypeChart" onAction="#choisiChart" prefHeight="26.0" prefWidth="191.0" style="-fx-background-radius: 20;" />
+                  <ComboBox fx:id="comboAdmin2" prefHeight="26.0" prefWidth="192.0" style="-fx-background-radius: 20;" />
+                  <ComboBox fx:id="comboAdmin3" prefHeight="26.0" prefWidth="192.0" style="-fx-background-radius: 20;" />
+                  <Button fx:id="buttonAfficherChart" maxWidth="90.0" mnemonicParsing="false" onMouseClicked="#afficheChart" prefHeight="35.0" style="-fx-background-color: #004aad; -fx-background-radius: 20;" text="Afficher" textFill="WHITE">
+                     <font>
+                        <Font name="Open Sans Bold" size="13.0" />
+                     </font></Button>
                </children>
                <HBox.margin>
                   <Insets left="20.0" top="25.0" />
